@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Test
+      run: dotnet test --verbosity normal   
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: '5.x'
+    - name: Determine Version
+      id:   gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.7
+      with:
+        useConfigFile: true
+
+    - name: Set version variables
+      run: |
+        echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
+        echo "PREVIEW=${{steps.gitversion.outputs.majorMinorPatch}}-preview.$(date +%s)" >> $GITHUB_ENV
+
+    - name: Pack
+      run: |
+        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.PREVIEW}}" --output preview
+        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output stable
+
+    - name: Publish Preview
+      uses: actions/upload-artifact@v2
+      with:
+        name: preview
+        path: 'preview/*.nupkg'
+
+    - name: Publish Stable
+      uses: actions/upload-artifact@v2
+      with:
+        name: stable
+        path: 'stable/*.nupkg'
