@@ -40,7 +40,7 @@ jobs:
       uses: gittools/actions/gitversion/execute@v0.9.7
       with:
         useConfigFile: true
-        configFilePath: ../../GitVersion.yml
+        configFilePath: '$(build.sourcesdirectory)\GitVersion.yml'
     - name: Display GitVersion outputs
       run: |
         echo "Major: ${{ steps.gitversion.outputs.major }}"
