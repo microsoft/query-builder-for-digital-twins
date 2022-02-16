@@ -42,7 +42,7 @@ jobs:
         useConfigFile: true
     - name: Display GitVersion outputs
       run: |
-        echo "SemVer: $GITVERSION_SEMVER"
+        echo "SemVer: {{ $GITVERSION_SEMVER }}"
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
         echo "Patch: ${{ steps.gitversion.outputs.patch }}"
@@ -78,7 +78,7 @@ jobs:
     
 
     - name: Pack
-      run: dotnet pack QueryBuilder.csproj --configuration Release --no-build
+      run: dotnet pack QueryBuilder/QueryBuilder.csproj --configuration Release --no-build
       shell: bash
 
     - name: Publish Artifacts
