@@ -77,7 +77,7 @@ jobs:
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
     
     - name: Pack
-      run: dotnet pack --configuration Release /p:Version=${steps.gitversion.outputs.majorMinorPatch} --no-build --output .
+      run: dotnet pack '**/QueryBuilder.csproj' --configuration Release /p:Version="${{steps.gitversion.outputs.majorMinorPatch}}" --no-build
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v2
