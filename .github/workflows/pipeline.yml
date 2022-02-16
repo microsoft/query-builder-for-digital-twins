@@ -42,6 +42,7 @@ jobs:
         useConfigFile: true
     - name: Display GitVersion outputs
       run: |
+        echo "SemVer: $GITVERSION_SEMVER"
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
         echo "Patch: ${{ steps.gitversion.outputs.patch }}"
@@ -74,3 +75,14 @@ jobs:
         echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
         echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+    
+
+    - name: Pack
+      run: dotnet pack QueryBuilder.csproj --configuration Release --no-build
+      shell: bash
+
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: NuGet-packages
+        path: '**/bin/**/*.*nupkg'
