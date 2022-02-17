@@ -8,7 +8,7 @@ on:
 
 jobs:
   Build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -38,7 +38,7 @@ jobs:
       run: echo "${{ env.STABLE }}"
     
     - name: Pack
-      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output stable
+      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{STABLE}}" --output stable
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v2
