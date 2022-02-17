@@ -75,6 +75,9 @@ jobs:
         echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
         echo "UncommittedChanges: ${{ steps.gitversion.outputs.uncommittedChanges }}"
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
+        
+    - name: debug
+      run: ls
     
     - name: Pack
       run: dotnet pack '**/QueryBuilder.csproj' --configuration Release /p:Version="${{steps.gitversion.outputs.majorMinorPatch}}" --no-build
