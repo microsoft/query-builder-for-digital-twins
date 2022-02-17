@@ -31,8 +31,7 @@ jobs:
         useConfigFile: true
         
     - name: Set version
-#       run: echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
-      run: echo "STABLE=2.3.4" >> $GITHUB_ENV
+      run: echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
       
     - name: debug
       run: echo "${{ env.STABLE }}"
