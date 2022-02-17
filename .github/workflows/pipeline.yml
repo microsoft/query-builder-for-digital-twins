@@ -1,4 +1,4 @@
-name: .NET
+name: CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  Build:
 
     runs-on: windows-latest
 
@@ -80,9 +80,12 @@ jobs:
       run: |
         ls
         ls QueryBuilder/
+        
+    - name: Set version
+      run: echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
     
     - name: Pack
-      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{steps.gitversion.outputs.majorMinorPatch}}"
+      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{STABLE}}" --output stable
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v2
