@@ -54,14 +54,3 @@ jobs:
       with:
         name: stable
         path: 'stable/*.nupkg'
-
-#     - name: debug
-#       run: |
-#         ls
-#         ls QueryBuilder/
-    
-#     - name: Restore dependencies
-#       run: dotnet restore
-      
-#     - name: Build
-#       run: dotnet build
