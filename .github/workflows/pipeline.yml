@@ -35,6 +35,13 @@ jobs:
         
     - name: Set version
       run: $STABLE="${{steps.gitversion.outputs.majorMinorPatch}}"
+      
+    - name: debug
+      run: |
+        $STABLE
+        ${env:STABLE}
+        echo $STABLE
+        echo ${env:STABLE}
     
     - name: Pack
       run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version=$STABLE --output stable
