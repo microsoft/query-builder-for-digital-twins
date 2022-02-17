@@ -42,7 +42,7 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v2
       with:
-        path: '**/bin/**/*.nupkg'
+        path: 'stable/*.nupkg'
         
 #     - name: debug
 #       run: |
