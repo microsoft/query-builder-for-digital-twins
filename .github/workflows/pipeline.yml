@@ -87,5 +87,4 @@ jobs:
     - name: Publish Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: NuGet-packages
-        path: '**/bin/**/*.*nupkg'
+        path: '**/bin/**/*.nupkg'
