@@ -31,13 +31,14 @@ jobs:
         useConfigFile: true
         
     - name: Set version
-      run: echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
+#       run: echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
+      run: echo "STABLE=2.3.4" >> $GITHUB_ENV
       
     - name: debug
-      run: echo "${env:STABLE}"
+      run: echo "${{ env.STABLE }}"
     
     - name: Pack
-      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${env:STABLE}" --output stable
+      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output stable
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v2
