@@ -82,7 +82,7 @@ jobs:
         ls QueryBuilder/
     
     - name: Pack
-      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{steps.gitversion.outputs.majorMinorPatch}}" --no-build
+      run: dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{steps.gitversion.outputs.majorMinorPatch}}"
 
     - name: Publish Artifacts
       uses: actions/upload-artifact@v2
