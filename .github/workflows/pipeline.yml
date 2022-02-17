@@ -77,7 +77,7 @@ jobs:
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
         
     - name: debug
-      run: ls
+      run: ls -lR
     
     - name: Pack
       run: dotnet pack '**/QueryBuilder.csproj' --configuration Release /p:Version="${{steps.gitversion.outputs.majorMinorPatch}}" --no-build
