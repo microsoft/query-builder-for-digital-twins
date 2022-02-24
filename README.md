@@ -1,14 +1,163 @@
-# Project
+# Azure Digital Twins Query Builder
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+The Azure Digital Twins QueryBuilder provides a C# based fluent query builder that helps you build and query an Azure Digital Twin instance in an easy and predictable way with familiar C# based programming constructs.
 
-As the maintainer of this project, please make a few updates:
+Queries generated follows a grammar of custom SQL-like query language called [Azure Digital Twins query language](https://docs.microsoft.com/en-us/azure/digital-twins/concepts-query-language).
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+## Change history
+See [CHANGELOG](https://github.com/microsoft/query-builder-for-digital-twins/blob/main/CHANGELOG.md) for change history of each version.
+
+## Examples
+Using query builder you will be able to:
+
+- Write complex queries
+
+    ``` csharp
+    var query = QueryBuilder
+                    .From<Building>()
+                    .Join<Building, Device>(b => b.HasDevices)
+                    .Join<Device, Sensor>(d => d.HasSensors)
+                    .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                    .Select<Sensor>();
+
+    var stringQuery = query.BuildAdtQuery();
+
+    // ADT SQL generated - Gets you all sensor twins in the specified building
+
+    SELECT sensor
+    FROM DIGITALTWINS building
+    JOIN device RELATED building.hasDevices
+    JOIN sensor RELATED device.hasSensors
+    WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+    AND IS_OF_MODEL(device, 'dtmi:microsoft:Device;1')
+    AND IS_OF_MODEL(sensor, 'dtmi:microsoft:Sensor;1')
+    AND building.$dtId = 'ID'
+    ```
+
+- Provides support for all available [query constructs](https://docs.microsoft.com/en-us/azure/digital-twins/concepts-query-language#reference-documentation).
+
+    ``` csharp
+    var query = QueryBuilder
+                .From<Building>()
+                .WhereIn<Building>(b => b.Name, new string[] { "name1", "name2" });
+
+    var stringQuery = query.BuildAdtQuery();
+
+    //SQL generated - uses 'IS_OF_MODEL' and 'IN' ADT query operator
+
+    SELECT building
+    FROM DIGITALTWINS building
+    WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+    AND building.name IN ['name1','name2']
+    ```
+
+    ``` csharp
+    var query = QueryBuilder
+                .From<Building>()
+                .Top(5)
+                .WhereStartsWith<Building>(b => b.Name, "name" });
+
+    var stringQuery = query.BuildAdtQuery();
+
+    //SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
+
+    SELECT Top(5) building
+    FROM DIGITALTWINS building
+    WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+    AND STARTSWITH(building.name, 'name')
+    ```
+
+    ``` csharp
+    var query = QueryBuilder
+                .From<Building>()
+                .Count()
+                .WhereStartsWith<Building>(b => b.Name, "name" });
+
+    var stringQuery = query.BuildAdtQuery();
+
+    //SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
+
+    SELECT COUNT()
+    FROM DIGITALTWINS building
+    WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+    AND STARTSWITH(building.name, 'name')
+    ```
+
+    ``` csharp
+    var query = QueryBuilder
+                .From<Building>()
+                .Count()
+                .WhereContains<Building>(b => b.Name, "ame" });
+
+    var stringQuery = query.BuildAdtQuery();
+
+    //SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'CONTAINS' ADT query operator
+
+    SELECT COUNT()
+    FROM DIGITALTWINS building
+    WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+    AND CONTAINS(building.name, 'ame')
+    ```
+
+## Methods
+
+- QueryBuilder
+  - From\<TModel\>()
+    - Where\<TModel\>(propertySelector, operation, value)
+    - Where\<TModel\>(propertyName, operation, value)
+    - Where\<TModel\>(propertySelector, scalarOperator)
+    - Where\<TModel\>(propertyName, scalarOperator)
+    - WhereStartsWith\<TModel\>(propertySelector,value)
+    - WhereStartsWith\<TModel\>(propertyName,value)
+    - WhereEndsWith\<TModel\>(propertySelector,value)
+    - WhereEndsWith\<TModel\>(propertyName,value)
+    - WhereContains\<TModel\>(propertySelector,value)
+    - WhereContains\<TModel\>(propertyName,value)
+    - WhereIn\<TModel\>(propertySelector,values)
+    - WhereIn\<TModel\>(propertyName,values)
+    - WhereNotIn\<TModel\>(propertySelector,values)
+    - WhereNotIn\<TModel\>(propertyName,values)
+    - Join\<TJoinFrom,TJoinWith\>(relationship)
+    - Select\<TSelect\>()
+    - Top(numberOfRecords)
+    - Count()
+    - BuildAdtQuery()
+
+### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| TModel, TJoinFrom, TJoinWith, TSelect | A [Type](https://docs.microsoft.com/en-us/dotnet/api/system.type) that's a sub-type of [Azure.DigitalTwins.Core.BasicDigitalTwin](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/digitaltwins/Azure.DigitalTwins.Core/src/Models/BasicDigitalTwin.cs). | The C# model of the twin. |
+| propertySelector | [Expression<Func<TModel, object>>](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1) | Expression to select any property of TModel type.|
+| propertyName | string | JSON property name of TModel type.  |
+| operation | ComparisonOperators | Operator for the condition. |
+| scalarOperator | ScalarOperators | ADT scalar function.  |
+| value | object | Value against which the where condition is applied. |
+| values | string[] | values against which the where condition is applied. |
+
+&nbsp;
+___
+
+### Operators
+
+ComparisonOperators
+
+- IsEqualTo
+- IsGreaterThan
+- IsGreaterThanOrEqualTo
+- IsLessThan
+- IsLessThanOrEqualTo
+- NotEqualTo
+
+ScalarOperators
+
+- IS_BOOL
+- IS_DEFINED
+- IS_NULL
+- IS_NUMBER
+- IS_OBJECT
+- IS_PRIMITIVE
+- IS_STRING
 
 ## Contributing
 
