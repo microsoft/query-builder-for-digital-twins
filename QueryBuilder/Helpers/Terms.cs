@@ -3,8 +3,6 @@
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers
 {
-    using Azure.DigitalTwins.Core;
-
     internal static class Terms
     {
         internal const string Select = "SELECT";
