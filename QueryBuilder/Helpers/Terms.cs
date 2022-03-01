@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers
 {
+    using Azure.DigitalTwins.Core;
+
     internal static class Terms
     {
         internal const string Select = "SELECT";
@@ -19,7 +21,6 @@ namespace Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers
         internal const string Or = "OR";
         internal const string Not = "NOT";
         internal const string DigitalTwins = "DIGITALTWINS";
-        internal const string Id = "$dtId";
         internal const string Equal = "=";
         internal const string NotEqual = "!=";
         internal const string Less = "<";

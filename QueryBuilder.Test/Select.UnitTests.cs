@@ -6,7 +6,7 @@ namespace QueryBuilder.UnitTests
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.Azure.DigitalTwins.QueryBuilder;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

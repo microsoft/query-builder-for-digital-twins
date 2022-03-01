@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder.Clauses
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
 {
     using System.Collections.Generic;
-    using Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers;
-    using static Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers.Terms;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers;
+    using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers.Terms;
 
     internal abstract class Condition
     {

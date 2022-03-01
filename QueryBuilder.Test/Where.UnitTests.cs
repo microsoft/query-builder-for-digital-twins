@@ -4,7 +4,7 @@
 namespace QueryBuilder.UnitTests
 {
     using System;
-    using Microsoft.Azure.DigitalTwins.QueryBuilder;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

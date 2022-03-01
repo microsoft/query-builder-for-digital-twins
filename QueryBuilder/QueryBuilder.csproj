@@ -5,8 +5,8 @@
     <LangVersion>latest</LangVersion>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RootNamespace>Microsoft.Azure.DigitalTwins.QueryBuilder</RootNamespace>
-    <AssemblyName>Microsoft.Azure.DigitalTwins.QueryBuilder</AssemblyName>
+    <RootNamespace>Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder</RootNamespace>
+    <AssemblyName>Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder</AssemblyName>
     <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>
     <Description>A query builder for Azure Digital Twins.</Description>

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder.Clauses
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
 {
-    using static Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers.Terms;
+    using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers.Terms;
 
     internal class JoinClause
     {

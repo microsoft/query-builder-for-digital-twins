@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 {
     /// <summary>
     /// A query that counts all digital twins.

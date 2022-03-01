@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace Microsoft.Azure.DigitalTwins.QueryBuilder
     using System.Reflection;
     using System.Runtime.Serialization;
     using global::Azure.DigitalTwins.Core;
-    using Microsoft.Azure.DigitalTwins.QueryBuilder.Clauses;
-    using Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers;
 
     /// <summary>
     /// A wrapper for the common functionalities of query builder.

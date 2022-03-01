@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 {
     using System;
     using System.Collections.Generic;
-    using Microsoft.Azure.DigitalTwins.QueryBuilder.Clauses;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses;
 
     /// <summary>
     /// A query that has a count select clause.

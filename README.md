@@ -22,7 +22,8 @@ Using query builder you will be able to:
 
     var stringQuery = query.BuildAdtQuery();
 
-    // ADT SQL generated - Gets you all sensor twins in the specified building
+    /* 
+    ADT SQL generated - Gets you all sensor twins in the specified building
 
     SELECT sensor
     FROM DIGITALTWINS building
@@ -32,6 +33,7 @@ Using query builder you will be able to:
     AND IS_OF_MODEL(device, 'dtmi:microsoft:Device;1')
     AND IS_OF_MODEL(sensor, 'dtmi:microsoft:Sensor;1')
     AND building.$dtId = 'ID'
+    */
     ```
 
 - Provides support for all available [query constructs](https://docs.microsoft.com/en-us/azure/digital-twins/concepts-query-language#reference-documentation).
@@ -43,12 +45,14 @@ Using query builder you will be able to:
 
     var stringQuery = query.BuildAdtQuery();
 
-    //SQL generated - uses 'IS_OF_MODEL' and 'IN' ADT query operator
+    /*
+    SQL generated - uses 'IS_OF_MODEL' and 'IN' ADT query operator
 
     SELECT building
     FROM DIGITALTWINS building
     WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
     AND building.name IN ['name1','name2']
+    */
     ```
 
     ``` csharp
@@ -59,12 +63,15 @@ Using query builder you will be able to:
 
     var stringQuery = query.BuildAdtQuery();
 
-    //SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
+    
+    /*
+    SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
 
     SELECT Top(5) building
     FROM DIGITALTWINS building
     WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
     AND STARTSWITH(building.name, 'name')
+    */
     ```
 
     ``` csharp
@@ -75,12 +82,14 @@ Using query builder you will be able to:
 
     var stringQuery = query.BuildAdtQuery();
 
-    //SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
+    /*
+    SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
 
     SELECT COUNT()
     FROM DIGITALTWINS building
     WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
     AND STARTSWITH(building.name, 'name')
+    */
     ```
 
     ``` csharp
@@ -91,12 +100,14 @@ Using query builder you will be able to:
 
     var stringQuery = query.BuildAdtQuery();
 
-    //SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'CONTAINS' ADT query operator
+    /*
+    *SQL generated - uses 'IS_OF_MODEL', 'TOP' and 'CONTAINS' ADT query operator
 
     SELECT COUNT()
     FROM DIGITALTWINS building
     WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
     AND CONTAINS(building.name, 'ame')
+    */
     ```
 
 ## Methods

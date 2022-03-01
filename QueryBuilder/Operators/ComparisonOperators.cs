@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 {
-    using static Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers.Terms;
+    using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers.Terms;
 
     /// <summary>
     /// White List Collection of ADT comparison operator.

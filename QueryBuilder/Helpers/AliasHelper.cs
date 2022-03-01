@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.Azure.DigitalTwins.QueryBuilder.Helpers
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers
 {
     using System;
 
