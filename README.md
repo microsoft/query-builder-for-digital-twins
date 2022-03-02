@@ -62,7 +62,7 @@ AND building.name IN ['name1','name2']
 var query = QueryBuilder
             .From<Building>()
             .Top(5)
-            .WhereStartsWith<Building>(b => b.Name, "name" });
+            .WhereStartsWith<Building>(b => b.Name, "name");
 
 var stringQuery = query.BuildAdtQuery();
 
@@ -81,7 +81,7 @@ AND STARTSWITH(building.name, 'name')
 var query = QueryBuilder
             .From<Building>()
             .Count()
-            .WhereStartsWith<Building>(b => b.Name, "name" });
+            .WhereStartsWith<Building>(b => b.Name, "name");
 
 var stringQuery = query.BuildAdtQuery();
 
@@ -99,7 +99,7 @@ AND STARTSWITH(building.name, 'name')
 var query = QueryBuilder
             .From<Building>()
             .Count()
-            .WhereContains<Building>(b => b.Name, "ame" });
+            .WhereContains<Building>(b => b.Name, "ame");
 
 var stringQuery = query.BuildAdtQuery();
 
