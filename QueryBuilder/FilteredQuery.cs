@@ -148,7 +148,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// <summary>
         /// Add a Start with where clause.
         /// </summary>
-        /// <typeparam name="TModel">DIP model type.</typeparam>
+        /// <typeparam name="TModel">Model type.</typeparam>
         /// <param name="propertySelector">Expression to select property of TModel type.</param>
         /// <param name="value">String value to compare.</param>
         /// <param name="alias">Optional - Model Alias.</param>
@@ -165,7 +165,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// <summary>
         /// Add a Start with where clause.
         /// </summary>
-        /// <typeparam name="TModel">DIP model type.</typeparam>
+        /// <typeparam name="TModel">Model type.</typeparam>
         /// <param name="propertyName">String property name of TModel type on which where condition is applied on.</param>
         /// <param name="value">String value to compare.</param>
         /// <param name="alias">Optional - Model Alias.</param>
@@ -180,7 +180,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// <summary>
         /// Add a Ends with where clause.
         /// </summary>
-        /// <typeparam name="TModel">DIP model.</typeparam>
+        /// <typeparam name="TModel">Model type.</typeparam>
         /// <param name="propertySelector">Expression to select property of TModel type.</param>
         /// <param name="value">String value to compare.</param>
         /// <param name="alias">Optional - Model Alias.</param>
@@ -197,7 +197,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// <summary>
         /// Add a Ends with where clause.
         /// </summary>
-        /// <typeparam name="TModel">DIP model.</typeparam>
+        /// <typeparam name="TModel">Model type.</typeparam>
         /// <param name="propertyName">String property name of TModel type on which where condition is applied on.</param>
         /// <param name="value">String value to compare.</param>
         /// <param name="alias">Optional - Model Alias.</param>
@@ -212,7 +212,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// <summary>
         /// Add a Contains where clause.
         /// </summary>
-        /// <typeparam name="TModel">DIP model type.</typeparam>
+        /// <typeparam name="TModel">Model type.</typeparam>
         /// <param name="propertySelector">Expression to select property of TModel type.</param>
         /// <param name="value">String value to compare.</param>
         /// <param name="alias">Optional - Model Alias.</param>
@@ -229,7 +229,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// <summary>
         /// Add a Contains where clause.
         /// </summary>
-        /// <typeparam name="TModel">DIP model type.</typeparam>
+        /// <typeparam name="TModel">Model type.</typeparam>
         /// <param name="propertyName">String property name of TModel type on which where condition is applied on.</param>
         /// <param name="value">String value to compare.</param>
         /// <param name="alias">Optional - Model Alias.</param>
