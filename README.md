@@ -5,7 +5,7 @@ The Azure Digital Twins (ADT) QueryBuilder provides a C# based fluent query buil
 Queries generated follows a grammar of custom SQL-like query language called [Azure Digital Twins query language](https://docs.microsoft.com/en-us/azure/digital-twins/concepts-query-language).
 
 ## Change history
-See [CHANGELOG](https://github.com/microsoft/query-builder-for-digital-twins/blob/main/CHANGELOG.md) for change history of each version.
+See [CHANGELOG](CHANGELOG.md) for change history of each version.
 
 ## Pre-requisites
 There are some assumptions QueryBuilder is making so that it can be most useful (please refer to [ADT SDK](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/digitaltwins/Azure.DigitalTwins.Core#azure-iot-digital-twins-client-library-for-net) for more context):
@@ -220,6 +220,11 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Security
+
+For guidance on reporing security issues, please refer to [Security](SECURITY.md)
+
 
 ## Trademarks
 
