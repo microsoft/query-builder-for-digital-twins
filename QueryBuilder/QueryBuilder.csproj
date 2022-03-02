@@ -9,7 +9,8 @@
     <AssemblyName>Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder</AssemblyName>
     <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>
-    <Description>A query builder for Azure Digital Twins.</Description>
+    <Title>Digital Twins Query Bulider</Title>
+    <Description>A C# query builder for Azure Digital Twins based on Azure Digital Twins SDK.</Description>
   </PropertyGroup>
   
   <PropertyGroup>
