@@ -17,6 +17,10 @@ jobs:
     - name: Validate last commit message
       run: |
         git branch --show-current
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
         
 #     - name: Install git-conventional-commits
 #       run: npm install --global git-conventional-commits
