@@ -24,13 +24,15 @@ jobs:
     - name: inspect branch
       run: echo "${{ steps.extract_branch.outputs.branch }}"
         
-#     - name: Install git-conventional-commits
-#       run: npm install --global git-conventional-commits
-#     - name: Validate last commit message
-#       run: |
-#         git branch --show-current
-#        git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
-#        git-conventional-commits commit-msg-hook msg.txt
+    - name: Install git-conventional-commits
+      run: npm install --global git-conventional-commits
+    - name: Validate last commit message
+      run: |
+        git switch -c "${{ steps.extract_branch.outputs.branch }}"
+        git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
+        git-conventional-commits commit-msg-hook msg.txt
+    - name: check commit
+      run: cat msg.txt
 
 #     - name: Setup .NET
 #       uses: actions/setup-dotnet@v1
