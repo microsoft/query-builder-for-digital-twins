@@ -20,6 +20,7 @@ jobs:
     - name: Validate last commit message
       run: |
         git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
+        cat msg.txt
         git-conventional-commits commit-msg-hook msg.txt
 
     - name: Setup .NET
