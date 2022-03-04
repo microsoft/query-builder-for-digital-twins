@@ -21,6 +21,8 @@ jobs:
       shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
+    - name: inspect branch
+      run: echo "${{ steps.extract_branch.outputs.branch }}"
         
 #     - name: Install git-conventional-commits
 #       run: npm install --global git-conventional-commits
