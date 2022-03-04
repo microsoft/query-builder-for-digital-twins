@@ -15,10 +15,12 @@ jobs:
       with:
         fetch-depth: 0
         
-    - name: install git-conventional-commits
+    - name: Install git-conventional-commits
       run: npm install --global git-conventional-commits
-    - name: validate commits message
-      run: git-conventional-commits commit-msg-hook git-conventional-commits.json
+    - name: Validate last commit message
+      run: |
+        git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
+        git-conventional-commits commit-msg-hook msg.txt
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
