@@ -14,15 +14,15 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Validate last commit message
-      run: |
-        git branch --show-current
-    - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/})"
-      id: extract_branch
-    - name: inspect branch
-      run: echo "${{ steps.extract_branch.outputs.branch }}"
+#     - name: Validate last commit message
+#       run: |
+#         git branch --show-current
+#     - name: Extract branch name
+#       shell: bash
+#       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/})"
+#       id: extract_branch
+#     - name: inspect branch
+#       run: echo "${{ steps.extract_branch.outputs.branch }}"
     - name: Get branch names
       id: branch-name
       uses: tj-actions/branch-names@v4.9
@@ -34,7 +34,7 @@ jobs:
       run: npm install --global git-conventional-commits
     - name: Validate last commit message
       run: |
-        git switch -c "${{ steps.extract_branch.outputs.branch }}"
+        git switch -c "${{ steps.branch-name.outputs.current_branch }}"
         git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
         git-conventional-commits commit-msg-hook msg.txt
     - name: check commit
