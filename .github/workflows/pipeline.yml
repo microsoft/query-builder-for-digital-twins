@@ -34,7 +34,7 @@ jobs:
       run: npm install --global git-conventional-commits
     - name: Validate last commit message
       run: |
-        git switch -c ${{ steps.branch-name.outputs.current_branch }}
+        git checkout -b ${{ steps.branch-name.outputs.current_branch }}
         git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
         git-conventional-commits commit-msg-hook msg.txt
     - name: check commit
