@@ -14,51 +14,54 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        
-    - name: Install git-conventional-commits
-      run: npm install --global git-conventional-commits
     - name: Validate last commit message
       run: |
-        git branch
-        git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
-        git-conventional-commits commit-msg-hook msg.txt
+        git branch --show-current
+        
+#     - name: Install git-conventional-commits
+#       run: npm install --global git-conventional-commits
+#     - name: Validate last commit message
+#       run: |
+#         git branch --show-current
+#        git rev-list --format=%B --max-count=1 HEAD | tail +2 > msg.txt
+#        git-conventional-commits commit-msg-hook msg.txt
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
+#     - name: Setup .NET
+#       uses: actions/setup-dotnet@v1
+#       with:
+#         dotnet-version: 6.0.x
 
-    - name: Test
-      run: dotnet test --verbosity normal   
+#     - name: Test
+#       run: dotnet test --verbosity normal   
 
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.7
-      with:
-        versionSpec: '5.x'
-    - name: Determine Version
-      id:   gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.7
-      with:
-        useConfigFile: true
+#     - name: Install GitVersion
+#       uses: gittools/actions/gitversion/setup@v0.9.7
+#       with:
+#         versionSpec: '5.x'
+#     - name: Determine Version
+#       id:   gitversion
+#       uses: gittools/actions/gitversion/execute@v0.9.7
+#       with:
+#         useConfigFile: true
 
-    - name: Set version variables
-      run: |
-        echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
-        echo "PREVIEW=${{steps.gitversion.outputs.majorMinorPatch}}-preview.$(date +%s)" >> $GITHUB_ENV
+#     - name: Set version variables
+#       run: |
+#         echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
+#         echo "PREVIEW=${{steps.gitversion.outputs.majorMinorPatch}}-preview.$(date +%s)" >> $GITHUB_ENV
 
-    - name: Pack
-      run: |
-        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.PREVIEW}}" --output preview
-        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output stable
+#     - name: Pack
+#       run: |
+#         dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.PREVIEW}}" --output preview
+#         dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output stable
 
-    - name: Publish Preview
-      uses: actions/upload-artifact@v2
-      with:
-        name: preview
-        path: 'preview/*.nupkg'
+#     - name: Publish Preview
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: preview
+#         path: 'preview/*.nupkg'
 
-    - name: Publish Stable
-      uses: actions/upload-artifact@v2
-      with:
-        name: stable
-        path: 'stable/*.nupkg'
+#     - name: Publish Stable
+#       uses: actions/upload-artifact@v2
+#       with:
+#         name: stable
+#         path: 'stable/*.nupkg'
