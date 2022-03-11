@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryBuilder", "QueryBuilder\QueryBuilder.csproj", "{C0008319-4D07-4289-A64A-CC2437A96260}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{940D9BE0-F857-4D3E-9A08-5C9530CD3D1E}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CHANGELOG.md = CHANGELOG.md
+		GitVersion.yml = GitVersion.yml
+		LICENSE = LICENSE
+		.github\workflows\pipeline.yml = .github\workflows\pipeline.yml
+		README.md = README.md
+		SECURITY.md = SECURITY.md
+		stylecop.json = stylecop.json
+		StyleCop.ruleset = StyleCop.ruleset
+		SUPPORT.md = SUPPORT.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryBuilder.Test", "QueryBuilder.Test\QueryBuilder.Test.csproj", "{55666BA1-BE1E-49A7-8178-A3A0808BC618}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0008319-4D07-4289-A64A-CC2437A96260}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0008319-4D07-4289-A64A-CC2437A96260}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0008319-4D07-4289-A64A-CC2437A96260}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0008319-4D07-4289-A64A-CC2437A96260}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55666BA1-BE1E-49A7-8178-A3A0808BC618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55666BA1-BE1E-49A7-8178-A3A0808BC618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55666BA1-BE1E-49A7-8178-A3A0808BC618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55666BA1-BE1E-49A7-8178-A3A0808BC618}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EE0A6AF-889F-402C-9025-3ECC52861115}
+	EndGlobalSection
+EndGlobal
