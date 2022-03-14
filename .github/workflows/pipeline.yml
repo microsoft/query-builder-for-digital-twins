@@ -110,13 +110,24 @@ jobs:
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: 'Install ESRP Client'
-      shell: pwsh
-      env:
-        AZ_SUB: ${{ secrets.AZURE_SUBSCRIPTION }}
+    - name: Install ESRP Client
       run: |
-        az storage blob download --subscription  "$env:AZ_SUB" --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
-        Expand-Archive -Path esrp.zip -DestinationPath .\esrp-client
+        az storage blob download --auth-mode --subscription  ${{ secrets.AZURE_SUBSCRIPTION }} --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
+
+#     - name: Install Certificates
+#       shell: pwsh
+#       env:
+#         AZ_SUB: ${{ secrets.AZURE_SUBSCRIPTION }}
+#         AZ_VAULT: ${{ secrets.AZURE_VAULT }}
+#         SSL_CERT: ${{ secrets.VAULT_SSL_CERT_NAME }}
+#         ESRP_CERT: ${{ secrets.VAULT_ESRP_CERT_NAME }}
+#       run: |
+#         az keyvault secret download --subscription "$env:AZ_SUB" --vault-name "$env:AZ_VAULT" --name "$env:SSL_CERT" -f out.pfx
+#         certutil -f -importpfx out.pfx
+#         Remove-Item out.pfx
+#         az keyvault secret download --subscription "$env:AZ_SUB" --vault-name "$env:AZ_VAULT" --name "$env:ESRP_CERT" -f out.pfx
+#         certutil -f -importpfx out.pfx
+#         Remove-Item out.pfx
 
     - name: Azure logout
       run: az logout
