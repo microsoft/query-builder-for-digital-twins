@@ -116,20 +116,14 @@ jobs:
         ls
         unzip -d ./esrp esrp.zip
 
-#     - name: Install Certificates
-#       shell: pwsh
-#       env:
-#         AZ_SUB: ${{ secrets.AZURE_SUBSCRIPTION }}
-#         AZ_VAULT: ${{ secrets.AZURE_VAULT }}
-#         SSL_CERT: ${{ secrets.VAULT_SSL_CERT_NAME }}
-#         ESRP_CERT: ${{ secrets.VAULT_ESRP_CERT_NAME }}
-#       run: |
-#         az keyvault secret download --subscription "$env:AZ_SUB" --vault-name "$env:AZ_VAULT" --name "$env:SSL_CERT" -f out.pfx
-#         certutil -f -importpfx out.pfx
-#         Remove-Item out.pfx
-#         az keyvault secret download --subscription "$env:AZ_SUB" --vault-name "$env:AZ_VAULT" --name "$env:ESRP_CERT" -f out.pfx
-#         certutil -f -importpfx out.pfx
-#         Remove-Item out.pfx
+    - name: Install Certificates
+      run: |
+        az keyvault secret download --subscription "${{ secrets.AZURE_SUBSCRIPTION }}" --vault-name "${{ secrets.AZURE_VAULT }}" --name "${{ secrets.AAD_AUTH_CERT }}" -f out.pfx
+        certutil -f -importpfx out.pfx
+        rm out.pfx
+        az keyvault secret download --subscription "${{ secrets.AZURE_SUBSCRIPTION }}" --vault-name "${{ secrets.AZURE_VAULT }}" --name "${{ secrets.ESRP_SIGNING_CERT }}" -f out.pfx
+        certutil -f -importpfx out.pfx
+        rm out.pfx
 
     - name: Azure logout
       run: az logout
