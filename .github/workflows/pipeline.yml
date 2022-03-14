@@ -112,7 +112,7 @@ jobs:
 
     - name: Install ESRP Client
       run: |
-        az storage blob download --auth-mode --subscription  ${{ secrets.AZURE_SUBSCRIPTION }} --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
+        az storage blob download --auth-mode login --subscription  ${{ secrets.AZURE_SUBSCRIPTION }} --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
 
 #     - name: Install Certificates
 #       shell: pwsh
