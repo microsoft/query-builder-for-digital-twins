@@ -59,18 +59,18 @@ jobs:
     - name: Set version variables
       run: |
         echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
-        echo "PREVIEW=${{steps.gitversion.outputs.majorMinorPatch}}-preview.$(date +%s)" >> $GITHUB_ENV
+        echo "BETA=${{steps.gitversion.outputs.majorMinorPatch}}-beta.$(date +%s)" >> $GITHUB_ENV
 
     - name: Pack
       run: |
-        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.PREVIEW}}" --output preview
+        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.BETA}}" --output beta
         dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output stable
 
-    - name: Publish Preview
+    - name: Publish Beta
       uses: actions/upload-artifact@v2
       with:
-        name: preview
-        path: 'preview/*.nupkg'
+        name: beta
+        path: 'beta/*.nupkg'
 
     - name: Publish Stable
       uses: actions/upload-artifact@v2
