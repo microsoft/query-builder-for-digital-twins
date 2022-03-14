@@ -104,10 +104,19 @@ jobs:
     steps:
     - name: output auth
       run: echo $auth
+
     - uses: azure/login@v1
       name: Azure Login
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Install ESRP Client'
+      shell: pwsh
+      env:
+        AZ_SUB: ${{ secrets.AZURE_SUBSCRIPTION }}
+      run: |
+        az storage blob download --subscription  "$env:AZ_SUB" --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip
+        Expand-Archive -Path microsoft.esrpclient.1.2.76.zip -DestinationPath .\esrp-client
 
     - name: Azure logout
       run: az logout
