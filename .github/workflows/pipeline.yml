@@ -1,4 +1,4 @@
-name: CI
+name: Package publish
 
 on:
   push:
@@ -77,3 +77,16 @@ jobs:
       with:
         name: stable
         path: 'stable/*.nupkg'
+
+
+  Sign:
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+    - uses: azure/login@v1
+      name: Azure Login
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure logout
+      run: az logout
