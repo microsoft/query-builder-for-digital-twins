@@ -115,8 +115,8 @@ jobs:
       env:
         AZ_SUB: ${{ secrets.AZURE_SUBSCRIPTION }}
       run: |
-        az storage blob download --subscription  "$env:AZ_SUB" --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip
-        Expand-Archive -Path microsoft.esrpclient.1.2.76.zip -DestinationPath .\esrp-client
+        az storage blob download --subscription  "$env:AZ_SUB" --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
+        Expand-Archive -Path esrp.zip -DestinationPath .\esrp-client
 
     - name: Azure logout
       run: az logout
