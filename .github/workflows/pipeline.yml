@@ -256,6 +256,14 @@ jobs:
         ./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./betaInput.json -o ./Output.json -l Verbose -f STDOUT
         ./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./stableInput.json -o ./Output.json -l Verbose -f STDOUT
 
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+        
+    - name: Verify Signature
+      run: |
+        nuget.exe verify -Signatures signed/stable/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.stable-version}}.nupkg
+        nuget.exe verify -Signatures signed/beta/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg
+
     - name: Publish Signed
       uses: actions/upload-artifact@v2
       with:
