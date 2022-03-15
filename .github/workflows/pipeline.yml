@@ -113,6 +113,7 @@ jobs:
         ls
         ls signed/
         ls unsigned/
+        echo "${{GITHUB_WORKSPACE}}"
 
     - name: Create Auth file
       env: 
