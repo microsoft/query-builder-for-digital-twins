@@ -110,6 +110,9 @@ jobs:
         mkdir signed
         mkdir signed/beta
         mkdir signed/stable
+        ls
+        ls signed/
+        ls unsigned/
 
     - name: Create Auth file
       env: 
@@ -146,9 +149,9 @@ jobs:
           "SignBatches": [
             {
               "SourceLocationType": "UNC",
-              "SourceRootDirectory": "./unsigned/beta",
+              "SourceRootDirectory": ".\\unsigned\\beta",
               "DestinationLocationType": "UNC",
-              "DestinationRootDirectory": "./signed/beta",
+              "DestinationRootDirectory": ".\\signed\\beta",
               "SignRequestFiles": [
                 {
                   "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg",
