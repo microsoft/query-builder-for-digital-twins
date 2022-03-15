@@ -72,48 +72,30 @@ jobs:
 
     - name: Pack
       run: |
-        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.BETA}}" --output beta
-        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output stable
+        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.BETA}}" --output unsigned/beta
+        dotnet pack 'QueryBuilder/QueryBuilder.csproj' --configuration Release /p:Version="${{env.STABLE}}" --output unsigned/stable
 
     - name: Publish Beta
       uses: actions/upload-artifact@v2
       with:
-        name: beta
-        path: 'beta/*.nupkg'
-
-    - name: Publish Stable
-      uses: actions/upload-artifact@v2
-      with:
-        name: stable
-        path: 'stable/*.nupkg'
-
+        name: unsigned
+        path: unsigned
 
   Sign:
     runs-on: windows-latest
     environment: Sign
     needs: Build
     steps:
-    - name: Download Beta
+    - name: Download unsigned packages
       uses: actions/download-artifact@v2
       with:
-        name: beta
-        path: unsigned/beta
-
-    - name: Download Stable
-      uses: actions/download-artifact@v2
-      with:
-        name: stable
-        path: unsigned/stable
+        name: unsigned
+        path: unsigned
 
     - name: Create signed directory
       run: |
-        mkdir signed
         mkdir signed/beta
         mkdir signed/stable
-        ls
-        ls signed/
-        ls unsigned/
-        echo $GITHUB_WORKSPACE
 
     - name: Create Auth file
       env: 
@@ -139,7 +121,6 @@ jobs:
         }
         '@
         Out-File -FilePath .\auth.json -InputObject $authJson
-        Get-Content -Path .\auth.json
 
     - name: Create Beta Input file
       run: |
@@ -181,7 +162,6 @@ jobs:
         $workspace = [regex]::escape("${{github.workspace}}")
         $betaInputJson = $betaInputJsonTemplate -replace '@@workspace@@', $workspace
         Out-File -FilePath .\betaInput.json -InputObject $betaInputJson
-        Get-Content -Path .\betaInput.json
 
     - name: Create Stable Input file
       env: 
@@ -225,7 +205,6 @@ jobs:
         $workspace = [regex]::escape("${{github.workspace}}")
         $stableInputJson = $stableInputJsonTemplate -replace '@@workspace@@', $workspace
         Out-File -FilePath .\stableInput.json -InputObject $stableInputJson
-        Get-Content -Path .\stableInput.json
 
     - uses: azure/login@v1
       name: Azure Login
@@ -235,7 +214,6 @@ jobs:
     - name: Install ESRP Client
       run: |
         az storage blob download --auth-mode login --subscription  ${{ secrets.AZURE_SUBSCRIPTION }} --account-name wlpistorageaccount -c esrp-client -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
-        ls
         unzip -d ./esrp esrp.zip
 
     - name: Install Certificates
@@ -245,12 +223,12 @@ jobs:
         AAD_CERT: ${{ secrets.AAD_AUTH_CERT }}
         ESRP_CERT: ${{ secrets.ESRP_SIGNING_CERT }}
       run: |
-        az keyvault secret download --subscription "${{env.AZ_SUB}}" --vault-name "${{env.AZ_VAULT}}" --name "${{env.AAD_CERT}}" -f out.pfx
-        certutil -silent -f -importpfx out.pfx
-        rm out.pfx
-        az keyvault secret download --subscription "${{env.AZ_SUB}}" --vault-name "${{env.AZ_VAULT}}" --name "${{env.ESRP_CERT}}" -f out.pfx
-        certutil -silent -f -importpfx out.pfx
-        rm out.pfx
+        az keyvault secret download --subscription "${{env.AZ_SUB}}" --vault-name "${{env.AZ_VAULT}}" --name "${{env.AAD_CERT}}" -f cert.pfx
+        certutil -silent -f -importpfx cert.pfx
+        rm cert.pfx
+        az keyvault secret download --subscription "${{env.AZ_SUB}}" --vault-name "${{env.AZ_VAULT}}" --name "${{env.ESRP_CERT}}" -f cert.pfx
+        certutil -silent -f -importpfx cert.pfx
+        rm cert.pfx
 
     - name: Run ESRP Client
       run: |
@@ -263,13 +241,13 @@ jobs:
     - name: Verify Signature
       run: |
         nuget.exe verify -Signatures signed/stable/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.stable-version}}.nupkg
-        nuget.exe verify -Signatures unsigned/beta/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg
+        nuget.exe verify -Signatures signed/beta/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg
 
     - name: Publish Signed
       uses: actions/upload-artifact@v2
       with:
         name: signed
-        path: 'signed'
+        path: signed
 
     - name: Azure logout
       run: az logout
