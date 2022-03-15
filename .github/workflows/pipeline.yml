@@ -88,7 +88,8 @@ jobs:
       env: 
         APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
       run: |
-        $authJson = @'{
+        $authJson = @'
+        {
           "Version": "1.0.0",
           "AuthenticationType": "AAD_CERT",
           "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
