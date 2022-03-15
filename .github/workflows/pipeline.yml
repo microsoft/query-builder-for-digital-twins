@@ -142,6 +142,8 @@ jobs:
         Get-Content -Path .\auth.json
 
     - name: Create Beta Input file
+      env:
+        workspace: $([regex]::escape($GITHUB_WORKSPACE))
       run: |
         $betaInputJson = @'
         {
@@ -149,9 +151,9 @@ jobs:
           "SignBatches": [
             {
               "SourceLocationType": "UNC",
-              "SourceRootDirectory": "${{github.workspace}}\\unsigned\\beta",
+              "SourceRootDirectory": "${{workspace}}\\unsigned\\beta",
               "DestinationLocationType": "UNC",
-              "DestinationRootDirectory": "${{github.workspace}}\\signed\\beta",
+              "DestinationRootDirectory": "${{workspace}}\\signed\\beta",
               "SignRequestFiles": [
                 {
                   "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg",
