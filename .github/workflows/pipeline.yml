@@ -136,7 +136,8 @@ jobs:
               "DestinationRootDirectory": ".\\signed\\beta",
               "SignRequestFiles": [
                 {
-                  "SourceLocation": "*.nupkg",
+                  "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.BETA}}.nupkg",
+                  "DestinationLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.BETA}}.nupkg"
                 }
               ],
               "SigningInfo": {
@@ -176,7 +177,8 @@ jobs:
               "DestinationRootDirectory": ".\\signed\\stable",
               "SignRequestFiles": [
                 {
-                  "SourceLocation": "*.nupkg",
+                  "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.STABLE}}.nupkg",
+                  "DestinationLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.STABLE}}.nupkg"
                 }
               ],
               "SigningInfo": {
@@ -232,3 +234,4 @@ jobs:
 
     - name: Azure logout
       run: az logout
+      if: always()
