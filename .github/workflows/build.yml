@@ -1,5 +1,3 @@
-name: Build
-
 on:
   workflow_call:
     inputs:
@@ -9,13 +7,13 @@ on:
     outputs:
       beta-version:
         description: "Beta version number."
-        value: ${{jobs.Build.outputs.beta-version}}
+        value: ${{jobs.Pack.outputs.beta-version}}
       stable-version:
         description: "Stable version number."
-        value: ${{jobs.Build.outputs.stable-version}}
+        value: ${{jobs.Pack.outputs.stable-version}}
 
 jobs:
-  Build:
+  Pack:
     runs-on: ubuntu-latest
     outputs:
       beta-version: ${{steps.version.outputs.beta-version}}
