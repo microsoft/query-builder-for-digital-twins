@@ -115,6 +115,10 @@ jobs:
         ls unsigned/
         echo $GITHUB_WORKSPACE
 
+    - name: Set workspace variables
+      run: |
+        echo "workspace=[regex]::escape("${{github.workspace}}")" >> $GITHUB_ENV
+
     - name: Create Auth file
       env: 
         APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
@@ -143,17 +147,15 @@ jobs:
 
     - name: Create Beta Input file
       run: |
-        $workspace = [regex]::escape("${{github.workspace}}")
-        $workspace
         $betaInputJson = @'
         {
           "Version": "1.0.0",
           "SignBatches": [
             {
               "SourceLocationType": "UNC",
-              "SourceRootDirectory": $workspace+"\\unsigned\\beta",
+              "SourceRootDirectory": "${{env.workspace}}\\unsigned\\beta",
               "DestinationLocationType": "UNC",
-              "DestinationRootDirectory": $workspace"+\\signed\\beta",
+              "DestinationRootDirectory": "${{env.workspace}}\\signed\\beta",
               "SignRequestFiles": [
                 {
                   "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg",
