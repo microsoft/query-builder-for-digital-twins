@@ -150,9 +150,9 @@ jobs:
           "SignBatches": [
             {
               "SourceLocationType": "UNC",
-              "SourceRootDirectory": ".\\unsigned\\beta",
+              "SourceRootDirectory": "${{github.workspace}}\\unsigned\\beta",
               "DestinationLocationType": "UNC",
-              "DestinationRootDirectory": ".\\signed\\beta",
+              "DestinationRootDirectory": "${{github.workspace}}\\signed\\beta",
               "SignRequestFiles": [
                 {
                   "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg",
