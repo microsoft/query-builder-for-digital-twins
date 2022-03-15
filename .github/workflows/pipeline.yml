@@ -84,6 +84,18 @@ jobs:
     environment: Sign
     needs: Build
     steps:
+    - name: Download Beta
+      uses: actions/download-artifact@v2
+      with:
+        name: beta
+        path: unsigned/beta
+
+    - name: Download Stable
+      uses: actions/download-artifact@v2
+      with:
+        name: stable
+        path: unsigned/stable
+
     - name: Create Auth file
       env: 
         APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
@@ -108,7 +120,86 @@ jobs:
         }
         '@
         Out-File -FilePath .\auth.json -InputObject $authJson
-        ls
+
+    - name: Create Beta Input file
+      env: 
+        APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
+      run: |
+        $betaInputJson = @'
+        {
+          "Version": "1.0.0",
+          "SignBatches": [
+            {
+              "SourceLocationType": "UNC",
+              "SourceRootDirectory": ".\\unsigned\\beta",
+              "DestinationLocationType": "UNC",
+              "DestinationRootDirectory": ".\\signed\\beta",
+              "SignRequestFiles": [
+                {
+                  "SourceLocation": "*.nupkg",
+                }
+              ],
+              "SigningInfo": {
+                "Operations": [
+                  {
+                    "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetSign",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  },
+                  {
+                  "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetVerify",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        '@
+        Out-File -FilePath .\betaInput.json -InputObject $betaInputJson
+
+    - name: Create Stable Input file
+      env: 
+        APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
+      run: |
+        $stableInputJson = @'
+        {
+          "Version": "1.0.0",
+          "SignBatches": [
+            {
+              "SourceLocationType": "UNC",
+              "SourceRootDirectory": ".\\unsigned\\stable",
+              "DestinationLocationType": "UNC",
+              "DestinationRootDirectory": ".\\signed\\stable",
+              "SignRequestFiles": [
+                {
+                  "SourceLocation": "*.nupkg",
+                }
+              ],
+              "SigningInfo": {
+                "Operations": [
+                  {
+                    "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetSign",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  },
+                  {
+                  "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetVerify",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        '@
+        Out-File -FilePath .\stableInput.json -InputObject $stableInputJson
 
     - uses: azure/login@v1
       name: Azure Login
@@ -136,10 +227,8 @@ jobs:
         rm out.pfx
 
     - name: Run ESRP Client
-      env:
-        AZ_APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
       run: |
-        ./esrp/tools/EsrpClient.exe sign -a "${{env.AUTH}} -l Verbose -f stdout
+        .\esrp\tools\EsrpClient.exe sign -a .\auth.json -p .\esrp\tools\Policy.json -c .\esrp\tools\Config.json -i .\betaInput.json -o .\Output.json -l Verbose -f STDOUT
 
     - name: Azure logout
       run: az logout
