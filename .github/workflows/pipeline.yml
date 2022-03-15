@@ -83,31 +83,12 @@ jobs:
     runs-on: windows-latest
     environment: Sign
     needs: Build
-    env:
-      AUTH: |
-        {
-          "Version": "1.0.0",
-          "AuthenticationType": "AAD_CERT",
-          "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-          "ClientId": "${{ secrets.AAD_SIGNING_CLIENT_ID }}",
-          "AuthCert": {
-            "SubjectName": "CN=${{ secrets.AAD_SIGNING_CLIENT_ID }}.microsoft.com",
-            "StoreLocation": "LocalMachine",
-            "StoreName": "My",
-            "SendX5c": "true"
-          },
-          "RequestSigningCert": {
-            "SubjectName": "CN=${{ secrets.AAD_SIGNING_CLIENT_ID }}",
-            "StoreLocation": "LocalMachine",
-            "StoreName": "My"
-          }
-        }
     steps:
     - name: Create Auth file
       env: 
         APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
       run: |
-        echo "{
+        $authJson = @'{
           "Version": "1.0.0",
           "AuthenticationType": "AAD_CERT",
           "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
@@ -123,8 +104,9 @@ jobs:
             "StoreLocation": "LocalMachine",
             "StoreName": "My"
           }
-        }" > auth.json
-        cat auth.json
+        }'@
+        Out-File -FilePath .\auth.json -InputObject $authJson
+        ls
 
     - uses: azure/login@v1
       name: Azure Login
