@@ -124,7 +124,7 @@ jobs:
         AAD_CERT: ${{ secrets.AAD_AUTH_CERT }}
         ESRP_CERT: ${{ secrets.ESRP_SIGNING_CERT }}
       run: |
-        az keyvault secret download --subscription "${{env:AZ_SUB}}" --vault-name "{{$env:AZ_VAULT}}" --name "${{env:AAD_CERT}}" -f out.pfx
+        az keyvault secret download --subscription "${{env.AZ_SUB}}" --vault-name "{{$env.AZ_VAULT}}" --name "${{env.AAD_CERT}}" -f out.pfx
         certutil -f -importpfx out.pfx
         rm out.pfx
         az keyvault secret download --subscription "$env:AZ_SUB" --vault-name "$env:AZ_VAULT" --name "$env:ESRP_CERT" -f out.pfx
