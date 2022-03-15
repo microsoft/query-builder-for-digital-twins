@@ -9,6 +9,9 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    outputs:
+      beta-version: ${{steps.version.outputs.beta-version}}
+      stable-version: ${{steps.version.outputs.stable-version}}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -20,7 +23,7 @@ jobs:
       uses: tj-actions/branch-names@v5.1
       
     - name: Current branch name
-      run: echo "${{ steps.branch-names.outputs.current_branch }}"
+      run: echo "${{steps.branch-names.outputs.current_branch}}"
       
 #     - name: Install git-conventional-commits
 #       run: npm install --global git-conventional-commits
@@ -57,9 +60,12 @@ jobs:
         useConfigFile: true
 
     - name: Set version variables
+      id: version
       run: |
         echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
         echo "BETA=${{steps.gitversion.outputs.majorMinorPatch}}-beta.$(date +%s)" >> $GITHUB_ENV
+        echo "::set-output name=beta-version::${{env.BETA}}"
+        echo "::set-output name=stable-version::${{env.STABLE}}"
 
     - name: Pack
       run: |
@@ -98,8 +104,8 @@ jobs:
         
     - name: debug env
       run: |
-        echo "${{env.BETA}}"
-        echo "${{env.STABLE}}"
+        echo "${{needs.Build.outputs.beta-version}}"
+        echo "${{needs.Build.outputs.stable-version}}"
 
     - name: Create Auth file
       env: 
