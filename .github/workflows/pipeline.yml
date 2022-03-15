@@ -95,6 +95,11 @@ jobs:
       with:
         name: stable
         path: unsigned/stable
+        
+    - name: debug env
+      run: |
+        echo "${{env.BETA}}"
+        echo "${{env.STABLE}}"
 
     - name: Create Auth file
       env: 
