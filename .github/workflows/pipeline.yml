@@ -103,8 +103,10 @@ jobs:
         path: unsigned/stable
         
     - name: debug env
+      env:
+        beta: ${{needs.Build.outputs.beta-version}}
       run: |
-        echo "${{needs.Build.outputs.beta-version}}"
+        echo "${{env.beta}}"
         echo "${{needs.Build.outputs.stable-version}}"
 
     - name: Create Auth file
@@ -147,8 +149,8 @@ jobs:
               "DestinationRootDirectory": ".\\signed\\beta",
               "SignRequestFiles": [
                 {
-                  "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.BETA}}.nupkg",
-                  "DestinationLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.BETA}}.nupkg"
+                  "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg",
+                  "DestinationLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg"
                 }
               ],
               "SigningInfo": {
@@ -188,8 +190,8 @@ jobs:
               "DestinationRootDirectory": ".\\signed\\stable",
               "SignRequestFiles": [
                 {
-                  "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.STABLE}}.nupkg",
-                  "DestinationLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{env.STABLE}}.nupkg"
+                  "SourceLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.stable-version}}.nupkg",
+                  "DestinationLocation": "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.stable-version}}.nupkg"
                 }
               ],
               "SigningInfo": {
