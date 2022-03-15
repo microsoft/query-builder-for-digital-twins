@@ -263,7 +263,7 @@ jobs:
     - name: Verify Signature
       run: |
         nuget.exe verify -Signatures signed/stable/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.stable-version}}.nupkg
-        nuget.exe verify -Signatures signed/beta/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg
+        nuget.exe verify -Signatures unsigned/beta/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.${{needs.Build.outputs.beta-version}}.nupkg
 
     - name: Publish Signed
       uses: actions/upload-artifact@v2
