@@ -117,7 +117,7 @@ jobs:
 
     - name: Set workspace variables
       run: |
-        echo "workspace=[regex]::escape("${{github.workspace}}")" >> $GITHUB_ENV
+        echo "workspace=$([regex]::escape("${{github.workspace}}"))" >> $GITHUB_ENV
 
     - name: Create Auth file
       env: 
