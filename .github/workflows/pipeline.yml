@@ -8,7 +8,7 @@ on:
 
 jobs:
   Build:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@af9ee0f2531268aa03f0498e7ba4ad50ace49f26
+    uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@a7312c32ee4d2495a44b4bd518efa0275b97dbde
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
 
