@@ -103,8 +103,28 @@ jobs:
           }
         }
     steps:
-    - name: output auth
-      run: echo $auth
+    - name: Create Auth file
+      env: 
+        APP_ID: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
+      run: |
+        echo "{
+          "Version": "1.0.0",
+          "AuthenticationType": "AAD_CERT",
+          "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+          "ClientId": "${{env.APP_ID}}",
+          "AuthCert": {
+            "SubjectName": "CN=${{env.APP_ID}}.microsoft.com",
+            "StoreLocation": "LocalMachine",
+            "StoreName": "My",
+            "SendX5c": "true"
+          },
+          "RequestSigningCert": {
+            "SubjectName": "CN=${{env.APP_ID}}",
+            "StoreLocation": "LocalMachine",
+            "StoreName": "My"
+          }
+        }" > auth.json
+        cat auth.json
 
     - uses: azure/login@v1
       name: Azure Login
