@@ -80,7 +80,7 @@ jobs:
 
 
   Sign:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     environment: Sign
     needs: Build
     env:
@@ -118,7 +118,6 @@ jobs:
         unzip -d ./esrp esrp.zip
 
     - name: Install Certificates
-      shell: pwsh
       env:
         AZ_SUB: ${{ secrets.AZURE_SUBSCRIPTION }}
         AZ_VAULT: ${{ secrets.AZURE_VAULT }}
