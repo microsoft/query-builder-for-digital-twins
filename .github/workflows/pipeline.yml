@@ -105,7 +105,8 @@ jobs:
             "StoreLocation": "LocalMachine",
             "StoreName": "My"
           }
-        }'@
+        }
+        '@
         Out-File -FilePath .\auth.json -InputObject $authJson
         ls
 
