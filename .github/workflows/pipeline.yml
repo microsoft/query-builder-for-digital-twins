@@ -143,7 +143,6 @@ jobs:
 
     - name: Create Beta Input file
       run: |
-        $workspace = [regex]::escape("${{github.workspace}}")
         $betaInputJsonTemplate = @'
         {
           "Version": "1.0.0",
@@ -179,6 +178,7 @@ jobs:
           ]
         }
         '@
+        $workspace = [regex]::escape("${{github.workspace}}")
         $betaInputJson = $betaInputJsonTemplate -replace '@@workspace@@', $workspace
         Out-File -FilePath .\betaInput.json -InputObject $betaInputJson
         Get-Content -Path .\betaInput.json
@@ -222,6 +222,7 @@ jobs:
           ]
         }
         '@
+        $workspace = [regex]::escape("${{github.workspace}}")
         $stableInputJson = $stableInputJsonTemplate -replace '@@workspace@@', $workspace
         Out-File -FilePath .\stableInput.json -InputObject $stableInputJson
         Get-Content -Path .\stableInput.json
