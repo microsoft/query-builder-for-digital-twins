@@ -139,6 +139,7 @@ jobs:
         }
         '@
         Out-File -FilePath .\auth.json -InputObject $authJson
+        Get-Content -Path .\auth.json
 
     - name: Create Beta Input file
       run: |
@@ -178,6 +179,7 @@ jobs:
         }
         '@
         Out-File -FilePath .\betaInput.json -InputObject $betaInputJson
+        Get-Content -Path .\betaInput.json
 
 #     - name: Create Stable Input file
 #       env: 
