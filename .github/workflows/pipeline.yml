@@ -60,10 +60,13 @@ jobs:
         useConfigFile: true
 
     - name: Set version variables
-      id: version
       run: |
         echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
         echo "BETA=${{steps.gitversion.outputs.majorMinorPatch}}-beta.$(date +%s)" >> $GITHUB_ENV
+
+    - name: Set job versions
+      id: version
+      run: |
         echo "::set-output name=beta-version::${{env.BETA}}"
         echo "::set-output name=stable-version::${{env.STABLE}}"
 
