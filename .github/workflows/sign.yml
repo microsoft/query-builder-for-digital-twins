@@ -1,0 +1,193 @@
+on:
+  workflow_call:
+    inputs:
+      assembly_name:
+        required: true
+        type: string
+      beta_version:
+        required: true
+        type: string
+      stable_version:
+        required: true
+        type: string
+    secrets:
+      client_id:
+        required: true
+      az_creds:
+        required: true
+      az_sub:
+        required: true
+      storage_name:
+        required: true
+      container_name:
+        required: true
+      vault_name:
+        required: true
+      aad_cert:
+        required: true
+      sign_cert:
+        required: true
+
+jobs:
+  Sign:
+    runs-on: windows-latest
+    steps:
+    - name: Download unsigned packages
+      uses: actions/download-artifact@v2
+      with:
+        name: unsigned
+        path: unsigned
+
+    - name: Create signed directory
+      run: |
+        mkdir signed/beta
+        mkdir signed/stable
+
+    - name: Create Auth file
+      env: 
+        CLIENT_ID: ${{ secrets.client_id }}
+      run: |
+        $authJson = @'
+        {
+          "Version": "1.0.0",
+          "AuthenticationType": "AAD_CERT",
+          "TenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+          "ClientId": "${{env.CLIENT_ID}}",
+          "AuthCert": {
+            "SubjectName": "CN=${{env.CLIENT_ID}}.microsoft.com",
+            "StoreLocation": "LocalMachine",
+            "StoreName": "My",
+            "SendX5c": "true"
+          },
+          "RequestSigningCert": {
+            "SubjectName": "CN=${{env.CLIENT_ID}}",
+            "StoreLocation": "LocalMachine",
+            "StoreName": "My"
+          }
+        }
+        '@
+        Out-File -FilePath .\auth.json -InputObject $authJson
+
+    - name: Create Beta Input file
+      run: |
+        $betaInputJsonTemplate = @'
+        {
+          "Version": "1.0.0",
+          "SignBatches": [
+            {
+              "SourceLocationType": "UNC",
+              "SourceRootDirectory": "@@workspace@@\\unsigned\\beta",
+              "DestinationLocationType": "UNC",
+              "DestinationRootDirectory": "@@workspace@@\\signed\\beta",
+              "SignRequestFiles": [
+                {
+                  "SourceLocation": "${{inputs.assembly_name}}.${{inputs.beta_version}}.nupkg",
+                  "DestinationLocation": "${{inputs.assembly_name}}.${{inputs.beta_version}}.nupkg"
+                }
+              ],
+              "SigningInfo": {
+                "Operations": [
+                  {
+                    "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetSign",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  },
+                  {
+                  "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetVerify",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        '@
+        $workspace = [regex]::escape("${{github.workspace}}")
+        $betaInputJson = $betaInputJsonTemplate -replace '@@workspace@@', $workspace
+        Out-File -FilePath .\betaInput.json -InputObject $betaInputJson
+
+    - name: Create Stable Input file
+      run: |
+        $stableInputJsonTemplate = @'
+        {
+          "Version": "1.0.0",
+          "SignBatches": [
+            {
+              "SourceLocationType": "UNC",
+              "SourceRootDirectory": "@@workspace@@\\unsigned\\stable",
+              "DestinationLocationType": "UNC",
+              "DestinationRootDirectory": "@@workspace@@\\signed\\stable",
+              "SignRequestFiles": [
+                {
+                  "SourceLocation": "${{inputs.assembly_name}}.${{inputs.stable_version}}.nupkg",
+                  "DestinationLocation": "${{inputs.assembly_name}}.${{inputs.stable_version}}.nupkg"
+                }
+              ],
+              "SigningInfo": {
+                "Operations": [
+                  {
+                    "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetSign",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  },
+                  {
+                  "KeyCode": "CP-401405",
+                    "OperationCode": "NuGetVerify",
+                    "ToolName": "sign",
+                    "ToolVersion": "1.0"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        '@
+        $workspace = [regex]::escape("${{github.workspace}}")
+        $stableInputJson = $stableInputJsonTemplate -replace '@@workspace@@', $workspace
+        Out-File -FilePath .\stableInput.json -InputObject $stableInputJson
+
+    - uses: azure/login@v1
+      name: Azure Login
+      with:
+          creds: ${{ secrets.az_creds }}
+
+    - name: Install ESRP Client
+      run: |
+        az storage blob download --auth-mode login --subscription  ${{ secrets.az_sub }} --account-name ${{ secrets.storage_name }} -c ${{ secrets.container_name }} -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
+        unzip -d ./esrp esrp.zip
+
+    - name: Install Certificates
+      run: |
+        az keyvault secret download --subscription "${{ secrets.az_sub }}" --vault-name "${{ secrets.vault_name }}" --name "${{ secrets.aad_cert }}" -f cert.pfx
+        certutil -silent -f -importpfx cert.pfx
+        rm cert.pfx
+        az keyvault secret download --subscription "${{ secrets.az_sub }}" --vault-name "${{ secrets.vault_name }}" --name "${{ secrets.sign_cert }}" -f cert.pfx
+        certutil -silent -f -importpfx cert.pfx
+        rm cert.pfx
+
+    - name: Run ESRP Client
+      run: |
+        ./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./betaInput.json -o ./Output.json -l Verbose -f STDOUT
+        ./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./stableInput.json -o ./Output.json -l Verbose -f STDOUT
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+        
+    - name: Verify Signature
+      run: |
+        nuget.exe verify -Signatures signed/stable/${{inputs.assembly_name}}.${{inputs.stable_version}}.nupkg
+        nuget.exe verify -Signatures signed/beta/${{inputs.assembly_name}}.${{inputs.beta_version}}.nupkg
+
+    - name: Publish Signed
+      uses: actions/upload-artifact@v2
+      with:
+        name: signed
+        path: signed
+
+    - name: Azure logout
+      run: az logout
+      if: always()
