@@ -7,11 +7,21 @@ on:
     branches: [ main ]
 
 env:
-  assembly_name: "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder"
+  assembly: "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder"
 
 jobs:
+  Parse_Environment:
+    runs-on: ubuntu-latest
+    outputs:
+      assembly_name: ${{steps.parse.outputs.assembly_name}}
+    steps:
+      - name: Parse Environment
+        id: parse
+        run: echo "::set-output name=assembly_name::${{env.assembly}}"
+
   Build:
     uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@a7312c32ee4d2495a44b4bd518efa0275b97dbde
+    needs: Parse_Environment
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
 
@@ -20,7 +30,7 @@ jobs:
 ##     if: github.event.push
     needs: Build
     with:
-      assembly_name: "${{ env.assembly_name }}"
+      assembly_name: ${{ jobs.Parse_Environment.outputs.assembly_name }}
       beta_version: ${{ needs.Build.outputs.beta-version }}
       stable_version: ${{ needs.Build.outputs.stable-version }}
     secrets:
@@ -37,7 +47,7 @@ jobs:
     uses: microsoft/query-builder-for-digital-twins/.github/workflows/beta_publish.yml@cd6efdfc176d782f5caf7ace270265e020c7894f
     needs: [Build, Sign]
     with:
-      assembly_name: ${{ env.assembly_name }}
+      assembly_name: ${{ jobs.Parse_Environment.outputs.assembly_name }}
       version: ${{ needs.Build.outputs.beta-version }}
     secrets:
       api_key: ${{ secrets.NUGET_API_KEY }}
@@ -46,7 +56,7 @@ jobs:
     uses: microsoft/query-builder-for-digital-twins/.github/workflows/stable_publish.yml@6ee20cc25d3da44167ed65ad599667eaff93349b
     needs: [Build, Sign]
     with:
-      assembly_name: ${{ env.assembly_name }}
+      assembly_name: ${{ jobs.Parse_Environment.outputs.assembly_name }}
       version: ${{ needs.Build.outputs.stable-version }}
     secrets:
       api_key: ${{ secrets.NUGET_API_KEY }}
