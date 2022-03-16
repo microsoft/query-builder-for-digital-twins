@@ -1,3 +1,5 @@
+[![Package publish](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml/badge.svg)](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml)
+
 # Azure Digital Twins Query Builder
 
 The Azure Digital Twins (ADT) QueryBuilder provides a C# based fluent query builder that helps you build and query an Azure Digital Twin instance in an easy and predictable way with familiar C# based programming constructs.
