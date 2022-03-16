@@ -14,7 +14,7 @@ jobs:
 
   Sign:
     uses: microsoft/query-builder-for-digital-twins/.github/workflows/sign.yml@2576f10f6a1584ae6872245ccbf0a5318a37ff66
-    if: github.event.push
+#     if: github.event.push
     needs: Build
     with:
       assembly_name: "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder"
@@ -29,3 +29,9 @@ jobs:
       vault_name: ${{ secrets.AZURE_VAULT }}
       aad_cert: ${{ secrets.AAD_AUTH_CERT }}
       sign_cert: ${{ secrets.ESRP_SIGNING_CERT }}
+      
+  Publish:
+    uses: microsoft/query-builder-for-digital-twins/.github/workflows/beta_publish.yml@e250393d44a7ba29e0280b1dff0ecea7729d0136
+    needs: Sign
+    secrets:
+      api_key: ${{ secrets.NUGET_API_KEY }}
