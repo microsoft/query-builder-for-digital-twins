@@ -26,4 +26,4 @@ jobs:
 
     - name: Push Beta Package
       run: |
-        nuget push signed/beta/${{inputs.assembly_name}}.${{inputs.version}}.nupkg -ApiKey ${{ secrets.api_key }}
+        nuget push signed/beta/${{inputs.assembly_name}}.${{inputs.version}}.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.api_key }} -Verbosity detailed -NonInteractive
