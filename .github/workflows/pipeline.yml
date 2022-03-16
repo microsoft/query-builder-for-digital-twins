@@ -31,7 +31,7 @@ jobs:
       sign_cert: ${{ secrets.ESRP_SIGNING_CERT }}
       
   Publish:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/beta_publish.yml@e250393d44a7ba29e0280b1dff0ecea7729d0136
+    uses: microsoft/query-builder-for-digital-twins/.github/workflows/beta_publish.yml@cd6efdfc176d782f5caf7ace270265e020c7894f
     needs: [Build, Sign]
     with:
       assembly_name: "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder"
