@@ -32,18 +32,18 @@ jobs:
   Sign:
     runs-on: windows-latest
     steps:
-    - name: Download unsigned packages
+    - name: Download Unsigned Packages
       uses: actions/download-artifact@v2
       with:
         name: unsigned
         path: unsigned
 
-    - name: Create signed directory
+    - name: Create Signed Directory
       run: |
         mkdir signed/beta
         mkdir signed/stable
 
-    - name: Create Auth file
+    - name: Create Auth File
       env: 
         CLIENT_ID: ${{ secrets.client_id }}
       run: |
@@ -68,7 +68,7 @@ jobs:
         '@
         Out-File -FilePath .\auth.json -InputObject $authJson
 
-    - name: Create Beta Input file
+    - name: Create Beta Input File
       run: |
         $betaInputJsonTemplate = @'
         {
@@ -109,7 +109,7 @@ jobs:
         $betaInputJson = $betaInputJsonTemplate -replace '@@workspace@@', $workspace
         Out-File -FilePath .\betaInput.json -InputObject $betaInputJson
 
-    - name: Create Stable Input file
+    - name: Create Stable Input File
       run: |
         $stableInputJsonTemplate = @'
         {
@@ -150,8 +150,8 @@ jobs:
         $stableInputJson = $stableInputJsonTemplate -replace '@@workspace@@', $workspace
         Out-File -FilePath .\stableInput.json -InputObject $stableInputJson
 
-    - uses: azure/login@v1
-      name: Azure Login
+    - name: Azure Login
+      uses: azure/login@v1
       with:
           creds: ${{ secrets.az_creds }}
 
@@ -169,6 +169,10 @@ jobs:
         certutil -silent -f -importpfx cert.pfx
         rm cert.pfx
 
+    - name: Azure logout
+      run: az logout
+      if: always()
+
     - name: Run ESRP Client
       run: |
         ./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./betaInput.json -o ./Output.json -l Verbose -f STDOUT
@@ -182,12 +186,8 @@ jobs:
         nuget.exe verify -Signatures signed/stable/${{inputs.assembly_name}}.${{inputs.stable_version}}.nupkg
         nuget.exe verify -Signatures signed/beta/${{inputs.assembly_name}}.${{inputs.beta_version}}.nupkg
 
-    - name: Publish Signed
+    - name: Upload Signed Packages
       uses: actions/upload-artifact@v2
       with:
         name: signed
         path: signed
-
-    - name: Azure logout
-      run: az logout
-      if: always()

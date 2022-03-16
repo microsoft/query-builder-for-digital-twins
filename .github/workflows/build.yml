@@ -23,13 +23,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        
-    - name: Get branch names
-      id: branch-names
-      uses: tj-actions/branch-names@v5.1
-      
-    - name: Current branch name
-      run: echo "${{steps.branch-names.outputs.current_branch}}"
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -55,7 +48,7 @@ jobs:
         echo "STABLE=${{steps.gitversion.outputs.majorMinorPatch}}" >> $GITHUB_ENV
         echo "BETA=${{steps.gitversion.outputs.majorMinorPatch}}-beta.$(date +%s)" >> $GITHUB_ENV
 
-    - name: Output version numbers
+    - name: Output Version Numbers
       id: version
       run: |
         echo "::set-output name=beta-version::${{env.BETA}}"
@@ -66,11 +59,18 @@ jobs:
         dotnet pack "${{inputs.project-to-pack}}" --configuration Release /p:Version="${{env.BETA}}" --output unsigned/beta
         dotnet pack "${{inputs.project-to-pack}}" --configuration Release /p:Version="${{env.STABLE}}" --output unsigned/stable
 
-    - name: Upload artifacts
+    - name: Upload Unsigned Packages
       uses: actions/upload-artifact@v2
       with:
         name: unsigned
         path: unsigned
+
+#    - name: Get branch names
+#      id: branch-names
+#      uses: tj-actions/branch-names@v5.1
+
+#    - name: Current branch name
+#      run: echo "${{steps.branch-names.outputs.current_branch}}"
 
 #     - name: Install git-conventional-commits
 #       run: npm install --global git-conventional-commits
