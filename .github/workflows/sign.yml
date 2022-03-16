@@ -183,8 +183,8 @@ jobs:
         
     - name: Verify Signature
       run: |
-        nuget.exe verify -Signatures signed/stable/${{inputs.assembly_name}}.${{inputs.stable_version}}.nupkg
-        nuget.exe verify -Signatures signed/beta/${{inputs.assembly_name}}.${{inputs.beta_version}}.nupkg
+        nuget verify -Signatures signed/stable/${{inputs.assembly_name}}.${{inputs.stable_version}}.nupkg
+        nuget verify -Signatures signed/beta/${{inputs.assembly_name}}.${{inputs.beta_version}}.nupkg
 
     - name: Upload Signed Packages
       uses: actions/upload-artifact@v2

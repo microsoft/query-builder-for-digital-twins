@@ -32,6 +32,9 @@ jobs:
       
   Publish:
     uses: microsoft/query-builder-for-digital-twins/.github/workflows/beta_publish.yml@e250393d44a7ba29e0280b1dff0ecea7729d0136
-    needs: Sign
+    needs: [Build, Sign]
+    with:
+      assembly_name: "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder"
+      version: ${{ needs.Build.outputs.beta-version }}
     secrets:
       api_key: ${{ secrets.NUGET_API_KEY }}
