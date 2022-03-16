@@ -1,0 +1,22 @@
+on:
+  workflow_call:
+    secrets:
+      api_key:
+        required: true
+
+jobs:
+  Beta:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Signed Packages
+      uses: actions/download-artifact@v2
+      with:
+        name: signed
+        path: signed
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+
+    - name: Push Beta Package
+      run: |
+        nuget push signed/beta/*.nupkg -ApiKey ${{ secrets.api_key }}
