@@ -19,6 +19,7 @@ jobs:
       assembly_name: "Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder"
       beta_version: ${{ needs.Build.outputs.beta-version }}
       stable_version: ${{ needs.Build.outputs.stable-version }}
+    secrets:
       client_id: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
       az_creds: ${{ secrets.AZURE_CREDENTIALS }}
       az_sub: ${{ secrets.AZURE_SUBSCRIPTION }}
