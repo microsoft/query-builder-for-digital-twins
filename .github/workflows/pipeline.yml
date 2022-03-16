@@ -20,7 +20,7 @@ jobs:
 ##     if: github.event.push
     needs: Build
     with:
-      assembly_name: ${{ env.assembly_name }}
+      assembly_name: "${{ env.assembly_name }}"
       beta_version: ${{ needs.Build.outputs.beta-version }}
       stable_version: ${{ needs.Build.outputs.stable-version }}
     secrets:
