@@ -59,6 +59,12 @@ jobs:
         dotnet pack "${{inputs.project-to-pack}}" --configuration Release /p:Version="${{env.BETA}}" --output unsigned/beta
         dotnet pack "${{inputs.project-to-pack}}" --configuration Release /p:Version="${{env.STABLE}}" --output unsigned/stable
 
+    - name: Validate Package Parameters
+      run: |
+        $url = "https://raw.githubusercontent.com/NuGet/NuGetGallery/master/src/VerifyMicrosoftPackage/verify.ps1"
+        Invoke-WebRequest $url -OutFile verify.ps1
+        .\verify.ps1 unsigned/**/*.nupkg
+
     - name: Upload Unsigned Packages
       uses: actions/upload-artifact@v2
       with:
