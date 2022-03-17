@@ -12,6 +12,7 @@
     <Title>Digital Twins Query Bulider</Title>
     <Description>A C# query builder for Azure Digital Twins based on Azure Digital Twins SDK.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
   </PropertyGroup>
   
   <PropertyGroup>
