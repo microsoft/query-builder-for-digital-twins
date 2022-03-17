@@ -26,6 +26,7 @@ jobs:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
       
   Verify:
+    needs: [Parse_Environment, Build]
     runs-on: ubuntu-latest
     steps:
       - name: Download Unsigned Packages
