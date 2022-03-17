@@ -60,6 +60,7 @@ jobs:
         dotnet pack "${{inputs.project-to-pack}}" --configuration Release /p:Version="${{env.STABLE}}" --output unsigned/stable
 
     - name: Validate Package Parameters
+      shell: pwsh
       run: |
         $url = "https://raw.githubusercontent.com/NuGet/NuGetGallery/master/src/VerifyMicrosoftPackage/verify.ps1"
         Invoke-WebRequest $url -OutFile verify.ps1
