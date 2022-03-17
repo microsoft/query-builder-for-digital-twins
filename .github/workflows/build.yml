@@ -64,7 +64,8 @@ jobs:
       run: |
         $url = "https://raw.githubusercontent.com/NuGet/NuGetGallery/master/src/VerifyMicrosoftPackage/verify.ps1"
         Invoke-WebRequest $url -OutFile verify.ps1
-        .\verify.ps1 unsigned/**/*.nupkg
+        .\verify.ps1 .\unsigned\beta\*.nupkg
+        .\verify.ps1 .\unsigned\stable\*.nupkg
 
     - name: Upload Unsigned Packages
       uses: actions/upload-artifact@v2
