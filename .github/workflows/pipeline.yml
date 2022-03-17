@@ -20,10 +20,26 @@ jobs:
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
 
   Build:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@687fb1634e65c6c1e5e72ea87b702f5ed4b457cd
+    uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@cb6f1253940f6009b47981c09238485302ecd0f9
     needs: Parse_Environment
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
+      
+  Verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Unsigned Packages
+        uses: actions/download-artifact@v2
+        with:
+          name: unsigned
+          path: unsigned
+      - name: validate
+        shell: pwsh
+        run: |
+          $url = "https://raw.githubusercontent.com/NuGet/NuGetGallery/master/src/VerifyMicrosoftPackage/verify.ps1"
+          Invoke-WebRequest $url -OutFile verify.ps1
+          .\verify.ps1 .\unsigned\beta\*.nupkg
+          .\verify.ps1 .\unsigned\stable\*.nupkg
 
   Sign:
     uses: microsoft/query-builder-for-digital-twins/.github/workflows/sign.yml@24b8e263a8c24ecd6c753f28f97cd60fdf3b9310
