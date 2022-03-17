@@ -20,7 +20,7 @@ jobs:
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
 
   Build:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@cb6f1253940f6009b47981c09238485302ecd0f9
+    uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@52ef66ab430972c39669d6f793fc5a8c2ee604dc
     needs: Parse_Environment
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
