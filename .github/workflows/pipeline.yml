@@ -20,7 +20,7 @@ jobs:
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
 
   Build:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/build.yml@52ef66ab430972c39669d6f793fc5a8c2ee604dc
+    uses: microsoft/digitalworkplace-workflows/templates/build.yml@v1
     needs: Parse_Environment
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
@@ -42,7 +42,7 @@ jobs:
           .\verify.ps1 .\unsigned\stable\*.nupkg
 
   Sign:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/sign.yml@24b8e263a8c24ecd6c753f28f97cd60fdf3b9310
+    uses: microsoft/digitalworkplace-workflows/templates/sign.yml@v1
     if: github.event.push
     needs: [Parse_Environment, Build]
     with:
@@ -61,7 +61,7 @@ jobs:
       signing_cert_fingerprint: ${{ secrets.SIGNING_CERT_FINGERPRINT }}
       
   Publish_Beta:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/beta_publish.yml@6ef14f2a6912cbe25df8d2a7ae674577cf7bb7f4
+    uses: microsoft/digitalworkplace-workflows/templates/beta_publish.yml@v1
     needs: [Parse_Environment, Build, Sign]
     with:
       assembly_name: ${{ needs.Parse_Environment.outputs.assembly_name }}
@@ -70,7 +70,7 @@ jobs:
       api_key: ${{ secrets.NUGET_API_KEY }}
 
   Publish_Stable:
-    uses: microsoft/query-builder-for-digital-twins/.github/workflows/stable_publish.yml@bf6206f6636b2bef3c777c7a872d5cd04ed5a61f
+    uses: microsoft/digitalworkplace-workflows/templates/stable_publish.yml@v1
     needs: [Parse_Environment, Build, Sign]
     with:
       assembly_name: ${{ needs.Parse_Environment.outputs.assembly_name }}
