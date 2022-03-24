@@ -20,6 +20,8 @@ jobs:
       - name: Parse Environment
         id: parse
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
+      - name: output env
+        run: echo "${{env}}"
 
   Build:
     uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.0
