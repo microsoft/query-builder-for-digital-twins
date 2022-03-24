@@ -1,0 +1,19 @@
+name: Assign Reviewers
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  assign-reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign
+        uses: rowi1de/auto-assign-review-teams@v1.1.3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          teams: "@microsoft/ee-dip"
+          persons: "amdawood"
+          include-draft: false
+          skip-with-manual-reviewers: 0
+          pick-one-from-persons-or-team: false
