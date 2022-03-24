@@ -23,6 +23,7 @@ jobs:
       - name: output env
         run: |
           echo "${{github.ref_name}}"
+          echo "${{github}}"
 
   Build:
     uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.0
