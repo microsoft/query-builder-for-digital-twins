@@ -22,9 +22,12 @@ jobs:
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
       - name: output env
         run: |
-          echo "${{github.ref_name}}"
-          echo "${{github}}"
-          printf '%s\n' "${github[@]}"
+          echo ref name "${{github.ref_name}}"
+          echo ref type "${{github.ref_type}}"
+          echo event name "${{github.event_name}}"
+          echo head ref "${{github.head_ref}}"
+          echo base ref "${{github.base_ref}}"
+          echo action "${{github.action}}"
 
   Build:
     uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.0
