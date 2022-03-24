@@ -53,7 +53,7 @@ jobs:
 
   Sign:
     uses: microsoft/digitalworkplace-workflows/.github/workflows/sign.yml@v1.0
-    if: github.ref_name == 'fix_workflow'
+    if: github.ref_name == 'main'
     needs: [Parse_Environment, Build]
     with:
       assembly_name: ${{ needs.Parse_Environment.outputs.assembly_name }}
