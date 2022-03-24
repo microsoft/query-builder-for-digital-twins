@@ -3,6 +3,8 @@ name: Package publish
 on:
   push:
     branches: [ main ]
+    paths:
+    - QueryBuilder/**
   pull_request:
     branches: [ main ]
 
