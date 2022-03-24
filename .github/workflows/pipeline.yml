@@ -24,6 +24,7 @@ jobs:
         run: |
           echo "${{github.ref_name}}"
           echo "${{github}}"
+          printf '%s\n' "${github[@]}"
 
   Build:
     uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.0
