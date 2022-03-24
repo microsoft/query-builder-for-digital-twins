@@ -20,13 +20,13 @@ jobs:
       - name: Parse Environment
         id: parse
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
-      - name: output env
+      - name: Debug Context
         run: |
-          echo ref name "${{github.ref_name}}"
-          echo ref type "${{github.ref_type}}"
-          echo event name "${{github.event_name}}"
-          echo head ref "${{github.head_ref}}"
-          echo base ref "${{github.base_ref}}"
+          echo ref_name "${{github.ref_name}}"
+          echo ref_type "${{github.ref_type}}"
+          echo event_name "${{github.event_name}}"
+          echo head_ref "${{github.head_ref}}"
+          echo base_ref "${{github.base_ref}}"
           echo action "${{github.action}}"
 
   Build:
