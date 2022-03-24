@@ -25,11 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{859B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D3EBE654-E59F-456A-ABFC-954EBFE0457B}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\beta_publish.yml = .github\workflows\beta_publish.yml
-		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\pipeline.yml = .github\workflows\pipeline.yml
-		.github\workflows\sign.yml = .github\workflows\sign.yml
-		stable_publish.yml = stable_publish.yml
 	EndProjectSection
 EndProject
 Global
