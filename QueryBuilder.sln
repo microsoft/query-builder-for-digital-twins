@@ -22,10 +22,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryBuilder.Test", "QueryBuilder.Test\QueryBuilder.Test.csproj", "{55666BA1-BE1E-49A7-8178-A3A0808BC618}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{859BC139-1910-4BCE-8CDC-5207901F8E84}"
+	ProjectSection(SolutionItems) = preProject
+		.github\CODEOWNERS = .github\CODEOWNERS
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D3EBE654-E59F-456A-ABFC-954EBFE0457B}"
 	ProjectSection(SolutionItems) = preProject
-		code_reviewers.yml = code_reviewers.yml
 		.github\workflows\pipeline.yml = .github\workflows\pipeline.yml
 	EndProjectSection
 EndProject
