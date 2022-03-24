@@ -22,7 +22,7 @@ jobs:
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
       - name: output env
         run: |
-          echo "${{env.ref}}"
+          echo "${{github.ref}}"
 
   Build:
     uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.0
