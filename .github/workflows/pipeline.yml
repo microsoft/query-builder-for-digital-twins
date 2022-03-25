@@ -20,14 +20,6 @@ jobs:
       - name: Parse Environment
         id: parse
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
-      - name: Debug Context
-        run: |
-          echo ref_name "${{github.ref_name}}"
-          echo ref_type "${{github.ref_type}}"
-          echo event_name "${{github.event_name}}"
-          echo head_ref "${{github.head_ref}}"
-          echo base_ref "${{github.base_ref}}"
-          echo action "${{github.action}}"
 
   Build:
     uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.0
