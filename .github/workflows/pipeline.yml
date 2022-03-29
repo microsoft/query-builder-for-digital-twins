@@ -22,7 +22,7 @@ jobs:
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
 
   Build:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.0
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@0915016a14b70f2ffb7332623bb93b1e8f8da632
     needs: Parse_Environment
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
