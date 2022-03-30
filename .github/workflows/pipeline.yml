@@ -22,7 +22,7 @@ jobs:
         run: echo "::set-output name=assembly_name::${{env.assembly}}"
 
   Build:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@f184aab49312af3c7b2e0a7053535be9e84adb77
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v1.1
     needs: Parse_Environment
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
@@ -44,7 +44,7 @@ jobs:
           .\verify.ps1 .\unsigned\stable\*.nupkg
 
   Sign:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/sign.yml@v1.0
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/sign.yml@v1.1
     if: github.ref_name == 'main'
     needs: [Parse_Environment, Build]
     with:
@@ -63,7 +63,7 @@ jobs:
       signing_cert_fingerprint: ${{ secrets.SIGNING_CERT_FINGERPRINT }}
       
   Publish_Beta:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/beta_publish.yml@v1.0
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/beta_publish.yml@v1.1
     needs: [Parse_Environment, Build, Sign]
     with:
       assembly_name: ${{ needs.Parse_Environment.outputs.assembly_name }}
@@ -72,7 +72,7 @@ jobs:
       api_key: ${{ secrets.NUGET_API_KEY }}
 
   Publish_Stable:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/stable_publish.yml@v1.0
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/stable_publish.yml@v1.1
     needs: [Parse_Environment, Build, Sign]
     with:
       assembly_name: ${{ needs.Parse_Environment.outputs.assembly_name }}
