@@ -22,9 +22,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
 
         public override string ToString()
         {
-            var sql = string.Join($" {And} ", Conditions);
+            if (Conditions.Count == 0)
+            {
+                return string.Empty;
+            }
 
-            return string.IsNullOrEmpty(sql) ? string.Empty : $"{Where} {sql}";
+            var sql = string.Join($" {And} ", Conditions);
+            return $"{Where} {sql}";
         }
     }
 }

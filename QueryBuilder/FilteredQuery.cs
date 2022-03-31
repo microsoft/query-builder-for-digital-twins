@@ -154,7 +154,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             where TFromModel : BasicDigitalTwin
             where TWithModel : BasicDigitalTwin
         {
-            whereClause.AddCondition(CreateWhereIsOfModelCondition<TFromModel, TWithModel>(typeof(TFromModel), typeof(TWithModel), alias));
+            whereClause.AddCondition(CreateWhereIsOfModelCondition<TFromModel, TWithModel>(alias));
 
             return (TQuery)this;
         }
@@ -351,11 +351,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             };
         }
 
-        private WhereIsOfModelCondition CreateWhereIsOfModelCondition<TModelFrom, TModelWith>(Type modelFrom, Type modelWith, string alias = null)
+        private WhereIsOfModelCondition CreateWhereIsOfModelCondition<TModelFrom, TModelWith>(string alias = null)
             where TModelFrom : BasicDigitalTwin
             where TModelWith : BasicDigitalTwin
         {
-            var modelAlias = ValidateAndGetAlias<TModelFrom>(modelFrom, alias);
+            var modelAlias = ValidateAndGetAlias<TModelFrom>(typeof(TModelFrom), alias);
             var model = Activator.CreateInstance<TModelWith>().Metadata.ModelId;
 
             return new WhereIsOfModelCondition
