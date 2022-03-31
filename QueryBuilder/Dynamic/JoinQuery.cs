@@ -23,10 +23,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         }
 
         /// <summary>
-        ///
+        /// Adds a JOIN statement to the query.
         /// </summary>
-        /// <param name="joinLogic"></param>
-        /// <returns></returns>
+        /// <param name="joinLogic">The functional logic of the JOIN statement containing the required components to join twins via a relationship.</param>
+        /// <returns>The query instance.</returns>
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, JoinFinalStatement<TWhereStatement>> joinLogic)
         {
             var join = joinLogic.Invoke(joinStatement);
@@ -34,10 +34,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         }
 
         /// <summary>
-        ///
+        /// Adds a JOIN statement to the query with an included set of WHERE clauses.
         /// </summary>
-        /// <param name="joinLogic"></param>
-        /// <returns></returns>
+        /// <param name="joinLogic">The functional logic of the JOIN statement containing the required components to join twins via a relationship.</param>
+        /// <returns>The query instance.</returns>
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, WhereCombineStatement<TWhereStatement>> joinLogic)
         {
             var joinWithWhere = joinLogic.Invoke(joinStatement);

@@ -402,6 +402,27 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.status = '1'", query.BuildAdtQuery());
         }
 
+        [TestMethod]
+        public void CanFilterOnModelDtmi()
+        {
+            var dtmi = "dtmi:microsoft:Space:Building;1";
+            var query = DynamicQueryBuilder
+                    .FromTwins()
+                    .Where(x => x.IsOfModel(dtmi));
+
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, '{dtmi}')", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void CanFilterWithRelationshipsQuery()
+        {
+            var query = DynamicQueryBuilder
+                    .FromRelationships()
+                    .Where(w => w.Property("$relationshipName").IsEqualTo("hasCalendar"));
+
+            Assert.AreEqual("SELECT relationship FROM RELATIONSHIPS relationship WHERE relationship.$relationshipName = 'hasCalendar'", query.BuildAdtQuery());
+        }
+
         private enum CustomEnum
         {
             Value1,

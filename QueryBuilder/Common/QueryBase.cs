@@ -80,9 +80,9 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         }
 
         /// <summary>
-        ///
+        /// Validates that a given alias can be used in the SELECT clause of the query.
         /// </summary>
-        /// <param name="alias"></param>
+        /// <param name="alias">The alias to validate.</param>
         protected virtual void ValidateSelectAlias(string alias)
         {
             if (SelectedAliases.Contains(alias))

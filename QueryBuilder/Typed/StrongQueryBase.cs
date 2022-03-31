@@ -22,7 +22,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
-        /// Get a Set of Types used in the query.
+        /// Gets a Set of Types used in the query.
         /// </summary>
         /// <returns>All the Types used in the query.</returns>
         internal ISet<Type> Types => new HashSet<Type>(aliasToTypeMapping.Values.Distinct());
@@ -58,10 +58,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             selectClause.Add(generatedAlias);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="alias"></param>
+        /// <inheritdoc/>
         protected override void ValidateSelectAlias(string alias)
         {
             base.ValidateSelectAlias(alias);

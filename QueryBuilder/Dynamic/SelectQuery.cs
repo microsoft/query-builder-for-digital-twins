@@ -64,10 +64,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         }
 
         /// <summary>
-        ///
+        /// Overrides the default SELECT statement with a custom select alias or aliases.
         /// </summary>
-        /// <param name="aliases"></param>
-        /// <returns></returns>
+        /// <param name="aliases">Optional: One or more aliases to apply to the SELECT clause.</param>
+        /// <returns>A query instance with one SELECT clause.</returns>
         public Query<TWhereStatement> Select(params string[] aliases)
         {
             ClearSelects();
@@ -91,10 +91,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         }
 
         /// <summary>
-        ///
+        /// Overrides the default SELECT statement with a custom select alias or aliases.
         /// </summary>
-        /// <param name="aliases"></param>
-        /// <returns></returns>
+        /// <param name="aliases">Optional: One or more aliases to apply to the SELECT clause.</param>
+        /// <returns>A query instance with one SELECT clause.</returns>
         public NonJoinQuery<TWhereStatement> Select(params string[] aliases)
         {
             ClearSelects();

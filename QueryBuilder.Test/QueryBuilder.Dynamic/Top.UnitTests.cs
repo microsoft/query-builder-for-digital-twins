@@ -3,7 +3,6 @@
 
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

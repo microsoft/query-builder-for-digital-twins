@@ -21,10 +21,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         }
 
         /// <summary>
-        ///
+        /// A method to add WHERE conditions to the query.
         /// </summary>
-        /// <param name="whereLogic"></param>
-        /// <returns></returns>
+        /// <param name="whereLogic">The functional logic of the WHERE statement containing one or more WHERE conditions.</param>
+        /// <returns>An extendible part of a WHERE statement to continue adding WHERE conditions to.</returns>
         public TQuery Where(Func<TWhereStatement, WhereCombineStatement<TWhereStatement>> whereLogic)
         {
             var statement = ActivatorHelper.CreateInstance<TWhereStatement>(whereClause, RootTwinAlias);

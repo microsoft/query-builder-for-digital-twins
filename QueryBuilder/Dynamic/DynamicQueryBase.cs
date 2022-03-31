@@ -14,9 +14,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     public abstract class DynamicQueryBase : QueryBase
     {
         /// <summary>
-        ///
+        /// Gets or Sets the root alias used in the query.
         /// </summary>
-        /// <value></value>
         protected string RootTwinAlias { get; set; } = DefaultTwinAlias;
 
         internal IList<string> allowedAliases { get; private set; }
@@ -40,10 +39,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
             }
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="alias"></param>
+        /// <inheritdoc/>
         protected override void ValidateSelectAlias(string alias)
         {
             base.ValidateSelectAlias(alias);
