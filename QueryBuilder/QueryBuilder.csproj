@@ -13,7 +13,7 @@
     <Description>A C# query builder for Azure Digital Twins based on Azure Digital Twins SDK.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\StyleCop.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -27,7 +27,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AdditionalFiles>
   </ItemGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Azure.DigitalTwins.Core" Version="1.2.2" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
@@ -42,5 +42,9 @@
       <_Parameter1>QueryBuilder.Test</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+
+  <!-- <ItemGroup>
+    <ProjectReference Include="..\QueryBuilder.Common\QueryBuilder.Common.csproj" />
+  </ItemGroup> -->
 
 </Project>
