@@ -146,6 +146,20 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         }
 
         /// <summary>
+        /// Add a where isOfModel operator.
+        /// </summary>
+        /// <param name="alias">Optional - Model Alias.</param>
+        /// <returns>ADT query instance.</returns>
+        public TQuery WhereIsOfModel<TFromModel, TWithModel>(string alias = null)
+            where TFromModel : BasicDigitalTwin
+            where TWithModel : BasicDigitalTwin
+        {
+            whereClause.AddCondition(CreateWhereIsOfModelCondition<TFromModel, TWithModel>(typeof(TFromModel), typeof(TWithModel), alias));
+
+            return (TQuery)this;
+        }
+
+        /// <summary>
         /// Add a Start with where clause.
         /// </summary>
         /// <typeparam name="TModel">Model type.</typeparam>
@@ -334,6 +348,20 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
                 Value = value,
                 Operator = op,
                 Alias = modelAlias
+            };
+        }
+
+        private WhereIsOfModelCondition CreateWhereIsOfModelCondition<TModelFrom, TModelWith>(Type modelFrom, Type modelWith, string alias = null)
+            where TModelFrom : BasicDigitalTwin
+            where TModelWith : BasicDigitalTwin
+        {
+            var modelAlias = ValidateAndGetAlias<TModelFrom>(modelFrom, alias);
+            var model = Activator.CreateInstance<TModelWith>().Metadata.ModelId;
+
+            return new WhereIsOfModelCondition
+            {
+                Alias = modelAlias,
+                Model = model
             };
         }
 

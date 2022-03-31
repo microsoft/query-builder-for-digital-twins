@@ -55,7 +55,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         {
             var relationship = relationshipSelector.Invoke((TJoinFrom)Activator.CreateInstance(typeof(TJoinFrom)));
 
-            if (!aliasToTypeMapping.ContainsKey(joinFromAlias))
+            if (string.IsNullOrEmpty(joinFromAlias) || !aliasToTypeMapping.ContainsKey(joinFromAlias))
             {
                 throw new ArgumentException($"Alias '{joinFromAlias}' is not assigned!");
             }

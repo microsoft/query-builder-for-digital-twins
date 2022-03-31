@@ -24,7 +24,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         {
             var sql = string.Join($" {And} ", Conditions);
 
-            return $"{Where} {sql}";
+            return string.IsNullOrEmpty(sql) ? string.Empty : $"{Where} {sql}";
         }
     }
 }

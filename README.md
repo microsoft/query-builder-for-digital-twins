@@ -138,6 +138,40 @@ WHERE IS_OF_MODEL(bldng, 'dtmi:microsoft:Space:Building;1')
 AND IS_OF_MODEL(itfunc, 'dtmi:microsoft:ITSiteFunction;1') 
 AND bldng.$dtId = 'ID' AND (bldng.count > 20 
 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))
+*/
+```
+
+```csharp
+var query = QueryBuilder
+                    .From<Space>()
+                    .WhereStartsWith<Space>(s => s.Name, "word")
+                    .Or(query => query
+                        .WhereIsOfModel<Space, Building>()
+                        .WhereIsOfModel<Space, Floor>())
+                    .Not(query => query
+                        .WhereIsOfModel<Space, ConferenceRoom>());
+
+/* 
+Generated query - uses IS_OF_MODEL & OR
+
+SELECT space FROM DIGITALTWINS space 
+WHERE IS_OF_MODEL(space, 'dtmi:microsoft:Space;1') 
+AND STARTSWITH(space.name, 'word') 
+AND (IS_OF_MODEL(space, 'dtmi:microsoft:Space:Building;1') OR IS_OF_MODEL(space, 'dtmi:microsoft:Space:Floor;1'))
+AND NOT IS_OF_MODEL(space, 'dtmi:microsoft:Space:ConferenceRoom;1')
+*/
+```
+
+```csharp
+var query = QueryBuilder
+                .From<BasicDigitalTwin>();
+
+/* 
+Generated query - select all twins
+
+SELECT basicdigitaltwin 
+FROM DIGITALTWINS basicdigitaltwin
+*/
 ```
 
 ## Methods
@@ -158,6 +192,7 @@ OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))
     - WhereIn\<TModel\>(propertyName, values)
     - WhereNotIn\<TModel\>(propertySelector, values)
     - WhereNotIn\<TModel\>(propertyName, values)
+    - WhereIsOfModel\<TModelFrom,TModelWith\>()
     - Join\<TJoinFrom,TJoinWith\>(relationship)
     - Select\<TSelect\>()
     - Top(numberOfRecords)

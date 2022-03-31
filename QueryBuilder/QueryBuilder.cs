@@ -38,11 +38,14 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             var model = Activator.CreateInstance<TModel>().Metadata.ModelId;
 
             var whereClause = new WhereClause();
-            whereClause.AddCondition(new WhereIsOfModelCondition
+            if (!typeof(TModel).Equals(typeof(BasicDigitalTwin)))
             {
-                Alias = rootTwinAlias,
-                Model = model
-            });
+                whereClause.AddCondition(new WhereIsOfModelCondition
+                {
+                    Alias = rootTwinAlias,
+                    Model = model
+                });
+            }
 
             var selectClause = new SelectClause();
             selectClause.Add(rootTwinAlias);
