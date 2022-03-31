@@ -36,11 +36,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <summary>
         /// Adds a JOIN statement to the query with an included set of WHERE clauses.
         /// </summary>
-        /// <param name="joinLogic">The functional logic of the JOIN statement containing the required components to join twins via a relationship.</param>
+        /// <param name="joinAndWhereLogic">The functional logic of the JOIN statement containing the required components to join twins via a relationship.</param>
         /// <returns>The query instance.</returns>
-        public TQuery Join(Func<JoinWithStatement<TWhereStatement>, WhereCombineStatement<TWhereStatement>> joinLogic)
+        public TQuery Join(Func<JoinWithStatement<TWhereStatement>, WhereCombineStatement<TWhereStatement>> joinAndWhereLogic)
         {
-            var joinWithWhere = joinLogic.Invoke(joinStatement);
+            var joinWithWhere = joinAndWhereLogic.Invoke(joinStatement);
             return Join(joinWithWhere.JoinOptions);
         }
 
