@@ -38,6 +38,15 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         }
 
         [TestMethod]
+        public void CanModifyDefaultSelectForRelationships()
+        {
+            var query = DynamicQueryBuilder
+                    .FromRelationships("rel")
+                    .Select("rel");
+            Assert.AreEqual("SELECT rel FROM RELATIONSHIPS rel", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
         public void CanSelectAllFive()
         {
             var query = DynamicQueryBuilder
@@ -175,6 +184,16 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         }
 
         [TestMethod]
+        public void CanSelectRelationshipProperties()
+        {
+            var query = DynamicQueryBuilder
+                    .FromRelationships("rel")
+                    .Select("$relationshipName");
+
+            Assert.AreEqual("SELECT rel.$relationshipName FROM RELATIONSHIPS rel", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CannotSelectSameAliasTwice()
         {
@@ -192,6 +211,24 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .FromTwins("spc1")
                 .Join(j => j.With("spc2").RelatedBy("hasChildren").On("spc1"))
                 .Select("bldng");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void CannotSelectUndefinedAliasForRelationships()
+        {
+            var query = DynamicQueryBuilder
+                .FromRelationships("rel1")
+                .Select("bldng");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void CannotSelectSameAliasTwiceForRelationships()
+        {
+            var query = DynamicQueryBuilder
+                .FromRelationships("spc1")
+                .Select("spc1", "spc1");
         }
     }
 }

@@ -423,6 +423,26 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             Assert.AreEqual("SELECT relationship FROM RELATIONSHIPS relationship WHERE relationship.$relationshipName = 'hasCalendar'", query.BuildAdtQuery());
         }
 
+        [TestMethod]
+        public void CanUseConjunctionsOnRelationshipQueries()
+        {
+            var query = DynamicQueryBuilder
+                    .FromRelationships()
+                    .Where(w => w
+                        .Property("$relationshipName")
+                        .IsEqualTo("hasCalendar")
+                        .And(a => a
+                            .Not(n => n
+                                .Precedence(p => p
+                                    .Property("$targetId")
+                                    .IsEqualTo("someguid")
+                                    .Or()
+                                    .Property("$targetId")
+                                    .IsEqualTo("someotherguid")))));
+
+            Assert.AreEqual("SELECT relationship FROM RELATIONSHIPS relationship WHERE relationship.$relationshipName = 'hasCalendar' AND NOT (relationship.$targetId = 'someguid' OR relationship.$targetId = 'someotherguid')", query.BuildAdtQuery());
+        }
+
         private enum CustomEnum
         {
             Value1,

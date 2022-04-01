@@ -68,15 +68,17 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 
         /// <summary>
         /// Overrides the default SELECT statement with a custom select alias or aliases.
+        /// Because relationships cannot join on anything, the Select method narrows to specific relationship properties.
         /// </summary>
-        /// <param name="aliases">Optional: One or more aliases to apply to the SELECT clause.</param>
+        /// <param name="propertyNames">Optional: One or more relationship properties to apply to the SELECT clause.</param>
         /// <returns>A query instance with one SELECT clause.</returns>
-        public NonJoinQuery<TWhereStatement> Select(params string[] aliases)
+        public NonJoinQuery<TWhereStatement> Select(params string[] propertyNames)
         {
             ClearSelects();
-            foreach (var name in aliases.Where(n => !string.IsNullOrWhiteSpace(n)))
+            foreach (var name in propertyNames.Where(n => !string.IsNullOrWhiteSpace(n)))
             {
-                ValidateAndAddSelect(name);
+                var alias = name == RootTwinAlias ? name : $"{RootTwinAlias}.{name}";
+                ValidateAndAddSelect(alias);
             }
 
             return new NonJoinQuery<TWhereStatement>(RootTwinAlias, allowedAliases, selectClause, fromClause, joinClauses, whereClause);

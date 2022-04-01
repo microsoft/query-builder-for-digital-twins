@@ -6,6 +6,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     using System;
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
     using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers.Terms;
 
     /// <summary>
@@ -43,10 +44,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         protected override void ValidateSelectAlias(string alias)
         {
             base.ValidateSelectAlias(alias);
-            if (!allowedAliases.Contains(alias))
-            {
-                throw new ArgumentException($"Alias: '{alias}' does not exist!");
-            }
+            QueryValidator.ValidateAlias(alias, allowedAliases);
         }
     }
 }

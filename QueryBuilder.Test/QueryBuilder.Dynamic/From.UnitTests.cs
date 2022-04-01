@@ -27,7 +27,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         public void CanAssignAliasWithRelationshipsQuery()
         {
             var query = DynamicQueryBuilder.FromRelationships("rel");
-
             Assert.AreEqual("SELECT rel FROM RELATIONSHIPS rel", query.BuildAdtQuery());
         }
     }

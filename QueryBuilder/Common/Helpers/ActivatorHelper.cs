@@ -17,6 +17,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
             }
 
             var constructors = typeof(T).GetConstructors(flags);
+            if (!constructors.Any())
+            {
+                throw new Exception("No constructors returned for provided flags");
+            }
+
             var matchedArgsConstructor = constructors.FirstOrDefault(c => c.GetParameters().Count() == args.Count());
             if (matchedArgsConstructor == null)
             {

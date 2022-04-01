@@ -8,6 +8,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
     using System.Linq;
     using global::Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
 
     /// <summary>
     /// A class for the basic common functionality.
@@ -62,10 +63,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         protected override void ValidateSelectAlias(string alias)
         {
             base.ValidateSelectAlias(alias);
-            if (!aliasToTypeMapping.ContainsKey(alias))
-            {
-                throw new ArgumentException($"Alias: '{alias}' does not exist!");
-            }
+            QueryValidator.ValidateAlias(alias, aliasToTypeMapping);
         }
     }
 }

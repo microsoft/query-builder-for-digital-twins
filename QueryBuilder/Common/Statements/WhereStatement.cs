@@ -4,6 +4,7 @@
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.Serialization;
@@ -33,22 +34,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         {
             WhereClause = whereClause;
             Alias = alias;
-        }
-
-        /// <summary>
-        /// Adds the propertyName to filter against to the WHERE statement.
-        /// </summary>
-        /// <param name="propertyName">The name of the property to filter against.</param>
-        /// <param name="forAlias">
-        /// Optional: Alias to override the default alias in the current scope.
-        /// This allows applying WHERE conditions to previous scopes of the query.
-        /// I.e. It can allow applying a WHERE condition to a relationship outside the scope of a previous JOIN statement.
-        /// </param>
-        /// <returns>A statement class that contains various unary or binary comparison methods to finalize the WHERE statement.</returns>
-        public WherePropertyStatement<TWhereStatement> Property(string propertyName, string forAlias = null)
-        {
-            var aliasOverride = string.IsNullOrWhiteSpace(forAlias) ? Alias : forAlias;
-            return new WherePropertyStatement<TWhereStatement>(JoinOptions, WhereClause, propertyName, aliasOverride);
         }
 
         /// <summary>
@@ -83,12 +68,24 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
     /// </summary>
     public class WhereRelationshipsStatement : WhereBaseStatement<WhereRelationshipsStatement>
     {
+        [ExcludeFromCodeCoverage]
         internal WhereRelationshipsStatement(JoinOptions joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
         {
         }
 
+        [ExcludeFromCodeCoverage]
         internal WhereRelationshipsStatement(WhereClause clause, string alias) : base(clause, alias)
         {
+        }
+
+        /// <summary>
+        /// Adds the propertyName to filter against to the WHERE statement.
+        /// </summary>
+        /// <param name="propertyName">The name of the property to filter against.</param>
+        /// <returns>A statement class that contains various unary or binary comparison methods to finalize the WHERE statement.</returns>
+        public WherePropertyStatement<WhereRelationshipsStatement> Property(string propertyName)
+        {
+            return new WherePropertyStatement<WhereRelationshipsStatement>(JoinOptions, WhereClause, propertyName, Alias);
         }
     }
 
@@ -97,12 +94,30 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
     /// </summary>
     public class WhereStatement : WhereBaseStatement<WhereStatement>
     {
+        [ExcludeFromCodeCoverage]
         internal WhereStatement(JoinOptions joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
         {
         }
 
+        [ExcludeFromCodeCoverage]
         internal WhereStatement(WhereClause whereClause, string alias) : base(whereClause, alias)
         {
+        }
+
+        /// <summary>
+        /// Adds the propertyName to filter against to the WHERE statement.
+        /// </summary>
+        /// <param name="propertyName">The name of the property to filter against.</param>
+        /// <param name="forAlias">
+        /// Optional: Alias to override the default alias in the current scope.
+        /// This allows applying WHERE conditions to previous scopes of the query.
+        /// I.e. It can allow applying a WHERE condition to a relationship outside the scope of a previous JOIN statement.
+        /// </param>
+        /// <returns>A statement class that contains various unary or binary comparison methods to finalize the WHERE statement.</returns>
+        public WherePropertyStatement<WhereStatement> Property(string propertyName, string forAlias = null)
+        {
+            var aliasOverride = string.IsNullOrWhiteSpace(forAlias) ? Alias : forAlias;
+            return new WherePropertyStatement<WhereStatement>(JoinOptions, WhereClause, propertyName, aliasOverride);
         }
 
         /// <summary>
@@ -154,7 +169,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         public TWhereStatement And()
         {
             WhereClause.AddCondition(Terms.And);
-            return new WhereStatement(JoinOptions, WhereClause, alias) as TWhereStatement;
+            return ActivatorHelper.CreateInstance<TWhereStatement>(JoinOptions, WhereClause, alias);
         }
 
         /// <summary>
@@ -178,7 +193,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         public TWhereStatement Or()
         {
             WhereClause.AddCondition(Terms.Or);
-            return new WhereStatement(JoinOptions, WhereClause, alias) as TWhereStatement;
+            return ActivatorHelper.CreateInstance<TWhereStatement>(JoinOptions, WhereClause, alias);
         }
 
         /// <summary>
@@ -188,7 +203,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
         public WhereCombineStatement<TWhereStatement> Or(Func<TWhereStatement, WhereCombineStatement<TWhereStatement>> nested)
         {
-            var statement = ActivatorHelper.CreateInstance<TWhereStatement>(new WhereClause(), alias);
+            var statement = ActivatorHelper.CreateInstance<TWhereStatement>(JoinOptions, new WhereClause(), alias);
             var w = nested.Invoke(statement);
             Or();
             WhereClause.AddCondition(w.WhereClause.Conditions.FirstOrDefault());
