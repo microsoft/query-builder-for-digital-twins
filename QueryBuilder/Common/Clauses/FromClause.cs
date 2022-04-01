@@ -7,11 +7,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
 
     internal class FromClause
     {
+        internal string Collection { get; set; } = DigitalTwins;
+
         internal string Alias { get; set; }
 
         public override string ToString()
         {
-            return $"{From} {DigitalTwins} {Alias}";
+            return $"{From} {Collection} {Alias}";
         }
     }
 }

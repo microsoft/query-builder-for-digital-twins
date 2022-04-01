@@ -19,6 +19,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
         internal const string Or = "OR";
         internal const string Not = "NOT";
         internal const string DigitalTwins = "DIGITALTWINS";
+        internal const string Relationships = "RELATIONSHIPS";
         internal const string Equal = "=";
         internal const string NotEqual = "!=";
         internal const string Less = "<";

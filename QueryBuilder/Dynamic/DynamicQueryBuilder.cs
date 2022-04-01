@@ -40,7 +40,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         {
             var fromClause = new FromClause
             {
-                Alias = alias
+                Alias = alias,
+                Collection = Relationships
             };
 
             var selectClause = new SelectClause();
