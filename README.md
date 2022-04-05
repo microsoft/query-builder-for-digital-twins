@@ -4,7 +4,7 @@
 
 The Azure Digital Twins (ADT) QueryBuilder provides two C# based query builders, both are fluent query builders that help you build and query an Azure Digital Twin instance in an easy and predictable way with familiar C# based programming constructs.
 The first is in the namespace `QueryBuilder.Typed` and uses generics constrained by the BasicDigitalTwin class provided by the ADT Client SDK and provided Linq-like predicates to create queries.
-The second is in the namespace `QueryBuilder.Dynamic` and supports building queries in scenarios where the C# type of the model is not known, thus the syntax requires a bit more of verbosity. More often than not, you'll likely find that it to be a better experience to use the Typed query builder over the Dynamic one that has niche use cases.
+The second is in the namespace `QueryBuilder.Dynamic` and supports building queries in scenarios where the C# type of the model is not known, thus the syntax requires a bit more of verbosity. More often than not, you'll likely find that it to be a better experience to use the Typed query builder over the Dynamic one that has niche use cases. For a quick comparison between the Dynamic and Typed QueryBuilder read [here](#query-builder-comparison).
 
 Queries generated follows a grammar of custom SQL-like query language called [Azure Digital Twins query language](https://docs.microsoft.com/en-us/azure/digital-twins/concepts-query-language).
 
@@ -404,6 +404,20 @@ ___
 
 The operators used in the Dynamic query builder are expressed as methods, but support remains the same for each.
 
+___
+
+## Query Builder Comparison
+
+| Feature | Typed | Dynamic |
+| ------- | ----- | ------- |
+| Query Twins Collection | :white_check_mark: | :white_check_mark: |
+| Query Relationships Collection | :x: | :white_check_mark: |
+| Select Twin Properties | :x: | :white_check_mark: |
+| Select Relationship Properties | :x: | :white_check_mark: |
+| Use Property Selectors | :white_check_mark: | :x: |
+| Use Relationship Selectors | :white_check_mark: | :x: |
+
+> Note: While not a comparison between the Typed or Dynamic QueryBuilder, it's worth noting that Joins cannot be used when querying the Relationships collection.
 ___
 
 ## Change history
