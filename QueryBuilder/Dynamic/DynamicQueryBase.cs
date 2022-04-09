@@ -3,7 +3,6 @@
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 {
-    using System;
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
@@ -19,12 +18,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// </summary>
         protected string RootTwinAlias { get; set; } = DefaultTwinAlias;
 
-        internal IList<string> allowedAliases { get; private set; }
+        internal IList<string> definedAliases { get; private set; }
 
-        internal DynamicQueryBase(string rootTwinAlias, IList<string> allowedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(selectClause, fromClause, joinClauses, whereClause)
+        internal DynamicQueryBase(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(selectClause, fromClause, joinClauses, whereClause)
         {
             this.RootTwinAlias = rootTwinAlias;
-            this.allowedAliases = allowedAliases;
+            this.definedAliases = definedAliases;
         }
 
         /// <summary>
@@ -44,7 +43,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         protected override void ValidateSelectAlias(string alias)
         {
             base.ValidateSelectAlias(alias);
-            QueryValidator.ValidateAlias(alias, allowedAliases);
+            QueryValidator.ValidateAlias(alias, definedAliases);
         }
     }
 }

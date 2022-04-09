@@ -9,12 +9,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
 
     /// <summary>
-    /// A default query that has no count, top, or select clauses.
+    /// A default query that has supports count, top, or select clauses.
     /// </summary>
-    public class DefaultQuery<TWhereStatement> : JoinQuery<DefaultQuery<TWhereStatement>, TWhereStatement>
+    public class TwinDefaultQuery<TWhereStatement> : JoinQuery<TwinDefaultQuery<TWhereStatement>, TWhereStatement>
     where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal DefaultQuery(string rootTwinAlias, IList<string> allowedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, allowedAliases, selectClause, fromClause, joinClauses, whereClause)
+        internal TwinDefaultQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
         }
 
@@ -23,7 +23,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// </summary>
         /// <param name="aliases">Optional: One or more aliases to apply to the SELECT clause.</param>
         /// <returns>A query instance with one SELECT clause.</returns>
-        public Query<TWhereStatement> Select(params string[] aliases)
+        public TwinQuery<TWhereStatement> Select(params string[] aliases)
         {
             ClearSelects();
             foreach (var name in aliases.Where(n => !string.IsNullOrWhiteSpace(n)))
@@ -31,7 +31,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
                 ValidateAndAddSelect(name);
             }
 
-            return new Query<TWhereStatement>(RootTwinAlias, allowedAliases, selectClause, fromClause, joinClauses, whereClause);
+            return new TwinQuery<TWhereStatement>(RootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
         }
 
         /// <summary>
@@ -39,10 +39,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// </summary>
         /// <param name="numberOfRecords">Postive number.</param>
         /// <returns>The ADT Query with TOP clause.</returns>
-        public DefaultSelectQuery<TWhereStatement> Top(ushort numberOfRecords)
+        public TwinDefaultSelectQuery<TWhereStatement> Top(ushort numberOfRecords)
         {
             selectClause.NumberOfRecords = numberOfRecords;
-            return new DefaultSelectQuery<TWhereStatement>(RootTwinAlias, allowedAliases, selectClause, fromClause, joinClauses, whereClause);
+            return new TwinDefaultSelectQuery<TWhereStatement>(RootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <returns>The ADT Query with the Count clause added.</returns>
         public CountQuery<TWhereStatement> Count()
         {
-            return new CountQuery<TWhereStatement>(RootTwinAlias, allowedAliases, new CountClause(), fromClause, joinClauses, whereClause);
+            return new CountQuery<TWhereStatement>(RootTwinAlias, definedAliases, new CountClause(), fromClause, joinClauses, whereClause);
         }
     }
 
@@ -59,10 +59,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     /// A default query that has no count, top, or select clauses and does not support Joins.
     /// </summary>
     /// <typeparam name="TWhereStatement">The type of WHERE statement supported.</typeparam>
-    public class DefaultNonJoinQuery<TWhereStatement> : FilteredQuery<DefaultNonJoinQuery<TWhereStatement>, TWhereStatement>
+    public class RelationshipDefaultQuery<TWhereStatement> : FilteredQuery<RelationshipDefaultQuery<TWhereStatement>, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal DefaultNonJoinQuery(string rootTwinAlias, IList<string> allowedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, allowedAliases, selectClause, fromClause, joinClauses, whereClause)
+        internal RelationshipDefaultQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
         }
 
@@ -72,7 +72,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// </summary>
         /// <param name="propertyNames">Optional: One or more relationship properties to apply to the SELECT clause.</param>
         /// <returns>A query instance with one SELECT clause.</returns>
-        public NonJoinQuery<TWhereStatement> Select(params string[] propertyNames)
+        public RelationshipQuery<TWhereStatement> Select(params string[] propertyNames)
         {
             ClearSelects();
             foreach (var name in propertyNames.Where(n => !string.IsNullOrWhiteSpace(n)))
@@ -81,7 +81,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
                 ValidateAndAddSelect(alias);
             }
 
-            return new NonJoinQuery<TWhereStatement>(RootTwinAlias, allowedAliases, selectClause, fromClause, joinClauses, whereClause);
+            return new RelationshipQuery<TWhereStatement>(RootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
         }
 
         /// <summary>
@@ -89,10 +89,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// </summary>
         /// <param name="numberOfRecords">Postive number.</param>
         /// <returns>The ADT Query with TOP clause.</returns>
-        public DefaultSelectNonJoinQuery<TWhereStatement> Top(ushort numberOfRecords)
+        public RelationshipDefaultSelectQuery<TWhereStatement> Top(ushort numberOfRecords)
         {
             selectClause.NumberOfRecords = numberOfRecords;
-            return new DefaultSelectNonJoinQuery<TWhereStatement>(RootTwinAlias, allowedAliases, selectClause, fromClause, joinClauses, whereClause);
+            return new RelationshipDefaultSelectQuery<TWhereStatement>(RootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <returns>The ADT Query with the Count clause added.</returns>
         public CountQuery<TWhereStatement> Count()
         {
-            return new CountQuery<TWhereStatement>(RootTwinAlias, allowedAliases, new CountClause(), fromClause, joinClauses, whereClause);
+            return new CountQuery<TWhereStatement>(RootTwinAlias, definedAliases, new CountClause(), fromClause, joinClauses, whereClause);
         }
     }
 }

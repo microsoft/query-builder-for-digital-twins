@@ -23,7 +23,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// </summary>
         /// <param name="alias">Optional: alias that will override the default root alias of 'twin'.</param>
         /// <returns>A query for querying twins with 'JOIN' and 'WHERE' conditions and a single 'SELECT'.</returns>
-        public static DefaultQuery<WhereStatement> FromTwins(string alias = DefaultTwinAlias)
+        public static TwinDefaultQuery<TwinsWhereStatement> FromTwins(string alias = DefaultTwinAlias)
         {
             var fromClause = new FromClause
             {
@@ -33,7 +33,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
             var selectClause = new SelectClause();
             selectClause.Add(alias);
             var allowedSelects = new List<string> { alias };
-            return new DefaultQuery<WhereStatement>(alias, allowedSelects, selectClause, fromClause, new List<JoinClause>(), new WhereClause());
+            return new TwinDefaultQuery<TwinsWhereStatement>(alias, allowedSelects, selectClause, fromClause, new List<JoinClause>(), new WhereClause());
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// </summary>
         /// <param name="alias">Optional: alias that will override the default root alias of 'relationship'.</param>
         /// <returns>A query for querying relationship with 'WHERE' conditions and a single 'SELECT'.</returns>
-        public static DefaultNonJoinQuery<WhereRelationshipsStatement> FromRelationships(string alias = DefaultRelationshipAlias)
+        public static RelationshipDefaultQuery<RelationshipsWhereStatement> FromRelationships(string alias = DefaultRelationshipAlias)
         {
             var fromClause = new FromClause
             {
@@ -57,7 +57,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
                 allowedSelects.Add($"{alias}.{prop}");
             }
 
-            return new DefaultNonJoinQuery<WhereRelationshipsStatement>(alias, allowedSelects, selectClause, fromClause, new List<JoinClause>(), new WhereClause());
+            return new RelationshipDefaultQuery<RelationshipsWhereStatement>(alias, allowedSelects, selectClause, fromClause, new List<JoinClause>(), new WhereClause());
         }
 
         /// <summary>
