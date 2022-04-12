@@ -57,16 +57,14 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 
         private void Join(JoinOptions options)
         {
-            QueryValidator.ValidateAliasIsDefined(options.Source, definedAliases);
-            QueryValidator.ValidateAliasNotAlreadyInUse(options.With, definedAliases);
-            definedAliases.Add(options.With);
+            ValidateAliasIsDefined(options.Source);
+            ValidateAndAddAlias(options.With);
             if (string.IsNullOrWhiteSpace(options.RelationshipAlias))
             {
                 options.RelationshipAlias = $"{options.RelationshipName.ToLowerInvariant()}relationship";
             }
 
-            QueryValidator.ValidateAliasNotAlreadyInUse(options.RelationshipAlias, definedAliases);
-            definedAliases.Add(options.RelationshipAlias);
+            ValidateAndAddAlias(options.RelationshipAlias);
             joinClauses.Add(new JoinClause
             {
                 JoinWith = options.With,

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 {
+    using System;
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
@@ -32,18 +33,37 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <param name="alias">A nullable alias string for selecting types that are mapped to aliases.</param>
         internal void ValidateAndAddSelect(string alias)
         {
-            if (!string.IsNullOrEmpty(alias))
+            ValidateAliasIsDefined(alias);
+            base.ValidateSelectAlias(alias);
+            selectClause.Add(alias);
+        }
+
+        internal void ValidateAndAddAlias(string alias)
+        {
+            ValidateAliasNotNull(alias);
+            if (definedAliases.Contains(alias))
             {
-                ValidateSelectAlias(alias);
-                selectClause.Add(alias);
+                throw new ArgumentException($"Cannot use the alias: {alias}, because its already assigned!");
+            }
+
+            definedAliases.Add(alias);
+        }
+
+        internal void ValidateAliasIsDefined(string alias)
+        {
+            ValidateAliasNotNull(alias);
+            if (!definedAliases.Contains(alias))
+            {
+                throw new ArgumentException($"Alias '{alias}' is not assigned!");
             }
         }
 
-        /// <inheritdoc/>
-        protected override void ValidateSelectAlias(string alias)
+        private static void ValidateAliasNotNull(string alias)
         {
-            base.ValidateSelectAlias(alias);
-            QueryValidator.ValidateAliasIsDefined(alias, definedAliases);
+            if (string.IsNullOrWhiteSpace(alias))
+            {
+                throw new ArgumentNullException(nameof(alias));
+            }
         }
     }
 }

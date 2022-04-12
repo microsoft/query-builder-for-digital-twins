@@ -44,32 +44,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
             }
         }
 
-        internal static void ValidateAliasIsDefined(string alias, IEnumerable<string> aliases)
-        {
-            ValidateAliasNotNull(alias);
-            if (!string.IsNullOrWhiteSpace(alias) && !aliases.Contains(alias))
-            {
-                throw new ArgumentException($"Alias '{alias}' is not assigned!");
-            }
-        }
-
-        internal static void ValidateAliasNotAlreadyInUse(string alias, IEnumerable<string> aliases)
-        {
-            ValidateAliasNotNull(alias);
-            if (aliases.Contains(alias))
-            {
-                throw new ArgumentException($"Cannot use the alias: {alias}, because its already assigned!");
-            }
-        }
-
-        private static void ValidateAliasNotNull(string alias)
-        {
-            if (string.IsNullOrWhiteSpace(alias))
-            {
-                throw new ArgumentNullException(nameof(alias));
-            }
-        }
-
         internal static void ValidateType<TModel>(ISet<Type> allowedType)
         {
             if (!allowedType.Contains(typeof(TModel)))
