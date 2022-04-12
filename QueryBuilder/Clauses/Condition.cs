@@ -74,7 +74,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
 
         public override string ToString()
         {
-            return string.IsNullOrEmpty(Alias) ? $"{IsOfModel}('{GetModelWithVersion(Model, minTwinVersion)}')" : $"{IsOfModel}({Alias}, '{GetModelWithVersion(Model, minTwinVersion)}')";
+            return $"{IsOfModel}({Alias}, '{GetModelWithVersion(Model, minTwinVersion)}')";
         }
 
         private string GetModelWithVersion(string model, int userSelectedVersion)

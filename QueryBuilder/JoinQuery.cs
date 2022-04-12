@@ -55,7 +55,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         {
             var relationship = relationshipSelector.Invoke((TJoinFrom)Activator.CreateInstance(typeof(TJoinFrom)));
 
-            if (string.IsNullOrEmpty(joinFromAlias) || !aliasToTypeMapping.ContainsKey(joinFromAlias))
+            if (!aliasToTypeMapping.ContainsKey(joinFromAlias))
             {
                 throw new ArgumentException($"Alias '{joinFromAlias}' is not assigned!");
             }
@@ -90,11 +90,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             var twinModel = Activator.CreateInstance<TJoinWith>().Metadata.ModelId;
             if (!string.IsNullOrEmpty(twinModel))
             {
-                whereClause.AddCondition(new WhereIsOfModelCondition
-                {
-                    Alias = joinWithAlias,
-                    Model = twinModel
-                });
+                whereClause.AddCondition(ConditionHelper.CreateWhereIsOfModelCondition(joinWithAlias, twinModel));
             }
 
             return (TQuery)this;

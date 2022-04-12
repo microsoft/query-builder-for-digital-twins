@@ -146,15 +146,17 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         }
 
         /// <summary>
-        /// Add a where isOfModel operator.
+        /// Add an isOfModel operator.
         /// </summary>
+        /// <typeparam name="TBase">Base model type.</typeparam>
+        /// <typeparam name="TDerived">Derived model type.</typeparam>
         /// <param name="alias">Optional - Model Alias.</param>
         /// <returns>ADT query instance.</returns>
-        public TQuery WhereIsOfModel<TFromModel, TWithModel>(string alias = null)
-            where TFromModel : BasicDigitalTwin
-            where TWithModel : BasicDigitalTwin
+        public TQuery WhereIsOfModel<TBase, TDerived>(string alias = null)
+            where TBase : BasicDigitalTwin
+            where TDerived : TBase
         {
-            whereClause.AddCondition(CreateWhereIsOfModelCondition<TFromModel, TWithModel>(alias));
+            whereClause.AddCondition(CreateWhereIsOfModelCondition<TBase, TDerived>(alias));
 
             return (TQuery)this;
         }
@@ -351,20 +353,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             };
         }
 
-        private WhereIsOfModelCondition CreateWhereIsOfModelCondition<TModelFrom, TModelWith>(string alias = null)
-            where TModelFrom : BasicDigitalTwin
-            where TModelWith : BasicDigitalTwin
-        {
-            var modelAlias = ValidateAndGetAlias<TModelFrom>(typeof(TModelFrom), alias);
-            var model = Activator.CreateInstance<TModelWith>().Metadata.ModelId;
-
-            return new WhereIsOfModelCondition
-            {
-                Alias = modelAlias,
-                Model = model
-            };
-        }
-
         private WhereInCondition CreateWhereInCondition<TModel>(string propertyName, string[] values, Type type, string alias)
         {
             var modelAlias = ValidateAndGetAlias<TModel>(type, alias);
@@ -387,6 +375,16 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
                 Value = values,
                 Alias = modelAlias
             };
+        }
+
+        private WhereIsOfModelCondition CreateWhereIsOfModelCondition<TBase, TDerived>(string alias = null)
+            where TBase : BasicDigitalTwin
+            where TDerived : BasicDigitalTwin
+        {
+            var modelAlias = ValidateAndGetAlias<TBase>(typeof(TBase), alias);
+            var model = Activator.CreateInstance<TDerived>().Metadata.ModelId;
+
+            return ConditionHelper.CreateWhereIsOfModelCondition(modelAlias, model);
         }
 
         private WhereScalarFunctionCondition CreateAdtScalarBinaryOperatorCondition<TModel>(string propertyName, string value, Type type, string alias, AdtScalarOperator binaryOperator)

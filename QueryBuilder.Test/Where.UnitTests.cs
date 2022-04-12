@@ -243,14 +243,14 @@ namespace QueryBuilder.UnitTests
                 .From<Building>("bldng")
                 .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
-                .Not(query => query.WhereIsOfModel<Building, Space>("itfunc"))
+                .Not(query => query.WhereIsOfModel<Building, WBuilding>("bldng"))
                 .Or(query => query
                     .Where<Building>("count", ComparisonOperators.IsGreaterThan, 20, alias: "bldng")
                     .And(q => q
                         .Where<Building>("count", ComparisonOperators.IsLessThan, 10, alias: "bldng")
                         .WhereEndsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")));
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND NOT IS_OF_MODEL(itfunc, '{Space.ModelId.UpdateVersion(1)}') AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND NOT IS_OF_MODEL(bldng, '{WBuilding.ModelId.UpdateVersion(1)}') AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
 
             query = QueryBuilder
                 .From<Building>("bldng")
@@ -370,14 +370,6 @@ namespace QueryBuilder.UnitTests
                        .From<Building>()
                        .WhereContains<Building>(b => b.Name, "word", "bldng")
                        .BuildAdtQuery();
-            });
-
-            Assert.ThrowsException<ArgumentException>(() =>
-            {
-                QueryBuilder
-                    .From<Building>()
-                    .WhereIsOfModel<Building, Space>("bldng")
-                    .BuildAdtQuery();
             });
         }
 

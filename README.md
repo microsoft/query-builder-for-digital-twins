@@ -192,7 +192,7 @@ FROM DIGITALTWINS basicdigitaltwin
     - WhereIn\<TModel\>(propertyName, values)
     - WhereNotIn\<TModel\>(propertySelector, values)
     - WhereNotIn\<TModel\>(propertyName, values)
-    - WhereIsOfModel\<TModelFrom,TModelWith\>()
+    - WhereIsOfModel\<TBase,TDerived\>()
     - Join\<TJoinFrom,TJoinWith\>(relationship)
     - Select\<TSelect\>()
     - Top(numberOfRecords)
@@ -208,7 +208,7 @@ FROM DIGITALTWINS basicdigitaltwin
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| TModel, TJoinFrom, TJoinWith, TSelect | A [Type](https://docs.microsoft.com/en-us/dotnet/api/system.type) that's a sub-type of [Azure.DigitalTwins.Core.BasicDigitalTwin](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/digitaltwins/Azure.DigitalTwins.Core/src/Models/BasicDigitalTwin.cs). | The C# model of the twin. |
+| TModel, TJoinFrom, TJoinWith, TSelect, TBase, TDerived | A [Type](https://docs.microsoft.com/en-us/dotnet/api/system.type) that's a sub-type of [Azure.DigitalTwins.Core.BasicDigitalTwin](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/digitaltwins/Azure.DigitalTwins.Core/src/Models/BasicDigitalTwin.cs). | The C# model of the twin. |
 | propertySelector | [Expression<Func<TModel, object>>](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1) | Expression to select any property of TModel type.|
 | propertyName | string | JSON property name of TModel type.  |
 | operation | ComparisonOperators | Operator for the condition. |

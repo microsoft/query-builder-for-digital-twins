@@ -4,6 +4,7 @@
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
 {
     using System.Collections.Generic;
+    using System.Linq;
     using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers.Terms;
 
     internal class WhereClause
@@ -22,7 +23,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
 
         public override string ToString()
         {
-            if (Conditions.Count == 0)
+            if (!Conditions.Any())
             {
                 return string.Empty;
             }
