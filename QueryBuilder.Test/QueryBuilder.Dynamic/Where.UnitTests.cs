@@ -88,7 +88,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(f => f
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .WithAlias("rel")
+                    .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").StartsWith("word")))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
@@ -111,7 +111,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(f => f
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .WithAlias("rel")
+                    .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").EndsWith("word")))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
@@ -134,7 +134,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(f => f
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .WithAlias("rel")
+                    .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").Contains("word")))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
@@ -161,7 +161,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .WithAlias("rel")
+                    .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").IsIn(new string[] { "name1", "name2" })))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
@@ -188,7 +188,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .WithAlias("rel")
+                    .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").IsNotIn(new string[] { "name1", "name2" })))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
@@ -253,7 +253,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .WithAlias("rel"))
+                    .As("rel"))
                 .Where(b => b
                     .Property("$dtId")
                     .IsEqualTo("ID")
@@ -276,7 +276,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .WithAlias("rel"))
+                    .As("rel"))
                 .Where(b => b
                     .Property("$dtId")
                     .IsEqualTo("ID")

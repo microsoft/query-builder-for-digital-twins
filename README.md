@@ -232,11 +232,10 @@ var query = QueryBuilder
                 .FromTwins()
                 .Join(b => b
                     .With("device")
-                    .RelatedBy("hasDevices"))
-                .Join(d => d
-                    .With("sensor")
-                    .RelatedBy("hasSensors")
-                    .On("device"))
+                    .RelatedBy("hasDevices")
+                    .Join(d => d
+                        .With("sensor")
+                        .RelatedBy("hasSensors")))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"))
                 .Select("sensor");
 
@@ -335,8 +334,7 @@ var query = DynamicQueryBuilder
             .Join(b => b
                 .With("itfunc")
                 .RelatedBy("hasITSiteFunction")
-                .On("bldng")
-                .WithAlias("rel"))
+                .As("rel"))
             .Where(b => b
                 .Property("$dtId")
                 .IsEqualTo("ID")

@@ -32,7 +32,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// </summary>
         /// <param name="relationshipAlias">The relationship alias to override with in the JOIN statement.</param>
         /// <returns>A statement class that contains various unary or binary comparison methods to finalize the JOIN statement.</returns>
-        public JoinFinalStatement<TWhereStatement> WithAlias(string relationshipAlias)
+        public JoinFinalStatement<TWhereStatement> As(string relationshipAlias)
         {
             Options.RelationshipAlias = relationshipAlias;
             return this;

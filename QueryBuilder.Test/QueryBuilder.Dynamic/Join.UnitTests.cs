@@ -67,7 +67,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                 .FromTwins("bldng")
-                .Join(b => b.With("flr").RelatedBy("hasChildren").WithAlias("rel"))
+                .Join(b => b.With("flr").RelatedBy("hasChildren").As("rel"))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren rel WHERE bldng.$dtId = 'ID'", query.BuildAdtQuery());
@@ -92,8 +92,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                 .FromTwins()
-                .Join(f => f.With("floor").RelatedBy("hasChildren").WithAlias("rel"))
-                .Join(b => b.With("confroom").RelatedBy("hasChildren").WithAlias("rel"))
+                .Join(f => f.With("floor").RelatedBy("hasChildren").As("rel"))
+                .Join(b => b.With("confroom").RelatedBy("hasChildren").As("rel"))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
             query.BuildAdtQuery();
