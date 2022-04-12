@@ -49,7 +49,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             return whereLogic.Invoke(statement);
         }
 
-
+#pragma warning disable SA1629
         /// <summary>
         /// Adds a nested JOIN to the existing one. This will contextually bind this JOIN to a parent one.
         /// Example:
@@ -68,6 +68,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             Joins.AddRange(final.Joins);
             return this;
         }
+#pragma warning restore SA1629
 
         /// <summary>
         /// Adds a nested JOIN and WHERE statements to the existing JOIN statement.

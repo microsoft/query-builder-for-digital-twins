@@ -34,7 +34,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         internal void ValidateAndAddSelect(string alias)
         {
             ValidateAliasIsDefined(alias);
-            base.ValidateSelectAlias(alias);
+            ValidateSelectAlias(alias);
             selectClause.Add(alias);
         }
 

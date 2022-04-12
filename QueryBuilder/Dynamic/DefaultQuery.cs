@@ -26,7 +26,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         public TwinQuery<TWhereStatement> Select(params string[] aliases)
         {
             ClearSelects();
-            foreach (var name in aliases.Where(n => !string.IsNullOrWhiteSpace(n)))
+            foreach (var name in aliases)
             {
                 ValidateAndAddSelect(name);
             }
