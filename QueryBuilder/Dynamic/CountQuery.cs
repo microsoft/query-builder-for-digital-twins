@@ -5,7 +5,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 {
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statements;
 
     /// <summary>
     /// A query that has a count select clause.

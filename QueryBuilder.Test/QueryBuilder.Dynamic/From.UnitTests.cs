@@ -3,7 +3,7 @@
 
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -12,21 +12,21 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void FromGeneratesDefaultSelect()
         {
-            var query = DynamicQueryBuilder.FromTwins();
+            var query = QueryBuilder.FromTwins();
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin", query.BuildAdtQuery());
         }
 
         [TestMethod]
         public void CanAssignAlias()
         {
-            var query = DynamicQueryBuilder.FromTwins("bldng");
+            var query = QueryBuilder.FromTwins("bldng");
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng", query.BuildAdtQuery());
         }
 
         [TestMethod]
         public void CanAssignAliasWithRelationshipsQuery()
         {
-            var query = DynamicQueryBuilder.FromRelationships("rel");
+            var query = QueryBuilder.FromRelationships("rel");
             Assert.AreEqual("SELECT rel FROM RELATIONSHIPS rel", query.BuildAdtQuery());
         }
     }

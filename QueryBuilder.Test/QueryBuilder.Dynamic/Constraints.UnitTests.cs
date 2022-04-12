@@ -4,7 +4,7 @@
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
     using System.Linq;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -13,48 +13,48 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanNotBuildEmptyQuery()
         {
-            Assert.IsNull(typeof(DynamicQueryBuilder).GetMethod("BuildAdtQuery"));
+            Assert.IsNull(typeof(QueryBuilder).GetMethod("BuildAdtQuery"));
         }
 
         [TestMethod]
         public void CanInvokeFromOnlyOnce()
         {
-            var query = DynamicQueryBuilder.FromTwins();
-            Assert.IsNull(query.GetType().GetMethod("From"));
+            var query = QueryBuilder.FromTwins();
+            Assert.IsNull(query.GetType().GetMethod("FromTwins"));
         }
 
         [TestMethod]
         public void DefaultQueryAllowsTop()
         {
-            var query = DynamicQueryBuilder.FromTwins();
+            var query = QueryBuilder.FromTwins();
             Assert.IsNotNull(query.GetType().GetMethod("Top"));
         }
 
         [TestMethod]
         public void DefaultQueryAllowsSelect()
         {
-            var query = DynamicQueryBuilder.FromTwins();
+            var query = QueryBuilder.FromTwins();
             Assert.IsNotNull(query.GetType().GetMethod("Select"));
         }
 
         [TestMethod]
         public void DefaultQueryAllowsCount()
         {
-            var query = DynamicQueryBuilder.FromTwins();
+            var query = QueryBuilder.FromTwins();
             Assert.IsNotNull(query.GetType().GetMethod("Count"));
         }
 
         [TestMethod]
         public void DefaultQueryAllowsCommonBehavior()
         {
-            var query = DynamicQueryBuilder.FromTwins();
+            var query = QueryBuilder.FromTwins();
             TestQueryAllowsCommonBehavior(query);
         }
 
         [TestMethod]
         public void CountQueryDoesNotAllowTop()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Count();
 
@@ -64,7 +64,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CountQueryDoesNotAllowSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Count();
 
@@ -74,7 +74,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CountQueryAllowsCommonBehavior()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Count();
 
@@ -84,7 +84,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void DefaultSelectQueryAllowsSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Top(2);
 
@@ -94,7 +94,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void DefaultSelectQueryDoesNotAllowCount()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Top(2);
 
@@ -104,7 +104,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void DefaultSelectQueryAllowsCommonBehavior()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Top(2);
 
@@ -114,7 +114,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void OneSelectQueryDoesNotAllowSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("building")
                 .Select("building");
 
@@ -124,7 +124,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void OneSelectQueryAllowsTop()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("building")
                 .Select("building");
 
@@ -134,7 +134,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void OneSelectQueryDoesNotAllowCount()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("building")
                 .Select("building");
 
@@ -144,7 +144,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void OneSelectQueryAllowsCommonBehavior()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("building")
                 .Select("building");
 

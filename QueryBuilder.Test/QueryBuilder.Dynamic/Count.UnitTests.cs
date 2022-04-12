@@ -4,7 +4,6 @@
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -13,7 +12,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CountIsAddedWithDefaultSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Count();
 
@@ -23,7 +22,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CountIsAddedWithDefaultSelectForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromRelationships()
                 .Count();
 
@@ -33,7 +32,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CountCanAllowWhereConditions()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Count()
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -44,7 +43,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CountCanAllowWhereConditionsForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromRelationships()
                 .Count()
                 .Where(b => b.Property("$targetId").IsEqualTo("someguid"));
@@ -55,7 +54,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanCountAll()
         {
-            Assert.AreEqual($"SELECT COUNT() FROM DIGITALTWINS", DynamicQueryBuilder.CountAllDigitalTwins().BuildAdtQuery());
+            Assert.AreEqual($"SELECT COUNT() FROM DIGITALTWINS", QueryBuilder.CountAllDigitalTwins().BuildAdtQuery());
             Assert.AreEqual($"SELECT COUNT() FROM DIGITALTWINS", new CountAllQuery().BuildAdtQuery());
         }
     }

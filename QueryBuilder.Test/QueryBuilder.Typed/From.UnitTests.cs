@@ -4,7 +4,6 @@
 namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 {
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]

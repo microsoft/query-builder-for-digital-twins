@@ -6,7 +6,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statements;
 
     /// <summary>
     /// Base query for all select queries. This query does not support Joins.

@@ -3,7 +3,7 @@
 
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -12,7 +12,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void TopIsAddedWithDefaultSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Top(1);
 
@@ -22,7 +22,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void TopIsAddedWithDefaultSelectForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromRelationships()
                 .Top(1);
 
@@ -32,7 +32,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void TopIsAddedWithOneSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Select("twin")
                 .Top(1);
@@ -43,7 +43,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void LastTopTakesPrecedence()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Select("twin")
                 .Top(1)
@@ -55,7 +55,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void TopIsAddedWithTwoSelects()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren"))
                 .Select("twin", "floor")
@@ -68,7 +68,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanSelectAfterTop()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren"))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"))
@@ -81,7 +81,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanSelectAfterTopForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromRelationships()
                 .Where(b => b.Property("$relationshipName").IsEqualTo("hasChildren"))
                 .Top(1)
@@ -93,7 +93,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanUseTopAfterSelectForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromRelationships()
                 .Where(b => b.Property("$targetId").IsEqualTo("ID"))
                 .Select("$targetId", "$relationshipName")

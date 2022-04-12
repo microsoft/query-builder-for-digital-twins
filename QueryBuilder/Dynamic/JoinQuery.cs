@@ -7,7 +7,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statements;
 
     /// <summary>
     /// A wrapper for the common functionalities of query builder.

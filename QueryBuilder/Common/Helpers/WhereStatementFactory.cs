@@ -7,7 +7,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statements;
 
     [ExcludeFromCodeCoverage]
     internal static class WhereStatementFactory
@@ -17,12 +17,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
             var type = typeof(TWhereStatement);
             if (type == typeof(RelationshipsWhereStatement))
             {
-                return (TWhereStatement)(new RelationshipsWhereStatement(joinOptions, clause, alias) as WhereBaseStatement<TWhereStatement>);
+                return new RelationshipsWhereStatement(joinOptions, clause, alias) as TWhereStatement;
             }
 
             if (type == typeof(TwinsWhereStatement))
             {
-                return (TWhereStatement)(new TwinsWhereStatement(joinOptions, clause, alias) as WhereBaseStatement<TWhereStatement>);
+                return new TwinsWhereStatement(joinOptions, clause, alias) as TWhereStatement;
             }
 
             throw new Exception($"Unsupported generic type passed in for {nameof(TWhereStatement)}");
@@ -33,12 +33,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
             var type = typeof(TWhereStatement);
             if (type == typeof(RelationshipsWhereStatement))
             {
-                return (TWhereStatement)(new RelationshipsWhereStatement(clause, alias) as WhereBaseStatement<TWhereStatement>);
+                return new RelationshipsWhereStatement(clause, alias) as TWhereStatement;
             }
 
             if (type == typeof(TwinsWhereStatement))
             {
-                return (TWhereStatement)(new TwinsWhereStatement(clause, alias) as WhereBaseStatement<TWhereStatement>);
+                return new TwinsWhereStatement(clause, alias) as TWhereStatement;
             }
 
             throw new Exception($"Unsupported generic type passed in for {nameof(TWhereStatement)}");

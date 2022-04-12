@@ -5,7 +5,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
     using System;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -16,7 +15,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             Assert.ThrowsException<InvalidOperationException>(() =>
             {
-                var query = DynamicQueryBuilder
+                var query = QueryBuilder
                 .FromTwins()
                 .Where(b => b.Property("name").IsEqualTo(new Building()))
                 .BuildAdtQuery();
@@ -26,43 +25,43 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanApplyScalarUnaryFilters()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromTwins()
                     .Where(t => t.Property("name").IsBool());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_BOOL(twin.name)", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins()
                     .Where(t => t.Property("name").IsDefined());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_DEFINED(twin.name)", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins()
                     .Where(t => t.Property("name").IsNull());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_NULL(twin.name)", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins()
                     .Where(t => t.Property("name").IsNumber());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_NUMBER(twin.name)", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins()
                     .Where(t => t.Property("name").IsObject());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_OBJECT(twin.name)", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins()
                     .Where(t => t.Property("name").IsPrimitive());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_PRIMITIVE(twin.name)", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins()
                     .Where(t => t.Property("name").IsString());
 
@@ -72,19 +71,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanApplyScalarBinaryFilters()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Property("name").StartsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE STARTSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Property("dict.temp").StartsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE STARTSWITH(twin.dict.temp, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(f => f
                     .With("itfunc")
@@ -95,19 +94,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE STARTSWITH(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Property("name").EndsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Property("dict.temp").EndsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE ENDSWITH(twin.dict.temp, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(f => f
                     .With("itfunc")
@@ -118,19 +117,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE ENDSWITH(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Property("name").Contains("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE CONTAINS(twin.name, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Property("dict.temp").Contains("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE CONTAINS(twin.dict.temp, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(f => f
                     .With("itfunc")
@@ -145,19 +144,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanApplyInFilters()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                    .FromTwins()
                    .Where(b => b.Property("name").IsIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name IN ['name1','name2']", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(b => b.Property("dict.temp").IsIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.dict.temp IN ['name1','name2']", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(b => b
                     .With("itfunc")
@@ -172,19 +171,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanApplyNotInFilters()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                    .FromTwins()
                    .Where(b => b.Property("name").IsNotIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name NIN ['name1','name2']", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(b => b.Property("dict.temp").IsNotIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.dict.temp NIN ['name1','name2']", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(b => b
                     .With("itfunc")
@@ -199,7 +198,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanAssignPrecedence()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromTwins("bldng")
                     .Where(b => b
                         .Property("name")
@@ -218,19 +217,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanUseLogicalOperations()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Not(b => b.Property("name").EndsWith("word")));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE NOT ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                    .FromTwins()
                    .Where(t => t.Not(q => q.Not(b => b.Property("name").EndsWith("word"))));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE NOT NOT ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins("bldng")
                     .Where(b => b
                         .Property("count")
@@ -239,7 +238,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE bldng.count > 20 OR bldng.count < 10", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                     .FromTwins("bldng")
                     .Where(b => b
                         .Property("count")
@@ -249,7 +248,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE bldng.count > 20 OR bldng.count < 10", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(b => b
                     .With("itfunc")
@@ -272,7 +271,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE bldng.$dtId = 'ID' AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(b => b
                     .With("itfunc")
@@ -300,37 +299,37 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanApplyComparisonConditions()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Where(t => t.Property("name").IsEqualTo("building 1"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name = 'building 1'", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins()
                 .Where(t => t.Property("externalId").IsGreaterThan(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId > 1", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins()
                 .Where(t => t.Property("externalId").IsGreaterThanOrEqualTo(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId >= 1", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins()
                 .Where(t => t.Property("externalId").IsLessThan(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId < 1", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins()
                 .Where(t => t.Property("externalId").IsLessThanOrEqualTo(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId <= 1", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins()
                 .Where(t => t.Property("name").NotEqualTo("building 1"));
 
@@ -366,19 +365,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var someBuilding2 = "some'buil'ding";
             var someBuildingEscaped2 = @"some\'buil\'ding";
 
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                       .FromTwins()
                       .Where(b => b.Property("name").IsEqualTo(someBuilding1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name = '{someBuildingEscaped1}'", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                   .FromTwins()
                   .Where(b => b.Property("name").IsIn(new string[] { someBuilding1, someBuilding2 }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name IN ['{someBuildingEscaped1}','{someBuildingEscaped2}']", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                   .FromTwins()
                   .Where(b => b.Property("name").StartsWith(someBuilding1));
 
@@ -388,7 +387,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void FilteringOverEnumWithNoMemberAttributeUsesInt()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromTwins()
                     .Where(x => x.Property("status").IsEqualTo(CustomEnum.Value2));
 
@@ -399,7 +398,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         public void CanFilterOnModelDtmi()
         {
             var dtmi = "dtmi:microsoft:Space:Building;1";
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromTwins()
                     .Where(x => x.IsOfModel(dtmi));
 
@@ -409,7 +408,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanFilterWithRelationshipsQuery()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromRelationships()
                     .Where(w => w.Property("$relationshipName").IsEqualTo("hasCalendar"));
 
@@ -419,7 +418,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanUseConjunctionsOnRelationshipQueries()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromRelationships()
                     .Where(w => w
                         .Property("$relationshipName")
@@ -439,7 +438,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanFilterOnNestedJoins()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j
                     .With("floor")

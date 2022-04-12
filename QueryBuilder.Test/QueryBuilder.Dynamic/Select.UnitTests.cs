@@ -6,7 +6,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -15,7 +15,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void FromGeneratesDefaultSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins();
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin", query.BuildAdtQuery());
@@ -24,13 +24,13 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanModifyDefaultSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Select("twin");
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin", query.BuildAdtQuery());
 
-            query = DynamicQueryBuilder
+            query = QueryBuilder
                 .FromTwins("bldng")
                 .Select("bldng");
 
@@ -40,7 +40,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanModifyDefaultSelectForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromRelationships("rel")
                     .Select("rel");
             Assert.AreEqual("SELECT rel FROM RELATIONSHIPS rel", query.BuildAdtQuery());
@@ -49,7 +49,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanSelectAllFive()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren")
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
@@ -66,7 +66,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanSelectTwoOutOfFive()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren")
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
@@ -83,7 +83,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanAddFilterAfterSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(j => j.With("flr").RelatedBy("hasChildren")
                     .Join(j => j.With("crm").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
@@ -100,7 +100,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanAddJoinAfterSelect()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("bldng")
                 .Select("bldng")
                 .Join(j => j.With("flr").RelatedBy("hasChildren")
@@ -117,7 +117,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void DefaultSelectsOnlyFirst()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren")
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
@@ -133,7 +133,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanRetrieveSelectedAliases()
         {
-            var query1 = DynamicQueryBuilder
+            var query1 = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren")
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
@@ -143,7 +143,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var expectedAliases = new List<string> { "twin" };
             Assert.IsFalse(expectedAliases.Where(a => !query1.SelectedAliases.Contains(a)).Any());
 
-            var query2 = DynamicQueryBuilder
+            var query2 = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren")
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
@@ -154,7 +154,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             expectedAliases = new List<string> { "twin", "floor", "confroom", "device", "sensor" };
             Assert.IsFalse(expectedAliases.Where(a => !query2.SelectedAliases.Contains(a)).Any());
 
-            var query3 = DynamicQueryBuilder
+            var query3 = QueryBuilder
                 .FromTwins("bldng")
                 .Join(j => j.With("floor").RelatedBy("hasChildren")
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
@@ -165,18 +165,18 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             expectedAliases = new List<string> { "bldng", "floor", "confroom", "device", "sensor" };
             Assert.IsFalse(expectedAliases.Where(a => !query3.SelectedAliases.Contains(a)).Any());
 
-            var query4 = DynamicQueryBuilder
+            var query4 = QueryBuilder
                 .FromTwins();
             expectedAliases = new List<string> { "twin" };
             Assert.IsFalse(expectedAliases.Where(a => !query4.SelectedAliases.Contains(a)).Any());
 
-            var query5 = DynamicQueryBuilder
+            var query5 = QueryBuilder
                 .FromTwins()
                 .Top(1);
             expectedAliases = new List<string> { "twin" };
             Assert.IsFalse(expectedAliases.Where(a => !query5.SelectedAliases.Contains(a)).Any());
 
-            var query6 = DynamicQueryBuilder
+            var query6 = QueryBuilder
                 .FromTwins()
                 .Count();
             expectedAliases = new List<string> { };
@@ -186,7 +186,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanSelectRelationshipProperties()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                     .FromRelationships("rel")
                     .Select("$relationshipName");
 
@@ -197,7 +197,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [ExpectedException(typeof(ArgumentException))]
         public void CannotSelectSameAliasTwice()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("spc1")
                 .Join(j => j.With("spc2").RelatedBy("hasChildren"))
                 .Select("spc1", "spc1");
@@ -207,7 +207,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [ExpectedException(typeof(ArgumentException))]
         public void CannotSelectUndefinedAlias()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("spc1")
                 .Join(j => j.With("spc2").RelatedBy("hasChildren"))
                 .Select("bldng");
@@ -217,7 +217,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [ExpectedException(typeof(ArgumentException))]
         public void CannotSelectUndefinedAliasForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromRelationships("rel1")
                 .Select("bldng");
         }
@@ -226,7 +226,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [ExpectedException(typeof(ArgumentException))]
         public void CannotSelectSameAliasTwiceForRelationships()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromRelationships("spc1")
                 .Select("spc1", "spc1");
         }

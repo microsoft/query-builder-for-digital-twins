@@ -4,7 +4,7 @@
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
     using System;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -13,7 +13,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanJoinWithFilter()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren"))
                 .Where(w => w.Property("$dtId").IsEqualTo("ID1"));
@@ -24,7 +24,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanNestJoins()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j
                     .With("floor")
@@ -39,7 +39,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanFilterInJoin()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j
                         .With("floor")
@@ -54,7 +54,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void AliasNotRequiredIfThereIsNoAmbiguity()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(f => f.With("flr").RelatedBy("hasChildren"))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -65,7 +65,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [TestMethod]
         public void CanAssignAliasToRelationship()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(b => b.With("flr").RelatedBy("hasChildren").WithAlias("rel"))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -77,7 +77,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [ExpectedException(typeof(ArgumentException))]
         public void CanNotAssignAliasAlreadyUsed()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(f => f.With("floor").RelatedBy("hasChildren"))
                 .Join(b => b.With("bldng").RelatedBy("hasChildren"))
@@ -90,7 +90,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [ExpectedException(typeof(ArgumentException))]
         public void CanNotAssignRelationshipAliasAlreadyUsed()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(f => f.With("floor").RelatedBy("hasChildren").WithAlias("rel"))
                 .Join(b => b.With("confroom").RelatedBy("hasChildren").WithAlias("rel"))
@@ -103,7 +103,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         [ExpectedException(typeof(ArgumentNullException))]
         public void CanNotAssignNullAlias()
         {
-            var query = DynamicQueryBuilder
+            var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With(null).RelatedBy("hasChildren"))
                 .Where(w => w.Property("$dtId").IsEqualTo("ID"));

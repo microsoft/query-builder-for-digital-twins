@@ -1,23 +1,68 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
+namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Text.Json.Serialization;
-    using Azure.DigitalTwins.Core;
+    using global::Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statements;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed;
     using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers.Terms;
 
     /// <summary>
     /// A factory class used to create ADT query builder.
     /// </summary>
-    public static class DynamicQueryBuilder
+    public static class QueryBuilder
     {
+        /// <summary>
+        /// Sets the root type of the query (the FROM clause), filters the correct type, and adds a select clause.
+        /// </summary>
+        /// <typeparam name="TModel">The root type of the query.</typeparam>
+        /// <param name="alias">Optional string alias to map to the root type.</param>
+        /// <returns>A query with single select.</returns>
+        public static DefaultQuery<TModel> From<TModel>(string alias = null)
+            where TModel : BasicDigitalTwin
+        {
+            var rootTwinAlias = string.IsNullOrEmpty(alias) ? AliasHelper.ExtractAliasFromType(typeof(TModel)) : alias;
+            var aliasTypeMapping = new Dictionary<string, Type>
+            {
+                { rootTwinAlias, typeof(TModel) }
+            };
+
+            var fromClause = new FromClause
+            {
+                Alias = rootTwinAlias
+            };
+
+            var model = Activator.CreateInstance<TModel>().Metadata.ModelId;
+            var whereClause = new WhereClause();
+            whereClause.AddCondition(new WhereIsOfModelCondition
+            {
+                Alias = rootTwinAlias,
+                Model = model
+            });
+
+            var selectClause = new SelectClause();
+            selectClause.Add(rootTwinAlias);
+            return new DefaultQuery<TModel>(aliasTypeMapping, selectClause, fromClause, new List<JoinClause>(), whereClause);
+        }
+
+        /// <summary>
+        /// Creates a query to count all digital twins.
+        /// </summary>
+        /// <returns>A query that counts all digital twins.</returns>
+        public static CountAllQuery CountAllDigitalTwins()
+        {
+            return new CountAllQuery();
+        }
+
         /// <summary>
         /// Sets the root of the query (the FROM clause) and adds a select clause.
         /// </summary>
@@ -58,15 +103,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
             }
 
             return new RelationshipDefaultQuery<RelationshipsWhereStatement>(alias, allowedSelects, selectClause, fromClause, new List<JoinClause>(), new WhereClause());
-        }
-
-        /// <summary>
-        /// Creates a query to count all digital twins.
-        /// </summary>
-        /// <returns>A query that counts all digital twins.</returns>
-        public static CountAllQuery CountAllDigitalTwins()
-        {
-            return new CountAllQuery();
         }
 
         private static IEnumerable<string> GetRelationshipPropertyKeys()
