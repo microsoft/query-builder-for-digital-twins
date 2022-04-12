@@ -43,7 +43,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         protected override void ValidateSelectAlias(string alias)
         {
             base.ValidateSelectAlias(alias);
-            QueryValidator.ValidateAlias(alias, definedAliases);
+            QueryValidator.ValidateAliasIsDefined(alias, definedAliases);
         }
     }
 }

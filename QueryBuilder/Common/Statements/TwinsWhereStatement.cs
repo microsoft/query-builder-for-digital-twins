@@ -3,6 +3,8 @@
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
 
     /// <summary>
@@ -10,7 +12,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
     /// </summary>
     public class TwinsWhereStatement : WhereBaseStatement<TwinsWhereStatement>
     {
-        internal TwinsWhereStatement(JoinOptions joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
+        internal TwinsWhereStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
         {
         }
 
@@ -52,7 +54,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         /// <returns>A statement class that contains various unary or binary comparison methods to finalize the WHERE statement.</returns>
         public WherePropertyStatement<TwinsWhereStatement> RelationshipProperty(string propertyName)
         {
-            var relationshipAlias = string.IsNullOrWhiteSpace(JoinOptions.RelationshipAlias) ? $"{JoinOptions.RelationshipName.ToLowerInvariant()}relationship" : JoinOptions.RelationshipAlias;
+            var latestJoinOptions = JoinOptions.LastOrDefault();
+            var relationshipAlias = string.IsNullOrWhiteSpace(latestJoinOptions.RelationshipAlias) ? $"{latestJoinOptions.RelationshipName.ToLowerInvariant()}relationship" : latestJoinOptions.RelationshipAlias;
             return new WherePropertyStatement<TwinsWhereStatement>(JoinOptions, WhereClause, propertyName, relationshipAlias);
         }
     }

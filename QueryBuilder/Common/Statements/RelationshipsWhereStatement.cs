@@ -3,20 +3,15 @@
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Reflection;
-    using System.Runtime.Serialization;
+    using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
 
     /// <summary>
     /// A WHERE statement class used for querying relationships.
     /// </summary>
     public class RelationshipsWhereStatement : WhereBaseStatement<RelationshipsWhereStatement>
     {
-        internal RelationshipsWhereStatement(JoinOptions joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
+        internal RelationshipsWhereStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
         {
         }
 

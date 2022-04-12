@@ -4,6 +4,7 @@
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
@@ -11,7 +12,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
     [ExcludeFromCodeCoverage]
     internal static class WhereStatementFactory
     {
-        internal static TWhereStatement CreateInstance<TWhereStatement>(JoinOptions joinOptions, WhereClause clause, string alias) where TWhereStatement : WhereBaseStatement<TWhereStatement>
+        internal static TWhereStatement CreateInstance<TWhereStatement>(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) where TWhereStatement : WhereBaseStatement<TWhereStatement>
         {
             var type = typeof(TWhereStatement);
             if (type == typeof(RelationshipsWhereStatement))

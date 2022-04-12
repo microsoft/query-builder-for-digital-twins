@@ -6,6 +6,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     using System;
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
+    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements;
 
     /// <summary>
@@ -30,7 +31,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, JoinFinalStatement<TWhereStatement>> joinLogic)
         {
             var join = joinLogic.Invoke(joinStatement);
-            return Join(join.Options);
+            return Join(join.Joins);
         }
 
         /// <summary>
@@ -41,24 +42,30 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, CompoundWhereStatement<TWhereStatement>> joinAndWhereLogic)
         {
             var joinWithWhere = joinAndWhereLogic.Invoke(joinStatement);
-            return Join(joinWithWhere.JoinOptions);
+            return Join(joinWithWhere.Joins);
         }
 
-        private TQuery Join(JoinOptions options)
+        private TQuery Join(IEnumerable<JoinOptions> joins)
         {
-            ValidateSelectAlias(options.Source);
-            ValidateSelectAlias(options.With);
+            foreach (var options in joins)
+            {
+                Join(options);
+            }
+
+            return (TQuery)this;
+        }
+
+        private void Join(JoinOptions options)
+        {
+            QueryValidator.ValidateAliasIsDefined(options.Source, definedAliases);
+            QueryValidator.ValidateAliasNotAlreadyInUse(options.With, definedAliases);
             definedAliases.Add(options.With);
             if (string.IsNullOrWhiteSpace(options.RelationshipAlias))
             {
                 options.RelationshipAlias = $"{options.RelationshipName.ToLowerInvariant()}relationship";
             }
 
-            if (!string.IsNullOrWhiteSpace(options.RelationshipAlias) && definedAliases.Contains(options.RelationshipAlias))
-            {
-                throw new ArgumentException($"Cannot use the alias: {options.RelationshipAlias}, because its already assigned!");
-            }
-
+            QueryValidator.ValidateAliasNotAlreadyInUse(options.RelationshipAlias, definedAliases);
             definedAliases.Add(options.RelationshipAlias);
             joinClauses.Add(new JoinClause
             {
@@ -67,8 +74,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
                 RelationshipAlias = options.RelationshipAlias,
                 JoinFrom = options.Source
             });
-
-            return (TQuery)this;
         }
     }
 }

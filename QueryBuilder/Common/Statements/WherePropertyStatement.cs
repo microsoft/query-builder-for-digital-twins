@@ -4,6 +4,7 @@
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using System.Runtime.Serialization;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
@@ -17,9 +18,9 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         private readonly string propertyName;
         private readonly string alias;
         private readonly WhereClause clause;
-        private readonly JoinOptions joinOptions;
+        private readonly IEnumerable<JoinOptions> joinOptions;
 
-        internal WherePropertyStatement(JoinOptions joinOptions, WhereClause clause, string propertyName, string alias)
+        internal WherePropertyStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string propertyName, string alias)
         {
             this.joinOptions = joinOptions;
             this.propertyName = propertyName;

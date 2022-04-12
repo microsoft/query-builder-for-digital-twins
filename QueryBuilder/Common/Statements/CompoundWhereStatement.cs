@@ -4,10 +4,8 @@
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
+    using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
-    using System.Runtime.Serialization;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
 
@@ -17,15 +15,15 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
     /// <typeparam name="TWhereStatement">The type of WHERE statement supported.</typeparam>
     public class CompoundWhereStatement<TWhereStatement> where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal JoinOptions JoinOptions { get; private set; }
+        internal IEnumerable<JoinOptions> Joins { get; set; }
 
         internal WhereClause WhereClause { get; private set; }
 
         private string alias;
 
-        internal CompoundWhereStatement(JoinOptions joinOptions, WhereClause whereClause, string alias)
+        internal CompoundWhereStatement(IEnumerable<JoinOptions> joins, WhereClause whereClause, string alias)
         {
-            JoinOptions = joinOptions;
+            Joins = joins;
             WhereClause = whereClause;
             this.alias = alias;
         }
@@ -37,7 +35,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         public TWhereStatement And()
         {
             WhereClause.AddCondition(Terms.And);
-            return WhereStatementFactory.CreateInstance<TWhereStatement>(JoinOptions, WhereClause, alias);
+            return WhereStatementFactory.CreateInstance<TWhereStatement>(Joins, WhereClause, alias);
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         public TWhereStatement Or()
         {
             WhereClause.AddCondition(Terms.Or);
-            return WhereStatementFactory.CreateInstance<TWhereStatement>(JoinOptions, WhereClause, alias);
+            return WhereStatementFactory.CreateInstance<TWhereStatement>(Joins, WhereClause, alias);
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
         public CompoundWhereStatement<TWhereStatement> Or(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> nested)
         {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(JoinOptions, new WhereClause(), alias);
+            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(Joins, new WhereClause(), alias);
             var w = nested.Invoke(statement);
             Or();
             WhereClause.AddCondition(w.WhereClause.Conditions.FirstOrDefault());

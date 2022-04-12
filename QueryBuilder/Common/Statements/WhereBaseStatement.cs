@@ -4,6 +4,7 @@
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
@@ -20,14 +21,14 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         /// </summary>
         protected readonly string Alias;
         internal readonly WhereClause WhereClause;
-        internal readonly JoinOptions JoinOptions;
+        internal readonly IEnumerable<JoinOptions> JoinOptions;
 
         [ExcludeFromCodeCoverage]
         internal WhereBaseStatement()
         {
         }
 
-        internal WhereBaseStatement(JoinOptions joinOptions, WhereClause clause, string alias) : this(clause, alias)
+        internal WhereBaseStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) : this(clause, alias)
         {
             JoinOptions = joinOptions;
         }

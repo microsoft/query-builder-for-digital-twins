@@ -4,6 +4,7 @@
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
 {
     using System;
+    using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
 
@@ -13,6 +14,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
     /// <typeparam name="TWhereStatement">The type of WHERE statement supported for the JOIN statement.</typeparam>
     public class JoinFinalStatement<TWhereStatement> where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
+        internal List<JoinOptions> Joins { get; private set; }
+
         internal JoinOptions Options { get; private set; }
 
         private WhereClause whereClause;
@@ -21,19 +24,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         {
             this.whereClause = whereClause;
             this.Options = options;
-        }
-
-        /// <summary>
-        /// Optional: Adds an alias to the JOIN statement to override the default.
-        /// This should mostly not be needed, because by default it will use whatever
-        /// the default/root alias for the query is, even if a custom one was provided in the FROM clause.
-        /// </summary>
-        /// <param name="sourceTwin">The alias to override with in the JOIN statement.</param>
-        /// <returns>A statement class that contains various unary or binary comparison methods to finalize the JOIN statement.</returns>
-        public JoinFinalStatement<TWhereStatement> On(string sourceTwin)
-        {
-            Options.Source = sourceTwin;
-            return this;
+            Joins = new List<JoinOptions> { options };
         }
 
         /// <summary>
@@ -54,8 +45,42 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Statements
         /// <returns>An extendible part of a WHERE statement to continue adding WHERE conditions to.</returns>
         public CompoundWhereStatement<TWhereStatement> Where(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> whereLogic)
         {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(Options, whereClause, Options.With);
+            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(Joins, whereClause, Options.With);
             return whereLogic.Invoke(statement);
+        }
+
+
+        /// <summary>
+        /// Adds a nested JOIN to the existing one. This will contextually bind this JOIN to a parent one.
+        /// Example:
+        /// Floor -> hasChildren
+        /// Area -> hasDevices
+        /// .Join(f => f
+        ///     .With("area")
+        ///     .RelatedBy("hasChildren")
+        ///     .Join(a => a.With("device").RelatedBy("hasDevices)))
+        /// </summary>
+        /// <param name="joinLogic">The functional logic of the JOIN statement containing the required components to join twins via a relationship.</param>
+        /// <returns>A statement class that contains various unary or binary comparison methods to finalize the JOIN statement.</returns>
+        public JoinFinalStatement<TWhereStatement> Join(Func<JoinWithStatement<TWhereStatement>, JoinFinalStatement<TWhereStatement>> joinLogic)
+        {
+            var final = joinLogic.Invoke(new JoinWithStatement<TWhereStatement>(whereClause, Options.With));
+            Joins.AddRange(final.Joins);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a nested JOIN and WHERE statements to the existing JOIN statement.
+        /// WHERE statements added at this level will be contextually bound to the twin that was JOINed.
+        /// </summary>
+        /// <param name="joinAndWhereLogic">The functional logic of the JOIN and WHERE statement containing one or more WHERE conditions.</param>
+        /// <returns>>An extendible part of a WHERE statement to continue adding WHERE conditions to.</returns>
+        public CompoundWhereStatement<TWhereStatement> Join(Func<JoinWithStatement<TWhereStatement>, CompoundWhereStatement<TWhereStatement>> joinAndWhereLogic)
+        {
+            var final = joinAndWhereLogic.Invoke(new JoinWithStatement<TWhereStatement>(whereClause, Options.With));
+            Joins.AddRange(final.Joins);
+            final.Joins = Joins;
+            return final;
         }
     }
 }

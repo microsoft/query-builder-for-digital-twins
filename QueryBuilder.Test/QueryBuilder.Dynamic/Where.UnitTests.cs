@@ -89,7 +89,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(f => f
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .On("bldng")
                     .WithAlias("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").StartsWith("word")))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -113,7 +112,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(f => f
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .On("bldng")
                     .WithAlias("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").EndsWith("word")))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -137,7 +135,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(f => f
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .On("bldng")
                     .WithAlias("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").Contains("word")))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -165,7 +162,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .On("bldng")
                     .WithAlias("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").IsIn(new string[] { "name1", "name2" })))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -193,7 +189,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .On("bldng")
                     .WithAlias("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").IsNotIn(new string[] { "name1", "name2" })))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
@@ -259,7 +254,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .On("bldng")
                     .WithAlias("rel"))
                 .Where(b => b
                     .Property("$dtId")
@@ -283,7 +277,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Join(b => b
                     .With("itfunc")
                     .RelatedBy("hasITSiteFunction")
-                    .On("bldng")
                     .WithAlias("rel"))
                 .Where(b => b
                     .Property("$dtId")
@@ -441,6 +434,22 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                                     .IsEqualTo("someotherguid")))));
 
             Assert.AreEqual("SELECT relationship FROM RELATIONSHIPS relationship WHERE relationship.$relationshipName = 'hasCalendar' AND NOT (relationship.$targetId = 'someguid' OR relationship.$targetId = 'someotherguid')", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void CanFilterOnNestedJoins()
+        {
+            var query = DynamicQueryBuilder
+                .FromTwins()
+                .Join(j => j
+                    .With("floor")
+                    .RelatedBy("hasChildren")
+                    .Join(i => i
+                        .With("device")
+                        .RelatedBy("hasDevices")
+                        .Where(i => i.IsOfModel("dtmi:microsoft:somemodel;1"))));
+
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship JOIN device RELATED floor.hasDevices hasdevicesrelationship WHERE IS_OF_MODEL(device, 'dtmi:microsoft:somemodel;1')", query.BuildAdtQuery());
         }
 
         private enum CustomEnum

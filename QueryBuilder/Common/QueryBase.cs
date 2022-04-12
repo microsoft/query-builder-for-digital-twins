@@ -6,7 +6,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using global::Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
 
     /// <summary>

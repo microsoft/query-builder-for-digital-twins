@@ -51,10 +51,10 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = DynamicQueryBuilder
                 .FromTwins()
-                .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Join(j => j.With("confroom").RelatedBy("hasChildren").On("floor").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("confroom"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("floor").RelatedBy("hasChildren")
+                    .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Where(w => w.Property("$dtId").IsEqualTo("ID"))
                 .Select("twin", "floor", "confroom", "sensor", "device");
 
@@ -68,10 +68,10 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = DynamicQueryBuilder
                 .FromTwins()
-                .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Join(j => j.With("confroom").RelatedBy("hasChildren").On("floor").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("confroom"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("floor").RelatedBy("hasChildren")
+                    .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Where(w => w.Property("$dtId").IsEqualTo("ID"))
                 .Select("confroom", "sensor");
 
@@ -85,10 +85,10 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = DynamicQueryBuilder
                 .FromTwins("bldng")
-                .Join(j => j.With("flr").RelatedBy("hasChildren").On("bldng"))
-                .Join(j => j.With("crm").RelatedBy("hasChildren").On("flr").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("crm"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("flr").RelatedBy("hasChildren")
+                    .Join(j => j.With("crm").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Select("crm", "sensor")
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
@@ -103,10 +103,10 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = DynamicQueryBuilder
                 .FromTwins("bldng")
                 .Select("bldng")
-                .Join(j => j.With("flr").RelatedBy("hasChildren").On("bldng"))
-                .Join(j => j.With("crm").RelatedBy("hasChildren").On("flr").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("crm"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("flr").RelatedBy("hasChildren")
+                    .Join(j => j.With("crm").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Where(b => b.Property("$dtId").IsEqualTo("ID"));
 
             var expectedQuery = $"SELECT bldng FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren haschildrenrelationship JOIN crm RELATED flr.hasChildren haschildrenrelationship1 JOIN device RELATED crm.hasDevices hasdevicesrelationship JOIN sensor RELATED device.hasSensors hassensorsrelationship WHERE bldng.$dtId = 'ID'";
@@ -119,10 +119,10 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = DynamicQueryBuilder
                 .FromTwins()
-                .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Join(j => j.With("confroom").RelatedBy("hasChildren").On("floor").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("confroom"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("floor").RelatedBy("hasChildren")
+                    .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Where(w => w.Property("$dtId").IsEqualTo("ID"));
 
             var expectedQuery = $"SELECT twin FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship JOIN confroom RELATED floor.hasChildren haschildrenrelationship1 JOIN device RELATED confroom.hasDevices hasdevicesrelationship JOIN sensor RELATED device.hasSensors hassensorsrelationship WHERE twin.$dtId = 'ID'";
@@ -135,20 +135,20 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query1 = DynamicQueryBuilder
                 .FromTwins()
-                .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Join(j => j.With("confroom").RelatedBy("hasChildren").On("floor").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("confroom"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("floor").RelatedBy("hasChildren")
+                    .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Where(w => w.Property("$dtId").IsEqualTo("ID"));
             var expectedAliases = new List<string> { "twin" };
             Assert.IsFalse(expectedAliases.Where(a => !query1.SelectedAliases.Contains(a)).Any());
 
             var query2 = DynamicQueryBuilder
                 .FromTwins()
-                .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Join(j => j.With("confroom").RelatedBy("hasChildren").On("floor").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("confroom"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("floor").RelatedBy("hasChildren")
+                    .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Select("twin", "floor", "confroom", "device", "sensor")
                 .Where(w => w.Property("$dtId").IsEqualTo("ID"));
             expectedAliases = new List<string> { "twin", "floor", "confroom", "device", "sensor" };
@@ -156,10 +156,10 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 
             var query3 = DynamicQueryBuilder
                 .FromTwins("bldng")
-                .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Join(j => j.With("confroom").RelatedBy("hasChildren").On("floor").WithAlias("haschildrenrelationship1"))
-                .Join(j => j.With("device").RelatedBy("hasDevices").On("confroom"))
-                .Join(j => j.With("sensor").RelatedBy("hasSensors").On("device"))
+                .Join(j => j.With("floor").RelatedBy("hasChildren")
+                    .Join(j => j.With("confroom").RelatedBy("hasChildren").WithAlias("haschildrenrelationship1")
+                        .Join(j => j.With("device").RelatedBy("hasDevices")
+                            .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Select("bldng", "floor", "confroom", "device", "sensor")
                 .Where(w => w.Property("$dtId").IsEqualTo("ID"));
             expectedAliases = new List<string> { "bldng", "floor", "confroom", "device", "sensor" };
@@ -199,7 +199,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = DynamicQueryBuilder
                 .FromTwins("spc1")
-                .Join(j => j.With("spc2").RelatedBy("hasChildren").On("spc1"))
+                .Join(j => j.With("spc2").RelatedBy("hasChildren"))
                 .Select("spc1", "spc1");
         }
 
@@ -209,7 +209,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = DynamicQueryBuilder
                 .FromTwins("spc1")
-                .Join(j => j.With("spc2").RelatedBy("hasChildren").On("spc1"))
+                .Join(j => j.With("spc2").RelatedBy("hasChildren"))
                 .Select("bldng");
         }
 
