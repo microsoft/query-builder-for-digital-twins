@@ -16,7 +16,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
     /// <summary>
     /// A wrapper for the common functionalities of query builder.
     /// </summary>
-    public abstract class FilteredQuery<TQuery> : StrongQueryBase
+    public abstract class FilteredQuery<TQuery> : TypedQueryBase
         where TQuery : FilteredQuery<TQuery>
     {
         internal FilteredQuery(IDictionary<string, Type> aliasToTypeMapping, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause)

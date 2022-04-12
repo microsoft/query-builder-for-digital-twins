@@ -59,7 +59,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     /// A default query that has no count, top, or select clauses and does not support Joins.
     /// </summary>
     /// <typeparam name="TWhereStatement">The type of WHERE statement supported.</typeparam>
-    public class RelationshipDefaultQuery<TWhereStatement> : FilteredQuery<RelationshipDefaultQuery<TWhereStatement>, TWhereStatement>
+    public class RelationshipDefaultQuery<TWhereStatement> : FilterQuery<RelationshipDefaultQuery<TWhereStatement>, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
         internal RelationshipDefaultQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)

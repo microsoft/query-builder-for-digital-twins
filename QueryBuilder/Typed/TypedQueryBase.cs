@@ -13,11 +13,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
     /// <summary>
     /// A class for the basic common functionality.
     /// </summary>
-    public abstract class StrongQueryBase : QueryBase
+    public abstract class TypedQueryBase : QueryBase
     {
         internal IDictionary<string, Type> aliasToTypeMapping { get; private set; }
 
-        internal StrongQueryBase(IDictionary<string, Type> aliasToTypeMapping, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(selectClause, fromClause, joinClauses, whereClause)
+        internal TypedQueryBase(IDictionary<string, Type> aliasToTypeMapping, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(selectClause, fromClause, joinClauses, whereClause)
         {
             this.aliasToTypeMapping = aliasToTypeMapping;
         }
@@ -26,7 +26,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// Gets a Set of Types used in the query.
         /// </summary>
         /// <returns>All the Types used in the query.</returns>
-        internal ISet<Type> Types => new HashSet<Type>(aliasToTypeMapping.Values.Distinct());
+        internal ISet<Type> Types => new HashSet<Type>(aliasToTypeMapping.Values);
 
         internal string GetAssignedAlias(Type type)
         {

@@ -12,11 +12,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     /// <summary>
     /// A wrapper for the common functionalities of query builder.
     /// </summary>
-    public class FilteredQuery<TQuery, TWhereStatement> : DynamicQueryBase
-        where TQuery : FilteredQuery<TQuery, TWhereStatement>
+    public class FilterQuery<TQuery, TWhereStatement> : DynamicQueryBase
+        where TQuery : FilterQuery<TQuery, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal FilteredQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
+        internal FilterQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
         }
 

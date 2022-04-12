@@ -11,7 +11,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     /// <summary>
     /// A wrapper for the common functionalities of query builder.
     /// </summary>
-    public abstract class JoinQuery<TQuery, TWhereStatement> : FilteredQuery<TQuery, TWhereStatement>
+    public abstract class JoinQuery<TQuery, TWhereStatement> : FilterQuery<TQuery, TWhereStatement>
         where TQuery : JoinQuery<TQuery, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
@@ -46,16 +46,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 
         private TQuery Join(JoinOptions options)
         {
-            if (!definedAliases.Contains(options.Source))
-            {
-                throw new ArgumentException($"Alias '{options.Source}' is not assigned!");
-            }
-
-            if (definedAliases.Contains(options.With))
-            {
-                throw new ArgumentException($"Cannot use the alias: {options.With}, because its already assigned!");
-            }
-
+            ValidateSelectAlias(options.Source);
+            ValidateSelectAlias(options.With);
             definedAliases.Add(options.With);
             if (string.IsNullOrWhiteSpace(options.RelationshipAlias))
             {

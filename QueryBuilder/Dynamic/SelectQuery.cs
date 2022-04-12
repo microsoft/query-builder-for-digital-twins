@@ -34,7 +34,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     /// <summary>
     /// Base query for all select queries. This query does not support Joins.
     /// </summary>
-    public abstract class RelationshipSelectQueryBase<TQuery, TWhereStatement> : FilteredQuery<TQuery, TWhereStatement>
+    public abstract class RelationshipSelectQueryBase<TQuery, TWhereStatement> : FilterQuery<TQuery, TWhereStatement>
         where TQuery : RelationshipSelectQueryBase<TQuery, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {

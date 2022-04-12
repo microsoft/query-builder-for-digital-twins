@@ -46,6 +46,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
 
         internal static void ValidateAlias(string alias, IEnumerable<string> aliases)
         {
+            if (string.IsNullOrWhiteSpace(alias))
+            {
+                throw new ArgumentNullException(nameof(alias));
+            }
+
             if (!string.IsNullOrWhiteSpace(alias) && !aliases.Contains(alias))
             {
                 throw new ArgumentException($"Alias '{alias}' is not assigned!");

@@ -21,7 +21,6 @@ There are some assumptions the Typed QueryBuilder is making so that it can be mo
 - Enum values have EnumMember attributes mapping to the DTDL model enum values.
 - Models have references to their relationships and the relationship classes extend BasicRelationship class supplied by ADT SDK.
 - C# relationship classes set Name property at construction.
-- C# properties are attributed with the `[JsonProperty("propName")]` attribute from the `System.Text.Json` library. The value passed into the attribute corresponds with the property name in DTDL (particularly its casing).
   > Note: It's important to understand this because of the distinction in behavior between the Typed and Dynamic query builders. In the Dynamic query builder, you'll need to be cognizant of the json representation of the property name, whereas in the Typed query builder, this is taken care of for you.
 
 ___

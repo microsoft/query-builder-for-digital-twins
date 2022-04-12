@@ -3,6 +3,7 @@
 
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
+    using System;
     using System.Linq;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -149,12 +150,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Select("building");
 
             TestQueryAllowsCommonBehavior(query);
-        }
-
-        [TestMethod]
-        public void CannotUseIsOfModelWhenQueryingRelationships()
-        {
-            // TODO: See how we can verify this
         }
 
         private void TestQueryAllowsCommonBehavior(object query)
