@@ -384,7 +384,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             var modelAlias = ValidateAndGetAlias<TBase>(typeof(TBase), alias);
             var model = Activator.CreateInstance<TDerived>().Metadata.ModelId;
 
-            return ConditionHelper.CreateWhereIsOfModelCondition(modelAlias, model);
+            return new WhereIsOfModelCondition(modelAlias, model);
         }
 
         private WhereScalarFunctionCondition CreateAdtScalarBinaryOperatorCondition<TModel>(string propertyName, string value, Type type, string alias, AdtScalarOperator binaryOperator)

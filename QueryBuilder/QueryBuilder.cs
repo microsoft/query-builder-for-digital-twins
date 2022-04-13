@@ -40,7 +40,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             var whereClause = new WhereClause();
             if (!typeof(TModel).Equals(typeof(BasicDigitalTwin)))
             {
-                whereClause.AddCondition(ConditionHelper.CreateWhereIsOfModelCondition(rootTwinAlias, model));
+                whereClause.AddCondition(new WhereIsOfModelCondition(rootTwinAlias, model));
             }
 
             var selectClause = new SelectClause();

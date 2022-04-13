@@ -90,7 +90,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
             var twinModel = Activator.CreateInstance<TJoinWith>().Metadata.ModelId;
             if (!string.IsNullOrEmpty(twinModel))
             {
-                whereClause.AddCondition(ConditionHelper.CreateWhereIsOfModelCondition(joinWithAlias, twinModel));
+                whereClause.AddCondition(new WhereIsOfModelCondition(joinWithAlias, twinModel));
             }
 
             return (TQuery)this;
