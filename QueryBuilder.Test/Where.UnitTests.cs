@@ -155,6 +155,42 @@ namespace QueryBuilder.UnitTests
         }
 
         [TestMethod]
+        public void RemovesDuplicateWhereFiltersInLevelOfPrecedence()
+        {
+            var query = QueryBuilder
+                    .From<Space>()
+                    .Or(query => query
+                        .WhereIsOfModel<Space, Building>()
+                        .WhereIsOfModel<Space, Building>()
+                        .WhereIsOfModel<Space, Floor>()
+                        .WhereIsOfModel<Space, Floor>()
+                        .WhereIsOfModel<Space, Floor>());
+
+            Assert.AreEqual($"SELECT space FROM DIGITALTWINS space WHERE IS_OF_MODEL(space, '{Space.ModelId.UpdateVersion(1)}') AND (IS_OF_MODEL(space, '{Building.ModelId.UpdateVersion(1)}') OR IS_OF_MODEL(space, '{Floor.ModelId.UpdateVersion(1)}'))", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                    .From<Space>()
+                    .Join<Space, BasicDigitalTwin>(s => s.HasChildren)
+                    .Where<Space>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                    .Where<Space>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                    .WhereIsOfModel<BasicDigitalTwin, Floor>()
+                    .WhereIsOfModel<BasicDigitalTwin, Floor>();
+
+            Assert.AreEqual($"SELECT space FROM DIGITALTWINS space JOIN basicdigitaltwin RELATED space.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(space, '{Space.ModelId.UpdateVersion(1)}') AND space.$dtId = 'ID' AND IS_OF_MODEL(basicdigitaltwin, '{Floor.ModelId.UpdateVersion(1)}')", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                    .From<Space>("bldg")
+                    .WhereStartsWith<Space>(s => s.Name, "word")
+                    .WhereIsOfModel<Space, Building>("bldg")
+                    .Or(query => query
+                        .WhereIsOfModel<Space, Building>("bldg")
+                        .WhereIsOfModel<Space, Building>("bldg")
+                        .WhereIsOfModel<Space, Floor>("bldg"));
+
+            Assert.AreEqual($"SELECT bldg FROM DIGITALTWINS bldg WHERE IS_OF_MODEL(bldg, '{Space.ModelId.UpdateVersion(1)}') AND STARTSWITH(bldg.name, 'word') AND IS_OF_MODEL(bldg, '{Building.ModelId.UpdateVersion(1)}') AND (IS_OF_MODEL(bldg, '{Building.ModelId.UpdateVersion(1)}') OR IS_OF_MODEL(bldg, '{Floor.ModelId.UpdateVersion(1)}'))", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
         public void CanApplyWhereIsOfModelFilter()
         {
             var query = QueryBuilder

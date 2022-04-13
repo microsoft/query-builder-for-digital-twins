@@ -7,18 +7,18 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers;
     using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Helpers.Terms;
 
-    internal abstract class Condition
+    internal abstract record class Condition
     {
     }
 
-    internal class SimpleCondition : Condition
+    internal record class SimpleCondition : Condition
     {
         internal string Alias { get; set; }
     }
 
-    internal class CompoundCondition : Condition
+    internal record class CompoundCondition : Condition
     {
-        internal IList<Condition> Conditions { get; set; }
+        internal HashSet<Condition> Conditions { get; set; }
 
         protected string LogicalOperator { get; set; }
 
@@ -28,7 +28,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         }
     }
 
-    internal class WhereComparisonCondition : SimpleCondition
+    internal record class WhereComparisonCondition : SimpleCondition
     {
         internal string Column { get; set; }
 
@@ -42,7 +42,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         }
     }
 
-    internal class WhereInCondition : SimpleCondition
+    internal record class WhereInCondition : SimpleCondition
     {
         internal string Column { get; set; }
 
@@ -54,7 +54,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         }
     }
 
-    internal class WhereNotInCondition : SimpleCondition
+    internal record class WhereNotInCondition : SimpleCondition
     {
         internal string Column { get; set; }
 
@@ -66,7 +66,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         }
     }
 
-    internal class WhereIsOfModelCondition : SimpleCondition
+    internal record class WhereIsOfModelCondition : SimpleCondition
     {
         private const int minTwinVersion = 1;
 
@@ -90,7 +90,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         }
     }
 
-    internal class WhereScalarFunctionCondition : SimpleCondition
+    internal record class WhereScalarFunctionCondition : SimpleCondition
     {
         internal string Column { get; set; }
 
@@ -109,7 +109,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         }
     }
 
-    internal class NotCondition : Condition
+    internal record class NotCondition : Condition
     {
         internal Condition Condition { get; set; }
 
@@ -119,19 +119,29 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
         }
     }
 
-    internal class OrCondition : CompoundCondition
+    internal record class OrCondition : CompoundCondition
     {
         internal OrCondition()
         {
             LogicalOperator = Or;
         }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 
-    internal class AndCondition : CompoundCondition
+    internal record class AndCondition : CompoundCondition
     {
         internal AndCondition()
         {
             LogicalOperator = And;
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
         }
     }
 }
