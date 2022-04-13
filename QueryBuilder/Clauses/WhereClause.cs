@@ -9,11 +9,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Clauses
 
     internal class WhereClause
     {
-        internal HashSet<Condition> Conditions { get; }
+        internal IList<Condition> Conditions { get; }
 
         internal WhereClause()
         {
-            Conditions = new HashSet<Condition>();
+            Conditions = new List<Condition>();
         }
 
         internal void AddCondition(Condition condition)
