@@ -55,7 +55,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").As("haschildrenrelationship1")
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
-                .Where(w => w.Property("$dtId").IsEqualTo("ID"))
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID"))
                 .Select("twin", "floor", "confroom", "sensor", "device");
 
             var expectedQuery = $"SELECT twin, floor, confroom, sensor, device FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship JOIN confroom RELATED floor.hasChildren haschildrenrelationship1 JOIN device RELATED confroom.hasDevices hasdevicesrelationship JOIN sensor RELATED device.hasSensors hassensorsrelationship WHERE twin.$dtId = 'ID'";
@@ -72,7 +72,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").As("haschildrenrelationship1")
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
-                .Where(w => w.Property("$dtId").IsEqualTo("ID"))
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID"))
                 .Select("confroom", "sensor");
 
             var expectedQuery = $"SELECT confroom, sensor FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship JOIN confroom RELATED floor.hasChildren haschildrenrelationship1 JOIN device RELATED confroom.hasDevices hasdevicesrelationship JOIN sensor RELATED device.hasSensors hassensorsrelationship WHERE twin.$dtId = 'ID'";
@@ -90,7 +90,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Select("crm", "sensor")
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             var expectedQuery = $"SELECT crm, sensor FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren haschildrenrelationship JOIN crm RELATED flr.hasChildren haschildrenrelationship1 JOIN device RELATED crm.hasDevices hasdevicesrelationship JOIN sensor RELATED device.hasSensors hassensorsrelationship WHERE bldng.$dtId = 'ID'";
 
@@ -107,7 +107,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Join(j => j.With("crm").RelatedBy("hasChildren").As("haschildrenrelationship1")
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             var expectedQuery = $"SELECT bldng FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren haschildrenrelationship JOIN crm RELATED flr.hasChildren haschildrenrelationship1 JOIN device RELATED crm.hasDevices hasdevicesrelationship JOIN sensor RELATED device.hasSensors hassensorsrelationship WHERE bldng.$dtId = 'ID'";
 
@@ -123,7 +123,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").As("haschildrenrelationship1")
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
-                .Where(w => w.Property("$dtId").IsEqualTo("ID"));
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID"));
 
             var expectedQuery = $"SELECT twin FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship JOIN confroom RELATED floor.hasChildren haschildrenrelationship1 JOIN device RELATED confroom.hasDevices hasdevicesrelationship JOIN sensor RELATED device.hasSensors hassensorsrelationship WHERE twin.$dtId = 'ID'";
 
@@ -139,7 +139,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Join(j => j.With("confroom").RelatedBy("hasChildren").As("haschildrenrelationship1")
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
-                .Where(w => w.Property("$dtId").IsEqualTo("ID"));
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID"));
             var expectedAliases = new List<string> { "twin" };
             Assert.IsFalse(expectedAliases.Where(a => !query1.SelectedAliases.Contains(a)).Any());
 
@@ -150,7 +150,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Select("twin", "floor", "confroom", "device", "sensor")
-                .Where(w => w.Property("$dtId").IsEqualTo("ID"));
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID"));
             expectedAliases = new List<string> { "twin", "floor", "confroom", "device", "sensor" };
             Assert.IsFalse(expectedAliases.Where(a => !query2.SelectedAliases.Contains(a)).Any());
 
@@ -161,7 +161,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                         .Join(j => j.With("device").RelatedBy("hasDevices")
                             .Join(j => j.With("sensor").RelatedBy("hasSensors")))))
                 .Select("bldng", "floor", "confroom", "device", "sensor")
-                .Where(w => w.Property("$dtId").IsEqualTo("ID"));
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID"));
             expectedAliases = new List<string> { "bldng", "floor", "confroom", "device", "sensor" };
             Assert.IsFalse(expectedAliases.Where(a => !query3.SelectedAliases.Contains(a)).Any());
 

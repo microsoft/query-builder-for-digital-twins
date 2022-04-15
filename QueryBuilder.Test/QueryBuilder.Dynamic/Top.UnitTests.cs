@@ -59,7 +59,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren"))
                 .Select("twin", "floor")
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"))
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"))
                 .Top(1);
 
             Assert.AreEqual($"SELECT TOP(1) twin, floor FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship WHERE twin.$dtId = 'ID'", query.BuildAdtQuery());
@@ -71,7 +71,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"))
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"))
                 .Top(1)
                 .Select("twin", "floor");
 

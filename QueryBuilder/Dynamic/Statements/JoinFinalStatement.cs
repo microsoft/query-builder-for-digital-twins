@@ -12,19 +12,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
     /// A class that contains various unary and binary comparison methods to finalize a JOIN statement.
     /// </summary>
     /// <typeparam name="TWhereStatement">The type of WHERE statement supported for the JOIN statement.</typeparam>
-    public class JoinFinalStatement<TWhereStatement> where TWhereStatement : WhereBaseStatement<TWhereStatement>
+    public class JoinFinalStatement<TWhereStatement> : JoinBaseStatement where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal List<JoinOptions> Joins { get; private set; }
-
-        internal JoinOptions Options { get; private set; }
-
-        private WhereClause whereClause;
-
-        internal JoinFinalStatement(WhereClause whereClause, JoinOptions options)
+        internal JoinFinalStatement(IList<JoinClause> joinClauses, WhereClause whereClause) : base(joinClauses, whereClause)
         {
-            this.whereClause = whereClause;
-            this.Options = options;
-            Joins = new List<JoinOptions> { options };
         }
 
         /// <summary>
@@ -34,7 +25,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>A statement class that contains various unary or binary comparison methods to finalize the JOIN statement.</returns>
         public JoinFinalStatement<TWhereStatement> As(string relationshipAlias)
         {
-            Options.RelationshipAlias = relationshipAlias;
+            Current.RelationshipAlias = relationshipAlias;
             return this;
         }
 
@@ -45,7 +36,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>An extendible part of a WHERE statement to continue adding WHERE conditions to.</returns>
         public CompoundWhereStatement<TWhereStatement> Where(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> whereLogic)
         {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(Joins, whereClause, Options.With);
+            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(Clauses, WhereClause, Current.JoinWith);
             return whereLogic.Invoke(statement);
         }
 
@@ -64,8 +55,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>A statement class that contains various unary or binary comparison methods to finalize the JOIN statement.</returns>
         public JoinFinalStatement<TWhereStatement> Join(Func<JoinWithStatement<TWhereStatement>, JoinFinalStatement<TWhereStatement>> joinLogic)
         {
-            var final = joinLogic.Invoke(new JoinWithStatement<TWhereStatement>(whereClause, Options.With));
-            Joins.AddRange(final.Joins);
+            joinLogic.Invoke(new JoinWithStatement<TWhereStatement>(Clauses, WhereClause, Current.JoinWith));
             return this;
         }
 #pragma warning restore SA1629
@@ -78,10 +68,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>>An extendible part of a WHERE statement to continue adding WHERE conditions to.</returns>
         public CompoundWhereStatement<TWhereStatement> Join(Func<JoinWithStatement<TWhereStatement>, CompoundWhereStatement<TWhereStatement>> joinAndWhereLogic)
         {
-            var final = joinAndWhereLogic.Invoke(new JoinWithStatement<TWhereStatement>(whereClause, Options.With));
-            Joins.AddRange(final.Joins);
-            final.Joins = Joins;
-            return final;
+            return joinAndWhereLogic.Invoke(new JoinWithStatement<TWhereStatement>(Clauses, WhereClause, Current.JoinWith));
         }
     }
 }

@@ -12,11 +12,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
     /// </summary>
     public class TwinsWhereStatement : WhereBaseStatement<TwinsWhereStatement>
     {
-        internal TwinsWhereStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
-        {
-        }
-
-        internal TwinsWhereStatement(WhereClause whereClause, string alias) : base(whereClause, alias)
+        internal TwinsWhereStatement(IList<JoinClause> joinClauses, WhereClause clause, string alias) : base(joinClauses, clause, alias)
         {
         }
 
@@ -27,13 +23,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <param name="forAlias">
         /// Optional: Alias to override the default alias in the current scope.
         /// This allows applying WHERE conditions to previous scopes of the query.
-        /// I.e. It can allow applying a WHERE condition to a relationship outside the scope of a previous JOIN statement.
+        /// I.e. It can allow applying a WHERE condition to a twin outside the scope of a previous JOIN statement.
         /// </param>
         /// <returns>A statement class that contains various unary or binary comparison methods to finalize the WHERE statement.</returns>
-        public WherePropertyStatement<TwinsWhereStatement> Property(string propertyName, string forAlias = null)
+        public WherePropertyStatement<TwinsWhereStatement> TwinProperty(string propertyName, string forAlias = null)
         {
             var aliasOverride = string.IsNullOrWhiteSpace(forAlias) ? Alias : forAlias;
-            return new WherePropertyStatement<TwinsWhereStatement>(JoinOptions, WhereClause, propertyName, aliasOverride);
+            return new WherePropertyStatement<TwinsWhereStatement>(JoinClauses, WhereClause, propertyName, aliasOverride);
         }
 
         /// <summary>
@@ -44,19 +40,29 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         public CompoundWhereStatement<TwinsWhereStatement> IsOfModel(string dtmi)
         {
             WhereClause.AddCondition(new WhereIsOfModelCondition { Alias = this.Alias, Model = dtmi });
-            return new CompoundWhereStatement<TwinsWhereStatement>(JoinOptions, WhereClause, Alias);
+            return new CompoundWhereStatement<TwinsWhereStatement>(JoinClauses, WhereClause, Alias);
         }
 
         /// <summary>
         /// Adds the propertyName to filter against to the WHERE statement.
         /// </summary>
         /// <param name="propertyName">The name of the relationship property to filter against.</param>
+        /// <param name="forAlias">
+        /// Optional: Alias to override the default alias in the current scope.
+        /// This allows applying WHERE conditions to previous scopes of the query.
+        /// I.e. It can allow applying a WHERE condition to a relationship outside the scope of a previous JOIN statement.
+        /// </param>
         /// <returns>A statement class that contains various unary or binary comparison methods to finalize the WHERE statement.</returns>
-        public WherePropertyStatement<TwinsWhereStatement> RelationshipProperty(string propertyName)
+        public WherePropertyStatement<TwinsWhereStatement> RelationshipProperty(string propertyName, string forAlias = null)
         {
-            var latestJoinOptions = JoinOptions.LastOrDefault();
-            var relationshipAlias = string.IsNullOrWhiteSpace(latestJoinOptions.RelationshipAlias) ? $"{latestJoinOptions.RelationshipName.ToLowerInvariant()}relationship" : latestJoinOptions.RelationshipAlias;
-            return new WherePropertyStatement<TwinsWhereStatement>(JoinOptions, WhereClause, propertyName, relationshipAlias);
+            var latestJoinOptions = JoinClauses.LastOrDefault();
+            var relationshipAlias = string.IsNullOrWhiteSpace(latestJoinOptions.RelationshipAlias) ? $"{latestJoinOptions.Relationship.ToLowerInvariant()}relationship" : latestJoinOptions.RelationshipAlias;
+            if (!string.IsNullOrWhiteSpace(forAlias))
+            {
+                relationshipAlias = forAlias;
+            }
+
+            return new WherePropertyStatement<TwinsWhereStatement>(JoinClauses, WhereClause, propertyName, relationshipAlias);
         }
     }
 }

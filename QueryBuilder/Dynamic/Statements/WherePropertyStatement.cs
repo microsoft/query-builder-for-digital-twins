@@ -18,11 +18,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         private readonly string propertyName;
         private readonly string alias;
         private readonly WhereClause clause;
-        private readonly IEnumerable<JoinOptions> joinOptions;
+        private readonly IList<JoinClause> joinClauses;
 
-        internal WherePropertyStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string propertyName, string alias)
+        internal WherePropertyStatement(IList<JoinClause> joinClauses, WhereClause clause, string propertyName, string alias)
         {
-            this.joinOptions = joinOptions;
+            this.joinClauses = joinClauses;
             this.propertyName = propertyName;
             this.clause = clause;
             this.alias = alias;
@@ -50,7 +50,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             };
 
             clause.AddCondition(condition);
-            return new CompoundWhereStatement<TWhereStatement>(joinOptions, clause, alias);
+            return new CompoundWhereStatement<TWhereStatement>(joinClauses, clause, alias);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             };
 
             clause.AddCondition(condition);
-            return new CompoundWhereStatement<TWhereStatement>(joinOptions, clause, alias);
+            return new CompoundWhereStatement<TWhereStatement>(joinClauses, clause, alias);
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             };
 
             clause.AddCondition(condition);
-            return new CompoundWhereStatement<TWhereStatement>(joinOptions, clause, alias);
+            return new CompoundWhereStatement<TWhereStatement>(joinClauses, clause, alias);
         }
 
         private CompoundWhereStatement<TWhereStatement> CreateAndAddScalarBinaryOperatorCondition(AdtScalarOperator binaryOperator, string value)
@@ -193,7 +193,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             };
 
             clause.AddCondition(condition);
-            return new CompoundWhereStatement<TWhereStatement>(joinOptions, clause, alias);
+            return new CompoundWhereStatement<TWhereStatement>(joinClauses, clause, alias);
         }
 
         private CompoundWhereStatement<TWhereStatement> CreateAndAddWhereComparisonCondition(ComparisonOperators op, object value)
@@ -212,7 +212,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             };
 
             clause.AddCondition(condition);
-            return new CompoundWhereStatement<TWhereStatement>(joinOptions, clause, alias);
+            return new CompoundWhereStatement<TWhereStatement>(joinClauses, clause, alias);
         }
 
         private string GetEnumValue(Enum value)

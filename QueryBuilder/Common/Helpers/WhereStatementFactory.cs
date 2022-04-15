@@ -12,33 +12,17 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
     [ExcludeFromCodeCoverage]
     internal static class WhereStatementFactory
     {
-        internal static TWhereStatement CreateInstance<TWhereStatement>(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) where TWhereStatement : WhereBaseStatement<TWhereStatement>
+        internal static TWhereStatement CreateInstance<TWhereStatement>(IList<JoinClause> joinClauses, WhereClause clause, string alias) where TWhereStatement : WhereBaseStatement<TWhereStatement>
         {
             var type = typeof(TWhereStatement);
             if (type == typeof(RelationshipsWhereStatement))
             {
-                return new RelationshipsWhereStatement(joinOptions, clause, alias) as TWhereStatement;
+                return new RelationshipsWhereStatement(joinClauses, clause, alias) as TWhereStatement;
             }
 
             if (type == typeof(TwinsWhereStatement))
             {
-                return new TwinsWhereStatement(joinOptions, clause, alias) as TWhereStatement;
-            }
-
-            throw new Exception($"Unsupported generic type passed in for {nameof(TWhereStatement)}");
-        }
-
-        internal static TWhereStatement CreateInstance<TWhereStatement>(WhereClause clause, string alias) where TWhereStatement : WhereBaseStatement<TWhereStatement>
-        {
-            var type = typeof(TWhereStatement);
-            if (type == typeof(RelationshipsWhereStatement))
-            {
-                return new RelationshipsWhereStatement(clause, alias) as TWhereStatement;
-            }
-
-            if (type == typeof(TwinsWhereStatement))
-            {
-                return new TwinsWhereStatement(clause, alias) as TWhereStatement;
+                return new TwinsWhereStatement(joinClauses, clause, alias) as TWhereStatement;
             }
 
             throw new Exception($"Unsupported generic type passed in for {nameof(TWhereStatement)}");

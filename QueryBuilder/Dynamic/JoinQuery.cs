@@ -6,7 +6,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     using System;
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statements;
 
     /// <summary>
@@ -18,9 +17,9 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     {
         private readonly JoinWithStatement<TWhereStatement> joinStatement;
 
-        internal JoinQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
+        internal JoinQuery(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
-            joinStatement = new JoinWithStatement<TWhereStatement>(whereClause, rootTwinAlias);
+            joinStatement = new JoinWithStatement<TWhereStatement>(new List<JoinClause>(), whereClause, rootAlias);
         }
 
         /// <summary>
@@ -30,8 +29,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <returns>The query instance.</returns>
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, JoinFinalStatement<TWhereStatement>> joinLogic)
         {
-            var join = joinLogic.Invoke(joinStatement);
-            return Join(join.Joins);
+            var computed = joinLogic.Invoke(joinStatement);
+            return Join(computed.Clauses);
         }
 
         /// <summary>
@@ -41,37 +40,30 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <returns>The query instance.</returns>
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, CompoundWhereStatement<TWhereStatement>> joinAndWhereLogic)
         {
-            var joinWithWhere = joinAndWhereLogic.Invoke(joinStatement);
-            return Join(joinWithWhere.Joins);
+            var computed = joinAndWhereLogic.Invoke(joinStatement);
+            return Join(computed.JoinClauses);
         }
 
-        private TQuery Join(IEnumerable<JoinOptions> joins)
+        private TQuery Join(IList<JoinClause> joinClause)
         {
-            foreach (var options in joins)
+            foreach (var clause in joinClause)
             {
-                Join(options);
+                ValidateAliasIsDefined(clause.JoinFrom);
+                ValidateAndAddAlias(clause.JoinWith);
+                SetRelationshipAliasIfNeeded(clause);
+                ValidateAndAddAlias(clause.RelationshipAlias);
+                joinClauses.Add(clause);
             }
 
             return (TQuery)this;
         }
 
-        private void Join(JoinOptions options)
+        private void SetRelationshipAliasIfNeeded(JoinClause clause)
         {
-            ValidateAliasIsDefined(options.Source);
-            ValidateAndAddAlias(options.With);
-            if (string.IsNullOrWhiteSpace(options.RelationshipAlias))
+            if (string.IsNullOrWhiteSpace(clause.RelationshipAlias))
             {
-                options.RelationshipAlias = $"{options.RelationshipName.ToLowerInvariant()}relationship";
+                clause.RelationshipAlias = $"{clause.Relationship.ToLowerInvariant()}relationship";
             }
-
-            ValidateAndAddAlias(options.RelationshipAlias);
-            joinClauses.Add(new JoinClause
-            {
-                JoinWith = options.With,
-                Relationship = options.RelationshipName,
-                RelationshipAlias = options.RelationshipAlias,
-                JoinFrom = options.Source
-            });
         }
     }
 }

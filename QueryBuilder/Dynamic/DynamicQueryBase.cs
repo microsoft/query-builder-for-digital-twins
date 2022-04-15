@@ -6,8 +6,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     using System;
     using System.Collections.Generic;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
-    using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
-    using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers.Terms;
 
     /// <summary>
     /// A class for the basic common functionality.
@@ -17,13 +15,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <summary>
         /// Gets or Sets the root alias used in the query.
         /// </summary>
-        protected string RootTwinAlias { get; set; } = DefaultTwinAlias;
+        protected string RootAlias { get; set; }
 
         internal IList<string> definedAliases { get; private set; }
 
-        internal DynamicQueryBase(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(selectClause, fromClause, joinClauses, whereClause)
+        internal DynamicQueryBase(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(selectClause, fromClause, joinClauses, whereClause)
         {
-            this.RootTwinAlias = rootTwinAlias;
+            this.RootAlias = rootAlias;
             this.definedAliases = definedAliases;
         }
 
@@ -40,10 +38,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 
         internal void ValidateAndAddAlias(string alias)
         {
-            ValidateAliasNotNull(alias);
+            ValidateAliasNotNullOrWhiteSpace(alias);
             if (definedAliases.Contains(alias))
             {
-                throw new ArgumentException($"Cannot use the alias: {alias}, because its already assigned!");
+                throw new ArgumentException($"Cannot use the alias: {alias}, because it's already assigned!");
             }
 
             definedAliases.Add(alias);
@@ -51,14 +49,14 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 
         internal void ValidateAliasIsDefined(string alias)
         {
-            ValidateAliasNotNull(alias);
+            ValidateAliasNotNullOrWhiteSpace(alias);
             if (!definedAliases.Contains(alias))
             {
                 throw new ArgumentException($"Alias '{alias}' is not assigned!");
             }
         }
 
-        private static void ValidateAliasNotNull(string alias)
+        internal static void ValidateAliasNotNullOrWhiteSpace(string alias)
         {
             if (string.IsNullOrWhiteSpace(alias))
             {

@@ -13,7 +13,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     public class CountQuery<TWhereStatement> : JoinQuery<CountQuery<TWhereStatement>, TWhereStatement>
     where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal CountQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause select, FromClause fromClause, IList<JoinClause> joins, WhereClause where) : base(rootTwinAlias, definedAliases, select, fromClause, joins, where)
+        internal CountQuery(string rootAlias, IList<string> definedAliases, SelectClause select, FromClause fromClause, IList<JoinClause> joins, WhereClause where) : base(rootAlias, definedAliases, select, fromClause, joins, where)
         {
         }
     }

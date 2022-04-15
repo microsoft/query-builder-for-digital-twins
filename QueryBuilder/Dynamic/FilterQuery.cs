@@ -16,7 +16,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         where TQuery : FilterQuery<TQuery, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal FilterQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
+        internal FilterQuery(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
         }
 
@@ -27,7 +27,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <returns>An extendible part of a WHERE statement to continue adding WHERE conditions to.</returns>
         public TQuery Where(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> whereLogic)
         {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(whereClause, RootTwinAlias);
+            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(joinClauses, whereClause, RootAlias);
             whereLogic.Invoke(statement);
             return (TQuery)this;
         }

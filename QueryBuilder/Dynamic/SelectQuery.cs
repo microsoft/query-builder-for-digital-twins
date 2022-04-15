@@ -15,7 +15,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         where TQuery : TwinSelectQueryBase<TQuery, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal TwinSelectQueryBase(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
+        internal TwinSelectQueryBase(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
         }
 
@@ -38,7 +38,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         where TQuery : RelationshipSelectQueryBase<TQuery, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal RelationshipSelectQueryBase(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
+        internal RelationshipSelectQueryBase(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
         }
 
@@ -60,7 +60,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     public class TwinDefaultSelectQuery<TWhereStatement> : TwinSelectQueryBase<TwinDefaultSelectQuery<TWhereStatement>, TWhereStatement>
     where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal TwinDefaultSelectQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
+        internal TwinDefaultSelectQuery(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
         {
         }
 
@@ -77,7 +77,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
                 ValidateAndAddSelect(name);
             }
 
-            return new TwinQuery<TWhereStatement>(RootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
+            return new TwinQuery<TWhereStatement>(RootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
         }
     }
 
@@ -87,7 +87,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     public class RelationshipDefaultSelectQuery<TWhereStatement> : RelationshipSelectQueryBase<RelationshipDefaultSelectQuery<TWhereStatement>, TWhereStatement>
     where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal RelationshipDefaultSelectQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
+        internal RelationshipDefaultSelectQuery(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
         {
         }
 
@@ -100,13 +100,18 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         public RelationshipQuery<TWhereStatement> Select(params string[] propertyNames)
         {
             ClearSelects();
-            foreach (var name in propertyNames.Where(n => !string.IsNullOrWhiteSpace(n)))
+            foreach (var name in propertyNames)
             {
-                var alias = name == RootTwinAlias ? name : $"{RootTwinAlias}.{name}";
+                /*
+                 Even though ValidateAndAddSelect checks for null, since we may alter the value passed into it
+                 we need to check ahead of the alteration, otherwise we could end up with "rootName." or "rootName.    "
+                */
+                ValidateAliasNotNullOrWhiteSpace(name);
+                var alias = name == RootAlias ? name : $"{RootAlias}.{name}";
                 ValidateAndAddSelect(alias);
             }
 
-            return new RelationshipQuery<TWhereStatement>(RootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
+            return new RelationshipQuery<TWhereStatement>(RootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause);
         }
     }
 
@@ -116,7 +121,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     public class TwinQuery<TWhereStatement> : TwinSelectQueryBase<TwinQuery<TWhereStatement>, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal TwinQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
+        internal TwinQuery(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
         {
         }
     }
@@ -127,7 +132,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
     public class RelationshipQuery<TWhereStatement> : RelationshipSelectQueryBase<RelationshipQuery<TWhereStatement>, TWhereStatement>
     where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        internal RelationshipQuery(string rootTwinAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootTwinAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
+        internal RelationshipQuery(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClauses) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClauses)
         {
         }
     }

@@ -69,8 +69,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
 
         public override string ToString()
         {
-            var sql = GetConditionsText();
-            return string.IsNullOrWhiteSpace(sql) ? string.Empty : $"{Where} {sql}";
+            var serializedConditions = GetConditionsText();
+            return string.IsNullOrWhiteSpace(serializedConditions) ? string.Empty : $"{Where} {serializedConditions}";
         }
     }
 }

@@ -11,11 +11,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
     /// </summary>
     public class RelationshipsWhereStatement : WhereBaseStatement<RelationshipsWhereStatement>
     {
-        internal RelationshipsWhereStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) : base(joinOptions, clause, alias)
-        {
-        }
-
-        internal RelationshipsWhereStatement(WhereClause clause, string alias) : base(clause, alias)
+        internal RelationshipsWhereStatement(IList<JoinClause> joinClauses, WhereClause clause, string alias) : base(joinClauses, clause, alias)
         {
         }
 
@@ -26,7 +22,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>A statement class that contains various unary or binary comparison methods to finalize the WHERE statement.</returns>
         public WherePropertyStatement<RelationshipsWhereStatement> Property(string propertyName)
         {
-            return new WherePropertyStatement<RelationshipsWhereStatement>(JoinOptions, WhereClause, propertyName, Alias);
+            return new WherePropertyStatement<RelationshipsWhereStatement>(JoinClauses, WhereClause, propertyName, Alias);
         }
     }
 }

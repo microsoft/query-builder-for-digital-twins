@@ -35,7 +35,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = QueryBuilder
                 .FromTwins()
                 .Count()
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT COUNT() FROM DIGITALTWINS twin WHERE twin.$dtId = 'ID'", query.BuildAdtQuery());
         }

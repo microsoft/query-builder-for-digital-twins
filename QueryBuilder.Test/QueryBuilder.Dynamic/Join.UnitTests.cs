@@ -16,7 +16,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With("floor").RelatedBy("hasChildren"))
-                .Where(w => w.Property("$dtId").IsEqualTo("ID1"));
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID1"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship WHERE twin.$dtId = 'ID1'", query.BuildAdtQuery());
         }
@@ -45,7 +45,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                         .With("floor")
                         .RelatedBy("hasChildren")
                         .Where(w => w
-                            .Property("name")
+                            .TwinProperty("name")
                             .IsEqualTo("floor 1")));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship WHERE floor.name = 'floor 1'", query.BuildAdtQuery());
@@ -57,7 +57,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(f => f.With("flr").RelatedBy("hasChildren"))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren haschildrenrelationship WHERE bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
@@ -68,7 +68,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = QueryBuilder
                 .FromTwins("bldng")
                 .Join(b => b.With("flr").RelatedBy("hasChildren").As("rel"))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren rel WHERE bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
@@ -81,7 +81,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .FromTwins("bldng")
                 .Join(f => f.With("floor").RelatedBy("hasChildren"))
                 .Join(b => b.With("bldng").RelatedBy("hasChildren"))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             query.BuildAdtQuery();
         }
@@ -94,7 +94,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .FromTwins()
                 .Join(f => f.With("floor").RelatedBy("hasChildren").As("rel"))
                 .Join(b => b.With("confroom").RelatedBy("hasChildren").As("rel"))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             query.BuildAdtQuery();
         }
@@ -106,7 +106,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = QueryBuilder
                 .FromTwins()
                 .Join(j => j.With(null).RelatedBy("hasChildren"))
-                .Where(w => w.Property("$dtId").IsEqualTo("ID"));
+                .Where(w => w.TwinProperty("$dtId").IsEqualTo("ID"));
 
             query.BuildAdtQuery();
         }

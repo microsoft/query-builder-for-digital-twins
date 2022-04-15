@@ -30,27 +30,27 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         public static DefaultQuery<TModel> From<TModel>(string alias = null)
             where TModel : BasicDigitalTwin
         {
-            var rootTwinAlias = string.IsNullOrEmpty(alias) ? AliasHelper.ExtractAliasFromType(typeof(TModel)) : alias;
+            var rootAlias = string.IsNullOrEmpty(alias) ? AliasHelper.ExtractAliasFromType(typeof(TModel)) : alias;
             var aliasTypeMapping = new Dictionary<string, Type>
             {
-                { rootTwinAlias, typeof(TModel) }
+                { rootAlias, typeof(TModel) }
             };
 
             var fromClause = new FromClause
             {
-                Alias = rootTwinAlias
+                Alias = rootAlias
             };
 
             var model = Activator.CreateInstance<TModel>().Metadata.ModelId;
             var whereClause = new WhereClause();
             whereClause.AddCondition(new WhereIsOfModelCondition
             {
-                Alias = rootTwinAlias,
+                Alias = rootAlias,
                 Model = model
             });
 
             var selectClause = new SelectClause();
-            selectClause.Add(rootTwinAlias);
+            selectClause.Add(rootAlias);
             return new DefaultQuery<TModel>(aliasTypeMapping, selectClause, fromClause, new List<JoinClause>(), whereClause);
         }
 
@@ -114,9 +114,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 
         private static string ConvertPropertyName(PropertyInfo prop)
         {
-            var attr = prop.GetCustomAttributes(typeof(JsonPropertyNameAttribute), true).FirstOrDefault() as JsonPropertyNameAttribute;
-            var propName = attr != null ? attr.Name : default;
-            return string.IsNullOrWhiteSpace(propName) ? prop.Name : propName;
+            return prop.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? prop.Name;
         }
     }
 }

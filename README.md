@@ -236,7 +236,7 @@ var query = QueryBuilder
                     .Join(d => d
                         .With("sensor")
                         .RelatedBy("hasSensors")))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"))
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"))
                 .Select("sensor");
 
 var stringQuery = query.BuildAdtQuery();
@@ -256,7 +256,7 @@ WHERE twin.$dtId = 'ID'
 var query = DynamicQueryBuilder
             .FromTwins()
             .Where(b => b
-                .Property("name")
+                .TwinProperty("name")
                 .IsIn(new string[] { "name1", "name2" }));
 
 var stringQuery = query.BuildAdtQuery();
@@ -275,7 +275,7 @@ var query = DynamicQueryBuilder
             .FromTwins()
             .Top(5)
             .Where(b => b
-                .Property("name")
+                .TwinProperty("name")
                 .StartsWith("name"));
 
 var stringQuery = query.BuildAdtQuery();
@@ -295,7 +295,7 @@ var query = QueryBuilder
             .FromTwins()
             .Count()
             .Where(b => b
-                .Property("name")
+                .TwinProperty("name")
                 .StartsWith("name"));
 
 var stringQuery = query.BuildAdtQuery();
@@ -314,7 +314,7 @@ var query = DynamicQueryBuilder
                 .FromTwins()
                 .Count()
                 .Where(b => b
-                    .Property("name")
+                    .TwinProperty("name")
                     .Contains("ame"));
 
 var stringQuery = query.BuildAdtQuery();
@@ -336,18 +336,18 @@ var query = DynamicQueryBuilder
                 .RelatedBy("hasITSiteFunction")
                 .As("rel"))
             .Where(b => b
-                .Property("$dtId")
+                .TwinProperty("$dtId")
                 .IsEqualTo("ID")
                 .And(a => a
                     .Precedence(p => p
-                        .Property("count")
+                        .TwinProperty("count")
                         .IsGreaterThan(20)
                         .Or(o => o
                             .Precedence(p => p
-                                .Property("count")
+                                .TwinProperty("count")
                                 .IsLessThan(10)
                                 .And(a => a
-                                    .Property("maxPriority", "rel")
+                                    .RelationshipProperty("maxPriority", "rel")
                                     .EndsWith("word")))))));
 
 var stringQuery = query.BuildAdtQuery();

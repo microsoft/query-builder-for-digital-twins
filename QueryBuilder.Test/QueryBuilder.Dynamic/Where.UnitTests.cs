@@ -17,7 +17,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             {
                 var query = QueryBuilder
                 .FromTwins()
-                .Where(b => b.Property("name").IsEqualTo(new Building()))
+                .Where(b => b.TwinProperty("name").IsEqualTo(new Building()))
                 .BuildAdtQuery();
             });
         }
@@ -27,43 +27,43 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                     .FromTwins()
-                    .Where(t => t.Property("name").IsBool());
+                    .Where(t => t.TwinProperty("name").IsBool());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_BOOL(twin.name)", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins()
-                    .Where(t => t.Property("name").IsDefined());
+                    .Where(t => t.TwinProperty("name").IsDefined());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_DEFINED(twin.name)", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins()
-                    .Where(t => t.Property("name").IsNull());
+                    .Where(t => t.TwinProperty("name").IsNull());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_NULL(twin.name)", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins()
-                    .Where(t => t.Property("name").IsNumber());
+                    .Where(t => t.TwinProperty("name").IsNumber());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_NUMBER(twin.name)", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins()
-                    .Where(t => t.Property("name").IsObject());
+                    .Where(t => t.TwinProperty("name").IsObject());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_OBJECT(twin.name)", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins()
-                    .Where(t => t.Property("name").IsPrimitive());
+                    .Where(t => t.TwinProperty("name").IsPrimitive());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_PRIMITIVE(twin.name)", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins()
-                    .Where(t => t.Property("name").IsString());
+                    .Where(t => t.TwinProperty("name").IsString());
 
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_STRING(twin.name)", query.BuildAdtQuery());
         }
@@ -73,13 +73,13 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Property("name").StartsWith("word"));
+                   .Where(t => t.TwinProperty("name").StartsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE STARTSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Property("dict.temp").StartsWith("word"));
+                   .Where(t => t.TwinProperty("dict.temp").StartsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE STARTSWITH(twin.dict.temp, 'word')", query.BuildAdtQuery());
 
@@ -90,19 +90,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .RelatedBy("hasITSiteFunction")
                     .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").StartsWith("word")))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE STARTSWITH(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Property("name").EndsWith("word"));
+                   .Where(t => t.TwinProperty("name").EndsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Property("dict.temp").EndsWith("word"));
+                   .Where(t => t.TwinProperty("dict.temp").EndsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE ENDSWITH(twin.dict.temp, 'word')", query.BuildAdtQuery());
 
@@ -113,19 +113,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .RelatedBy("hasITSiteFunction")
                     .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").EndsWith("word")))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE ENDSWITH(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Property("name").Contains("word"));
+                   .Where(t => t.TwinProperty("name").Contains("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE CONTAINS(twin.name, 'word')", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Property("dict.temp").Contains("word"));
+                   .Where(t => t.TwinProperty("dict.temp").Contains("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE CONTAINS(twin.dict.temp, 'word')", query.BuildAdtQuery());
 
@@ -136,7 +136,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .RelatedBy("hasITSiteFunction")
                     .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").Contains("word")))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE CONTAINS(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
@@ -146,13 +146,13 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                    .FromTwins()
-                   .Where(b => b.Property("name").IsIn(new string[] { "name1", "name2" }));
+                   .Where(b => b.TwinProperty("name").IsIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name IN ['name1','name2']", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(b => b.Property("dict.temp").IsIn(new string[] { "name1", "name2" }));
+                   .Where(b => b.TwinProperty("dict.temp").IsIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.dict.temp IN ['name1','name2']", query.BuildAdtQuery());
 
@@ -163,7 +163,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .RelatedBy("hasITSiteFunction")
                     .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").IsIn(new string[] { "name1", "name2" })))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE rel.maxPriority IN ['name1','name2'] AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
@@ -173,13 +173,13 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                    .FromTwins()
-                   .Where(b => b.Property("name").IsNotIn(new string[] { "name1", "name2" }));
+                   .Where(b => b.TwinProperty("name").IsNotIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name NIN ['name1','name2']", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(b => b.Property("dict.temp").IsNotIn(new string[] { "name1", "name2" }));
+                   .Where(b => b.TwinProperty("dict.temp").IsNotIn(new string[] { "name1", "name2" }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.dict.temp NIN ['name1','name2']", query.BuildAdtQuery());
 
@@ -190,7 +190,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .RelatedBy("hasITSiteFunction")
                     .As("rel")
                     .Where(r => r.RelationshipProperty("maxPriority").IsNotIn(new string[] { "name1", "name2" })))
-                .Where(b => b.Property("$dtId").IsEqualTo("ID"));
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE rel.maxPriority NIN ['name1','name2'] AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
@@ -201,14 +201,14 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             var query = QueryBuilder
                     .FromTwins("bldng")
                     .Where(b => b
-                        .Property("name")
+                        .TwinProperty("name")
                         .IsEqualTo("building 1")
                         .And()
                         .Precedence(p => p
-                            .Property("count")
+                            .TwinProperty("count")
                             .IsGreaterThan(20)
                             .Or(b => b
-                                .Property("count")
+                                .TwinProperty("count")
                                 .IsLessThan(10))));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE bldng.name = 'building 1' AND (bldng.count > 20 OR bldng.count < 10)", query.BuildAdtQuery());
@@ -219,32 +219,32 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Not(b => b.Property("name").EndsWith("word")));
+                   .Where(t => t.Not(b => b.TwinProperty("name").EndsWith("word")));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE NOT ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Not(q => q.Not(b => b.Property("name").EndsWith("word"))));
+                   .Where(t => t.Not(q => q.Not(b => b.TwinProperty("name").EndsWith("word"))));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE NOT NOT ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins("bldng")
                     .Where(b => b
-                        .Property("count")
+                        .TwinProperty("count")
                         .IsGreaterThan(20)
-                        .Or(b => b.Property("count").IsLessThan(10)));
+                        .Or(b => b.TwinProperty("count").IsLessThan(10)));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE bldng.count > 20 OR bldng.count < 10", query.BuildAdtQuery());
 
             query = QueryBuilder
                     .FromTwins("bldng")
                     .Where(b => b
-                        .Property("count")
+                        .TwinProperty("count")
                         .IsGreaterThan(20)
                         .Or()
-                        .Property("count").IsLessThan(10));
+                        .TwinProperty("count").IsLessThan(10));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE bldng.count > 20 OR bldng.count < 10", query.BuildAdtQuery());
 
@@ -255,18 +255,18 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .RelatedBy("hasITSiteFunction")
                     .As("rel"))
                 .Where(b => b
-                    .Property("$dtId")
+                    .TwinProperty("$dtId")
                     .IsEqualTo("ID")
                     .And(a => a
                         .Precedence(p => p
-                            .Property("count")
+                            .TwinProperty("count")
                             .IsGreaterThan(20)
                             .Or(o => o
                                 .Precedence(p => p
-                                    .Property("count")
+                                    .TwinProperty("count")
                                     .IsLessThan(10)
                                     .And(a => a
-                                        .Property("maxPriority", "rel")
+                                        .RelationshipProperty("maxPriority", "rel")
                                         .EndsWith("word")))))));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE bldng.$dtId = 'ID' AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
@@ -278,19 +278,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .RelatedBy("hasITSiteFunction")
                     .As("rel"))
                 .Where(b => b
-                    .Property("$dtId")
+                    .TwinProperty("$dtId")
                     .IsEqualTo("ID")
                     .And(a => a
                         .Precedence(p => p
-                            .Property("count")
+                            .TwinProperty("count")
                             .IsGreaterThan(20)
                             .Or(o => o
                                 .Not(n => n
                                     .Precedence(p => p
-                                        .Property("count")
+                                        .TwinProperty("count")
                                         .IsLessThan(10)
                                         .And(a => a
-                                            .Property("maxPriority", "rel")
+                                            .RelationshipProperty("maxPriority")
                                             .EndsWith("word"))))))));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE bldng.$dtId = 'ID' AND (bldng.count > 20 OR NOT (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
@@ -301,37 +301,37 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                 .FromTwins()
-                .Where(t => t.Property("name").IsEqualTo("building 1"));
+                .Where(t => t.TwinProperty("name").IsEqualTo("building 1"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name = 'building 1'", query.BuildAdtQuery());
 
             query = QueryBuilder
                 .FromTwins()
-                .Where(t => t.Property("externalId").IsGreaterThan(1));
+                .Where(t => t.TwinProperty("externalId").IsGreaterThan(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId > 1", query.BuildAdtQuery());
 
             query = QueryBuilder
                 .FromTwins()
-                .Where(t => t.Property("externalId").IsGreaterThanOrEqualTo(1));
+                .Where(t => t.TwinProperty("externalId").IsGreaterThanOrEqualTo(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId >= 1", query.BuildAdtQuery());
 
             query = QueryBuilder
                 .FromTwins()
-                .Where(t => t.Property("externalId").IsLessThan(1));
+                .Where(t => t.TwinProperty("externalId").IsLessThan(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId < 1", query.BuildAdtQuery());
 
             query = QueryBuilder
                 .FromTwins()
-                .Where(t => t.Property("externalId").IsLessThanOrEqualTo(1));
+                .Where(t => t.TwinProperty("externalId").IsLessThanOrEqualTo(1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId <= 1", query.BuildAdtQuery());
 
             query = QueryBuilder
                 .FromTwins()
-                .Where(t => t.Property("name").NotEqualTo("building 1"));
+                .Where(t => t.TwinProperty("name").NotEqualTo("building 1"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name != 'building 1'", query.BuildAdtQuery());
         }
@@ -367,19 +367,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 
             var query = QueryBuilder
                       .FromTwins()
-                      .Where(b => b.Property("name").IsEqualTo(someBuilding1));
+                      .Where(b => b.TwinProperty("name").IsEqualTo(someBuilding1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name = '{someBuildingEscaped1}'", query.BuildAdtQuery());
 
             query = QueryBuilder
                   .FromTwins()
-                  .Where(b => b.Property("name").IsIn(new string[] { someBuilding1, someBuilding2 }));
+                  .Where(b => b.TwinProperty("name").IsIn(new string[] { someBuilding1, someBuilding2 }));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.name IN ['{someBuildingEscaped1}','{someBuildingEscaped2}']", query.BuildAdtQuery());
 
             query = QueryBuilder
                   .FromTwins()
-                  .Where(b => b.Property("name").StartsWith(someBuilding1));
+                  .Where(b => b.TwinProperty("name").StartsWith(someBuilding1));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE STARTSWITH(twin.name, '{someBuildingEscaped1}')", query.BuildAdtQuery());
         }
@@ -389,7 +389,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                     .FromTwins()
-                    .Where(x => x.Property("status").IsEqualTo(CustomEnum.Value2));
+                    .Where(x => x.TwinProperty("status").IsEqualTo(CustomEnum.Value2));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE twin.status = '1'", query.BuildAdtQuery());
         }

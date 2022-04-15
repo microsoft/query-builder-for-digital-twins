@@ -21,21 +21,17 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// </summary>
         protected readonly string Alias;
         internal readonly WhereClause WhereClause;
-        internal readonly IEnumerable<JoinOptions> JoinOptions;
+        internal IList<JoinClause> JoinClauses;
 
         [ExcludeFromCodeCoverage]
         internal WhereBaseStatement()
         {
         }
 
-        internal WhereBaseStatement(IEnumerable<JoinOptions> joinOptions, WhereClause clause, string alias) : this(clause, alias)
+        internal WhereBaseStatement(IList<JoinClause> clauses, WhereClause clause, string alias)
         {
-            JoinOptions = joinOptions;
-        }
-
-        internal WhereBaseStatement(WhereClause whereClause, string alias)
-        {
-            WhereClause = whereClause;
+            JoinClauses = clauses;
+            WhereClause = clause;
             Alias = alias;
         }
 
@@ -46,10 +42,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
         public CompoundWhereStatement<TWhereStatement> Precedence(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> nested)
         {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(JoinOptions, new WhereClause(), Alias);
+            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(JoinClauses, new WhereClause(), Alias);
             var n = nested.Invoke(statement);
             WhereClause.AddCondition($"({n.WhereClause.GetConditionsText()})");
-            return new CompoundWhereStatement<TWhereStatement>(JoinOptions, WhereClause, Alias);
+            return new CompoundWhereStatement<TWhereStatement>(JoinClauses, WhereClause, Alias);
         }
 
         /// <summary>
@@ -59,11 +55,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
         public CompoundWhereStatement<TWhereStatement> Not(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> nested)
         {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(new WhereClause(), Alias);
+            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(JoinClauses, new WhereClause(), Alias);
             var w = nested.Invoke(statement);
             var condition = new NotCondition { Condition = w.WhereClause.GetConditionsText() };
             WhereClause.AddCondition(condition);
-            return new CompoundWhereStatement<TWhereStatement>(JoinOptions, WhereClause, Alias);
+            return new CompoundWhereStatement<TWhereStatement>(JoinClauses, WhereClause, Alias);
         }
     }
 }
