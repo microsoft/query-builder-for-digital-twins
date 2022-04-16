@@ -406,7 +406,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
             Assert.AreEqual($"SELECT building FROM DIGITALTWINS building WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') AND building.status = '1'", query.BuildAdtQuery());
         }
 
-        private void TestScalarUnaryOperator(AdtScalarUnaryOperator op)
+        private void TestScalarUnaryOperator(ScalarUnaryOperator op)
         {
             var query = QueryBuilder
                    .From<Building>()

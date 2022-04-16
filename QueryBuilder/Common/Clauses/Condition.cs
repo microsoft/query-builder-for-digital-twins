@@ -88,13 +88,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
     {
         internal string Column { get; set; }
 
-        internal AdtScalarOperator ScalarFunction { get; set; }
+        internal ScalarOperator ScalarFunction { get; set; }
 
         internal string Value { get; set; } = string.Empty;
 
         public override string ToString()
         {
-            if (ScalarFunction is AdtScalarBinaryOperator)
+            if (ScalarFunction is ScalarBinaryOperator)
             {
                 return $"{ScalarFunction.Name}({Alias}.{Column}, '{Value.EscapeValue()}')";
             }

@@ -169,7 +169,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
         public CompoundWhereStatement<TWhereStatement> EndsWith(string value) => CreateAndAddScalarBinaryOperatorCondition(ScalarOperators.ENDSWITH, value);
 
-        private CompoundWhereStatement<TWhereStatement> CreateAndAddWhereScalarCondition(AdtScalarOperator op)
+        private CompoundWhereStatement<TWhereStatement> CreateAndAddWhereScalarCondition(ScalarOperator op)
         {
             var condition = new WhereScalarFunctionCondition
             {
@@ -182,7 +182,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             return new CompoundWhereStatement<TWhereStatement>(joinClauses, clause, alias);
         }
 
-        private CompoundWhereStatement<TWhereStatement> CreateAndAddScalarBinaryOperatorCondition(AdtScalarOperator binaryOperator, string value)
+        private CompoundWhereStatement<TWhereStatement> CreateAndAddScalarBinaryOperatorCondition(ScalarOperator binaryOperator, string value)
         {
             var condition = new WhereScalarFunctionCondition
             {

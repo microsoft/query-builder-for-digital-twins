@@ -77,6 +77,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
             ClearSelects();
             foreach (var name in propertyNames.Where(n => !string.IsNullOrWhiteSpace(n)))
             {
+                /*
+                 Even though ValidateAndAddSelect checks for null, since we may alter the value passed into it
+                 we need to check ahead of the alteration, otherwise we could end up with "rootName." or "rootName.    "
+                */
+                ValidateAliasNotNullOrWhiteSpace(name);
                 var alias = name == RootAlias ? name : $"{RootAlias}.{name}";
                 ValidateAndAddSelect(alias);
             }

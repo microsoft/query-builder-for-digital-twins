@@ -8,13 +8,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
     /// <summary>
     /// Model for Scalar operators.
     /// </summary>
-    public abstract class AdtScalarOperator
+    public abstract class ScalarOperator
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AdtScalarOperator"/> class.
+        /// Initializes a new instance of the <see cref="ScalarOperator"/> class.
         /// </summary>
         /// <param name="name">The name of the operator.</param>
-        protected AdtScalarOperator(string name) => Name = name;
+        protected ScalarOperator(string name) => Name = name;
 
         /// <summary>
         /// Gets the name of the scalar operator.
@@ -25,13 +25,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
     /// <summary>
     /// Model for Unary operators.
     /// </summary>
-    public class AdtScalarUnaryOperator : AdtScalarOperator
+    public class ScalarUnaryOperator : ScalarOperator
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AdtScalarUnaryOperator"/> class.
+        /// Initializes a new instance of the <see cref="ScalarUnaryOperator"/> class.
         /// </summary>
         /// <param name="name">The name of the operator.</param>
-        public AdtScalarUnaryOperator(string name) : base(name)
+        public ScalarUnaryOperator(string name) : base(name)
         {
         }
     }
@@ -39,13 +39,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
     /// <summary>
     /// Model for Binary operators.
     /// </summary>
-    public class AdtScalarBinaryOperator : AdtScalarOperator
+    public class ScalarBinaryOperator : ScalarOperator
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AdtScalarBinaryOperator"/> class.
+        /// Initializes a new instance of the <see cref="ScalarBinaryOperator"/> class.
         /// </summary>
         /// <param name="name">The name of the operator.</param>
-        public AdtScalarBinaryOperator(string name) : base(name)
+        public ScalarBinaryOperator(string name) : base(name)
         {
         }
     }
@@ -58,51 +58,51 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// <summary>
         /// Gets IS_BOOL scalar operator.
         /// </summary>
-        public static AdtScalarUnaryOperator IS_BOOL { get; } = new AdtScalarUnaryOperator(IsBool);
+        public static ScalarUnaryOperator IS_BOOL { get; } = new ScalarUnaryOperator(IsBool);
 
         /// <summary>
         /// Gets IS_DEFINED scalar operator.
         /// </summary>
-        public static AdtScalarUnaryOperator IS_DEFINED { get; } = new AdtScalarUnaryOperator(IsDefined);
+        public static ScalarUnaryOperator IS_DEFINED { get; } = new ScalarUnaryOperator(IsDefined);
 
         /// <summary>
         /// Gets IS_NULL scalar operator.
         /// </summary>
-        public static AdtScalarUnaryOperator IS_NULL { get; } = new AdtScalarUnaryOperator(IsNull);
+        public static ScalarUnaryOperator IS_NULL { get; } = new ScalarUnaryOperator(IsNull);
 
         /// <summary>
         /// Gets IS_NUMBER scalar operator.
         /// </summary>
-        public static AdtScalarUnaryOperator IS_NUMBER { get; } = new AdtScalarUnaryOperator(IsNumber);
+        public static ScalarUnaryOperator IS_NUMBER { get; } = new ScalarUnaryOperator(IsNumber);
 
         /// <summary>
         /// Gets IS_OBJECT scalar operator.
         /// </summary>
-        public static AdtScalarUnaryOperator IS_OBJECT { get; } = new AdtScalarUnaryOperator(IsObject);
+        public static ScalarUnaryOperator IS_OBJECT { get; } = new ScalarUnaryOperator(IsObject);
 
         /// <summary>
         /// Gets IS_STRING scalar operator.
         /// </summary>
-        public static AdtScalarUnaryOperator IS_STRING { get; } = new AdtScalarUnaryOperator(IsString);
+        public static ScalarUnaryOperator IS_STRING { get; } = new ScalarUnaryOperator(IsString);
 
         /// <summary>
         /// Gets IS_PRIMITIVE scalar operator.
         /// </summary>
-        public static AdtScalarUnaryOperator IS_PRIMITIVE { get; } = new AdtScalarUnaryOperator(IsPrimitive);
+        public static ScalarUnaryOperator IS_PRIMITIVE { get; } = new ScalarUnaryOperator(IsPrimitive);
 
         /// <summary>
         /// Gets ENDSWITH operator.
         /// </summary>
-        public static AdtScalarBinaryOperator ENDSWITH { get; } = new AdtScalarBinaryOperator(EndsWith);
+        public static ScalarBinaryOperator ENDSWITH { get; } = new ScalarBinaryOperator(EndsWith);
 
         /// <summary>
         /// Gets STARTSWITH operator.
         /// </summary>
-        public static AdtScalarBinaryOperator STARTSWITH { get; } = new AdtScalarBinaryOperator(StartsWith);
+        public static ScalarBinaryOperator STARTSWITH { get; } = new ScalarBinaryOperator(StartsWith);
 
         /// <summary>
         /// Gets CONTAINS operator.
         /// </summary>
-        public static AdtScalarBinaryOperator CONTAINS { get; } = new AdtScalarBinaryOperator(Contains);
+        public static ScalarBinaryOperator CONTAINS { get; } = new ScalarBinaryOperator(Contains);
     }
 }

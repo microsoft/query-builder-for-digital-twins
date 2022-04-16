@@ -30,7 +30,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// <param name="scalarFunction">ADT comparison operator.</param>
         /// <param name="alias"> Optional - Model Alias.</param>
         /// <returns>ADT query instance.</returns>
-        public TQuery Where<TModel>(Expression<Func<TModel, object>> propertySelector, AdtScalarUnaryOperator scalarFunction, string alias = null)
+        public TQuery Where<TModel>(Expression<Func<TModel, object>> propertySelector, ScalarUnaryOperator scalarFunction, string alias = null)
             where TModel : BasicDigitalTwin
         {
             QueryValidator.ExtractModelAndPropertyName(propertySelector, out Type type, out string propertyName);
@@ -46,7 +46,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// <param name="scalarFunction">ADT comparison operator.</param>
         /// <param name="alias">Optional - Model Alias.</param>
         /// <returns>ADT query instance.</returns>
-        public TQuery Where<TModel>(string propertyName, AdtScalarUnaryOperator scalarFunction, string alias = null)
+        public TQuery Where<TModel>(string propertyName, ScalarUnaryOperator scalarFunction, string alias = null)
         {
             whereClause.AddCondition(CreateWhereScalarCondition<TModel>(propertyName, scalarFunction, typeof(TModel), alias));
 
@@ -308,7 +308,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             return (TQuery)this;
         }
 
-        private WhereScalarFunctionCondition CreateWhereScalarCondition<TModel>(string propertyName, AdtScalarOperator op, Type type, string alias)
+        private WhereScalarFunctionCondition CreateWhereScalarCondition<TModel>(string propertyName, ScalarOperator op, Type type, string alias)
         {
             var modelAlias = ValidateAndGetAlias<TModel>(type, alias);
 
@@ -361,7 +361,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             };
         }
 
-        private WhereScalarFunctionCondition CreateAdtScalarBinaryOperatorCondition<TModel>(string propertyName, string value, Type type, string alias, AdtScalarOperator binaryOperator)
+        private WhereScalarFunctionCondition CreateAdtScalarBinaryOperatorCondition<TModel>(string propertyName, string value, Type type, string alias, ScalarOperator binaryOperator)
         {
             var modelAlias = ValidateAndGetAlias<TModel>(type, alias);
 
