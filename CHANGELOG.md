@@ -14,11 +14,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### :rocket: New Features
 
-- Added a new Dynamic Query Builder.
+- Added new dynamic query building methods: `FromTwins()` and `FromRelationships` to the QueryBuilder.
 
 ### :house: Internal
 
-- Moved the Typed Query Builder into a new *Typed* folder.
+- Moved the typed query building classes into the *Typed* folder.
+- Added a new Dynamic folder to contain all the classes and querying logic for the new dynamic querying methods.
 
 ## v0
 

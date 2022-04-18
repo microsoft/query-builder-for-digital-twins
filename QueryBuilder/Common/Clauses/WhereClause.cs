@@ -47,15 +47,14 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
             for (var i = 0; i < Conditions.Count; i++)
             {
                 var next = i + 1;
-                if (next < Conditions.Count && Conditions[next] == Or)
+                if (TryHandleCompoundStatement(builder, ref next, ref i))
                 {
-                    builder.Append($"{Conditions[i]} {Or} {Conditions[next + 1]}");
-                    i += 2;
+                    continue;
                 }
-                else if (next < Conditions.Count && Conditions[next] == And)
+                else if (Conditions[i] == Not)
                 {
-                    builder.Append($"{Conditions[i]} {And} {Conditions[next + 1]}");
-                    i += 2;
+                    HandleNots(builder, $"{Not} ", ref next);
+                    i += next;
                 }
                 else
                 {
@@ -71,6 +70,47 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
         {
             var serializedConditions = GetConditionsText();
             return string.IsNullOrWhiteSpace(serializedConditions) ? string.Empty : $"{Where} {serializedConditions}";
+        }
+
+        private bool TryHandleCompoundStatement(StringBuilder builder, ref int next, ref int i)
+        {
+            if (next < Conditions.Count && (Conditions[next] == Or || Conditions[next] == And))
+            {
+                var compound = Conditions[next];
+                next++;
+                if (Conditions[next] != Not)
+                {
+                    builder.Append($"{Conditions[i]} {compound} {Conditions[next]}");
+                    i += next;
+                    return true;
+                }
+
+                next++;
+                HandleNots(builder, $"{Conditions[i]} {compound} {Not} ", ref next);
+                i += next;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Since multiple NOTs can be added and it's not illegal syntax we need to handle that.
+        /// After the NOTs are handled, the actual conditions is appended to the string.
+        /// </summary>
+        /// <param name="builder">The StringBuilder to apply the text to.</param>
+        /// <param name="preLoopText">The initial string condition(s) to append before handling any continuous NOTs.</param>
+        /// <param name="next">The forward-looking position in the Conditions array.</param>
+        private void HandleNots(StringBuilder builder, string preLoopText, ref int next)
+        {
+            builder.Append(preLoopText);
+            while (next < Conditions.Count && Conditions[next] == Not)
+            {
+                builder.Append($"{Not} ");
+                next++;
+            }
+
+            builder.Append(Conditions[next]);
         }
     }
 }

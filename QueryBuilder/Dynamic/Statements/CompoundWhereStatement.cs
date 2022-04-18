@@ -39,20 +39,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         }
 
         /// <summary>
-        /// Adds one or more WHERE clauses preceded by an AND term to the WHERE statement.
-        /// </summary>
-        /// <param name="nested">The functional logic of the WHERE statement containing one or more WHERE conditions.</param>
-        /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
-        public CompoundWhereStatement<TWhereStatement> And(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> nested)
-        {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(JoinClauses, new WhereClause(), alias);
-            var w = nested.Invoke(statement);
-            And();
-            WhereClause.AddCondition(w.WhereClause.Conditions.FirstOrDefault());
-            return this;
-        }
-
-        /// <summary>
         /// Appends an OR term to the current WHERE statement.
         /// </summary>
         /// <returns>The WHERE statement implementation supported in this statement. I.e. Either for twins or relationships.</returns>
@@ -60,20 +46,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         {
             WhereClause.AddCondition(Terms.Or);
             return WhereStatementFactory.CreateInstance<TWhereStatement>(JoinClauses, WhereClause, alias);
-        }
-
-        /// <summary>
-        /// Adds one or more WHERE clauses preceded by an OR term to the WHERE statement.
-        /// </summary>
-        /// <param name="nested">The functional logic of the WHERE statement containing one or more WHERE conditions.</param>
-        /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
-        public CompoundWhereStatement<TWhereStatement> Or(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> nested)
-        {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(JoinClauses, new WhereClause(), alias);
-            var w = nested.Invoke(statement);
-            Or();
-            WhereClause.AddCondition(w.WhereClause.Conditions.FirstOrDefault());
-            return this;
         }
     }
 }

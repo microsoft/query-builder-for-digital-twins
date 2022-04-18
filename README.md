@@ -2,9 +2,10 @@
 
 [![Package publish](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml/badge.svg)](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml)
 
-The Azure Digital Twins (ADT) QueryBuilder provides two C# based query builders, both are fluent query builders that help you build and query an Azure Digital Twin instance in an easy and predictable way with familiar C# based programming constructs.
-The first is in the namespace `QueryBuilder.Typed` and uses generics constrained by the BasicDigitalTwin class provided by the ADT Client SDK and provided Linq-like predicates to create queries.
-The second is in the namespace `QueryBuilder.Dynamic` and supports building queries in scenarios where the C# type of the model is not known, thus the syntax requires a bit more of verbosity. More often than not, you'll likely find that it to be a better experience to use the Typed query builder over the Dynamic one that has niche use cases. For a quick comparison between the Dynamic and Typed QueryBuilder read [here](#query-builder-comparison).
+The Azure Digital Twins (ADT) QueryBuilder provides a C# based fluent query builder that helps you build and query an Azure Digital Twin instance in an easy and predictable way with familiar C# based programming constructs.
+The QueryBuilder factory supports two flows we're identifying as the ***Typed*** flow and the ***Dynamic*** flow.
+The Typed flow starts with the method `.From<T>()` and uses generics constrained by the BasicDigitalTwin class provided by the ADT Client SDK and provided Linq-like predicates to create queries.
+The Dynamic flow supports two querying methods: `.FromTwins()` and `.FromRelationships()` and both support building queries in scenarios where the C# type of the model is not known, thus the syntax requires a bit more verbosity. More often than not, you'll likely find that it to be a better experience to use the Typed query flow over the Dynamic one that has niche use cases. For a quick comparison between the Dynamic and Typed flows read [here](#typed-vs-dynamic-comparison).
 
 Queries generated follows a grammar of custom SQL-like query language called [Azure Digital Twins query language](https://docs.microsoft.com/en-us/azure/digital-twins/concepts-query-language).
 
@@ -21,13 +22,13 @@ There are some assumptions the Typed QueryBuilder is making so that it can be mo
 - Enum values have EnumMember attributes mapping to the DTDL model enum values.
 - Models have references to their relationships and the relationship classes extend BasicRelationship class supplied by ADT SDK.
 - C# relationship classes set Name property at construction.
-  > Note: It's important to understand this because of the distinction in behavior between the Typed and Dynamic query builders. In the Dynamic query builder, you'll need to be cognizant of the json representation of the property name, whereas in the Typed query builder, this is taken care of for you.
+  > Note: It's important to understand this because of the distinction in behavior between the Typed and Dynamic flows. In the Dynamic flow, you'll need to be cognizant of the json representation of the property name, whereas in the Typed flow, this is taken care of for you.
 
 ___
 
 ## Typed Samples
 
-Here are some samples of how the Typed QueryBuilder can be used to construct complex queries:
+Here are some samples of how the Typed flow can be used to construct complex queries:
 
 ```csharp
 var query = QueryBuilder
@@ -154,6 +155,8 @@ ___
 
 ### Methods
 
+Methods supported in the Typed flow.
+
 - QueryBuilder
   - From\<TModel\>()
     - Where\<TModel\>(propertySelector, operation, value)
@@ -223,9 +226,9 @@ ___
 
 ## Dynamic Samples
 
-Here are some samples of how the Dynamic QueryBuilder can be used to construct complex queries:
+Here are some samples of how the Dynamic flow can be used to construct complex queries:
 
-> Note: In comparing these nearly identical samples to the Typed QueryBuilder, you'll want to take notice that while the Typed builder automatically applies the IS_OF_MODEL scalar function to filter for models based on the types used in the methods' generic parameters, the Dynamic builder does not, as it is not aware of any types. To filter for specific models, the Dynamic builder supports `.Where(t => t.IsOfModel("dtmi:sometwinmodel;1"))`
+> Note: In comparing these nearly identical samples to the Typed flow, you'll want to take notice that while the Typed flow automatically applies the IS_OF_MODEL scalar function to filter for models based on the types used in the methods' generic parameters, the Dynamic flow does not, as it is not aware of any types. To filter for specific models, the Dynamic flow supports `.Where(t => t.IsOfModel("dtmi:sometwinmodel;1"))`
 
 ```csharp
 var query = QueryBuilder
@@ -253,7 +256,7 @@ WHERE twin.$dtId = 'ID'
 ```
 
 ``` csharp
-var query = DynamicQueryBuilder
+var query = QueryBuilder
             .FromTwins()
             .Where(b => b
                 .TwinProperty("name")
@@ -271,7 +274,7 @@ WHERE twin.name IN ['name1','name2']
 ```
 
 ``` csharp
-var query = DynamicQueryBuilder
+var query = QueryBuilder
             .FromTwins()
             .Top(5)
             .Where(b => b
@@ -310,7 +313,7 @@ WHERE STARTSWITH(twin.name, 'name')
 ```
 
 ``` csharp
-var query = DynamicQueryBuilder
+var query = QueryBuilder
                 .FromTwins()
                 .Count()
                 .Where(b => b
@@ -329,7 +332,7 @@ WHERE CONTAINS(twin.name, 'ame')
 ```
 
 ```csharp
-var query = DynamicQueryBuilder
+var query = QueryBuilder
             .FromTwins("bldng")
             .Join(b => b
                 .With("itfunc")
@@ -338,17 +341,17 @@ var query = DynamicQueryBuilder
             .Where(b => b
                 .TwinProperty("$dtId")
                 .IsEqualTo("ID")
-                .And(a => a
+                .And()
+                .Precedence(p => p
+                    .TwinProperty("count")
+                    .IsGreaterThan(20)
+                    .Or()
                     .Precedence(p => p
                         .TwinProperty("count")
-                        .IsGreaterThan(20)
-                        .Or(o => o
-                            .Precedence(p => p
-                                .TwinProperty("count")
-                                .IsLessThan(10)
-                                .And(a => a
-                                    .RelationshipProperty("maxPriority", "rel")
-                                    .EndsWith("word")))))));
+                        .IsLessThan(10)
+                        .And()
+                        .RelationshipProperty("maxPriority", "rel")
+                        .EndsWith("word"))));
 
 var stringQuery = query.BuildAdtQuery();
 
@@ -366,7 +369,9 @@ ___
 
 ### Methods
 
-- DynamicQueryBuilder
+Methods supported in the Dynamic flow.
+
+- QueryBuilder
   - FromTwins()
     - Where(whereLogic)
     - Join(joinLogic)
@@ -388,10 +393,10 @@ ___
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| TWhereStatement, WhereCombineStatement, JoinWithStatement, JoinFinalStatement | | These types are all part of the Where and Join methods' inner fluent syntax that aid in building and enforcing particular query semantics. |
-| whereLogic | [Func<TWhereStatement, WhereCombineStatement<TWhereStatement>>](https://docs.microsoft.com/en-us/dotnet/api/system.func-2) | Func to include WHERE logic in the query. |
+| TWhereStatement, CompoundWhereStatement, JoinWithStatement, JoinFinalStatement | | These types are all part of the Where and Join methods' inner fluent syntax that aid in building and enforcing particular query semantics. |
+| whereLogic | [Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>>](https://docs.microsoft.com/en-us/dotnet/api/system.func-2) | Func to include WHERE logic in the query. |
 | joinLogic | [Func\<JoinWithStatement\<TWhereStatement\>, JoinFinalStatement\<TWhereStatement\>\>](https://docs.microsoft.com/en-us/dotnet/api/system.func-2) | Func to include JOIN logic in the query. |
-| joinAndWhereLogic | [Func\<JoinWithStatement\<TWhereStatement\>, WhereCombineStatement\<TWhereStatement\>\>]() | Func to include JOIN logic in the query with additional WHERE logic scoped to the JOIN. |
+| joinAndWhereLogic | [Func\<JoinWithStatement\<TWhereStatement\>, CompoundWhereStatement\<TWhereStatement\>\>]() | Func to include JOIN logic in the query with additional WHERE logic scoped to the JOIN. |
 | aliases | params object[] | This can be one or many aliases to override and apply to the SELECT clause of the query.
 | numberOfRecords | int | The number of records to include in the a TOP query. |
 
@@ -399,11 +404,11 @@ ___
 
 ### Operators
 
-The operators used in the Dynamic query builder are expressed as methods, but support remains the same for each.
+The operators used in the Dynamic flow are expressed as methods, but support remains the same for each.
 
 ___
 
-## Query Builder Comparison
+## Typed vs Dynamic Comparison
 
 | Feature | Typed | Dynamic |
 | ------- | ----- | ------- |
@@ -414,7 +419,7 @@ ___
 | Use Property Selectors | :white_check_mark: | :x: |
 | Use Relationship Selectors | :white_check_mark: | :x: |
 
-> Note: While not a comparison between the Typed or Dynamic QueryBuilder, it's worth noting that Joins cannot be used when querying the Relationships collection.
+> Note: While not a comparison between the Typed or Dynamic flows, it's worth noting that Joins cannot be used when querying the Relationships collection.
 ___
 
 ## Change history

@@ -51,15 +51,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <summary>
         /// Prepends a NOT term to one or more WHERE clauses.
         /// </summary>
-        /// <param name="nested">The functional logic of the WHERE statement containing one or more WHERE conditions.</param>
-        /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
-        public CompoundWhereStatement<TWhereStatement> Not(Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>> nested)
+        /// <returns>The WHERE statement implementation supported in this statement. I.e. Either for twins or relationships.</returns>
+        public TWhereStatement Not()
         {
-            var statement = WhereStatementFactory.CreateInstance<TWhereStatement>(JoinClauses, new WhereClause(), Alias);
-            var w = nested.Invoke(statement);
-            var condition = new NotCondition { Condition = w.WhereClause.GetConditionsText() };
-            WhereClause.AddCondition(condition);
-            return new CompoundWhereStatement<TWhereStatement>(JoinClauses, WhereClause, Alias);
+            WhereClause.AddCondition(Terms.Not);
+            return WhereStatementFactory.CreateInstance<TWhereStatement>(JoinClauses, WhereClause, Alias);
         }
     }
 }

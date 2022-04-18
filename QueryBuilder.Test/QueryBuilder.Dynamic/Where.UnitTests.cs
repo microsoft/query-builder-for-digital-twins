@@ -207,9 +207,9 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                         .Precedence(p => p
                             .TwinProperty("count")
                             .IsGreaterThan(20)
-                            .Or(b => b
-                                .TwinProperty("count")
-                                .IsLessThan(10))));
+                            .Or()
+                            .TwinProperty("count")
+                            .IsLessThan(10)));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE bldng.name = 'building 1' AND (bldng.count > 20 OR bldng.count < 10)", query.BuildAdtQuery());
         }
@@ -219,13 +219,13 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         {
             var query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Not(b => b.TwinProperty("name").EndsWith("word")));
+                   .Where(t => t.Not().TwinProperty("name").EndsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE NOT ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .FromTwins()
-                   .Where(t => t.Not(q => q.Not(b => b.TwinProperty("name").EndsWith("word"))));
+                   .Where(t => t.Not().Not().TwinProperty("name").EndsWith("word"));
 
             Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE NOT NOT ENDSWITH(twin.name, 'word')", query.BuildAdtQuery());
 
@@ -234,7 +234,9 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Where(b => b
                         .TwinProperty("count")
                         .IsGreaterThan(20)
-                        .Or(b => b.TwinProperty("count").IsLessThan(10)));
+                        .Or()
+                        .TwinProperty("count")
+                        .IsLessThan(10));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE bldng.count > 20 OR bldng.count < 10", query.BuildAdtQuery());
 
@@ -257,17 +259,17 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Where(b => b
                     .TwinProperty("$dtId")
                     .IsEqualTo("ID")
-                    .And(a => a
+                    .And()
+                    .Precedence(p => p
+                        .TwinProperty("count")
+                        .IsGreaterThan(20)
+                        .Or()
                         .Precedence(p => p
                             .TwinProperty("count")
-                            .IsGreaterThan(20)
-                            .Or(o => o
-                                .Precedence(p => p
-                                    .TwinProperty("count")
-                                    .IsLessThan(10)
-                                    .And(a => a
-                                        .RelationshipProperty("maxPriority", "rel")
-                                        .EndsWith("word")))))));
+                            .IsLessThan(10)
+                            .And()
+                            .RelationshipProperty("maxPriority", "rel")
+                            .EndsWith("word"))));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE bldng.$dtId = 'ID' AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
 
@@ -280,18 +282,18 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                 .Where(b => b
                     .TwinProperty("$dtId")
                     .IsEqualTo("ID")
-                    .And(a => a
+                    .And()
+                    .Precedence(p => p
+                        .TwinProperty("count")
+                        .IsGreaterThan(20)
+                        .Or()
+                        .Not()
                         .Precedence(p => p
                             .TwinProperty("count")
-                            .IsGreaterThan(20)
-                            .Or(o => o
-                                .Not(n => n
-                                    .Precedence(p => p
-                                        .TwinProperty("count")
-                                        .IsLessThan(10)
-                                        .And(a => a
-                                            .RelationshipProperty("maxPriority")
-                                            .EndsWith("word"))))))));
+                            .IsLessThan(10)
+                            .And()
+                            .RelationshipProperty("maxPriority")
+                            .EndsWith("word"))));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE bldng.$dtId = 'ID' AND (bldng.count > 20 OR NOT (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
         }
@@ -423,14 +425,14 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Where(w => w
                         .Property("$relationshipName")
                         .IsEqualTo("hasCalendar")
-                        .And(a => a
-                            .Not(n => n
-                                .Precedence(p => p
+                        .And()
+                        .Not()
+                        .Precedence(p => p
                                     .Property("$targetId")
                                     .IsEqualTo("someguid")
                                     .Or()
                                     .Property("$targetId")
-                                    .IsEqualTo("someotherguid")))));
+                                    .IsEqualTo("someotherguid")));
 
             Assert.AreEqual("SELECT relationship FROM RELATIONSHIPS relationship WHERE relationship.$relationshipName = 'hasCalendar' AND NOT (relationship.$targetId = 'someguid' OR relationship.$targetId = 'someotherguid')", query.BuildAdtQuery());
         }
