@@ -15,7 +15,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
     public static class QueryBuilder
     {
         /// <summary>
-        /// Sets the root type of the query (the FROM clause), filters the correct type, and adds a select clause.
+        /// Sets the root type of the query (the FROM clause), filters the correct type, and adds a select clause. When using BasicDigitalTwin as the root type, there is no type filtered.
         /// </summary>
         /// <typeparam name="TModel">The root type of the query.</typeparam>
         /// <param name="alias">Optional string alias to map to the root type.</param>

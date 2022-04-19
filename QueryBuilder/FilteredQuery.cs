@@ -147,6 +147,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 
         /// <summary>
         /// Add an isOfModel operator.
+        /// It is recommended only to use the isOfModel operator when there is no model inferred from the FROM clause. No model is inferred when using the root type BasicDigitalTwin in the FROM clause.
         /// </summary>
         /// <typeparam name="TBase">Base model type.</typeparam>
         /// <typeparam name="TDerived">Derived model type.</typeparam>
