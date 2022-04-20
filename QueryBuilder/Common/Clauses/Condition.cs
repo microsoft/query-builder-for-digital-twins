@@ -72,6 +72,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
 
         internal string Model { get; set; }
 
+        public WhereIsOfModelCondition(string modelAlias, string model)
+        {
+            Alias = modelAlias;
+            Model = model;
+        }
+
         public override string ToString()
         {
             return $"{IsOfModel}({Alias}, '{GetModelWithVersion(Model, minTwinVersion)}')";

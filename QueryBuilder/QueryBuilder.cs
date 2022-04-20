@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
@@ -22,7 +22,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
     public static class QueryBuilder
     {
         /// <summary>
-        /// Sets the root type of the query (the FROM clause), filters the correct type, and adds a select clause.
+        /// Sets the root type of the query (the FROM clause), filters the correct type, and adds a select clause. When using BasicDigitalTwin as the root type, there is no type filtered.
         /// </summary>
         /// <typeparam name="TModel">The root type of the query.</typeparam>
         /// <param name="alias">Optional string alias to map to the root type.</param>
@@ -43,11 +43,10 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
 
             var model = Activator.CreateInstance<TModel>().Metadata.ModelId;
             var whereClause = new WhereClause();
-            whereClause.AddCondition(new WhereIsOfModelCondition
+            if (!typeof(TModel).Equals(typeof(BasicDigitalTwin)))
             {
-                Alias = rootAlias,
-                Model = model
-            });
+                whereClause.AddCondition(new WhereIsOfModelCondition(rootAlias, model));
+            }
 
             var selectClause = new SelectClause();
             selectClause.Add(rootAlias);
