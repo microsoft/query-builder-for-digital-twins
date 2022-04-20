@@ -3,6 +3,7 @@
 
 namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 {
+    using Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,6 +26,20 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .From<Building>("bldng");
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}')", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void FromGeneratesSelectAllBasicDigitalTwins()
+        {
+            var query = QueryBuilder
+                .From<BasicDigitalTwin>();
+
+            Assert.AreEqual("SELECT basicdigitaltwin FROM DIGITALTWINS basicdigitaltwin", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                .From<BasicDigitalTwin>("twin");
+
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin", query.BuildAdtQuery());
         }
     }
 }

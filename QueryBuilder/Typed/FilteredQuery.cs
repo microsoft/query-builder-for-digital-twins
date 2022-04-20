@@ -146,6 +146,23 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Add an isOfModel operator.
+        /// It is recommended only to use the isOfModel operator when there is no model inferred from the FROM clause. No model is inferred when using the root type BasicDigitalTwin in the FROM clause.
+        /// </summary>
+        /// <typeparam name="TBase">Base model type.</typeparam>
+        /// <typeparam name="TDerived">Derived model type.</typeparam>
+        /// <param name="alias">Optional - Model Alias.</param>
+        /// <returns>ADT query instance.</returns>
+        public TQuery WhereIsOfModel<TBase, TDerived>(string alias = null)
+            where TBase : BasicDigitalTwin
+            where TDerived : TBase
+        {
+            whereClause.AddCondition(CreateWhereIsOfModelCondition<TBase, TDerived>(alias));
+
+            return (TQuery)this;
+        }
+
+        /// <summary>
         /// Add a Start with where clause.
         /// </summary>
         /// <typeparam name="TModel">Model type.</typeparam>
@@ -359,6 +376,16 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
                 Value = values,
                 Alias = modelAlias
             };
+        }
+
+        private WhereIsOfModelCondition CreateWhereIsOfModelCondition<TBase, TDerived>(string alias = null)
+            where TBase : BasicDigitalTwin
+            where TDerived : BasicDigitalTwin
+        {
+            var modelAlias = ValidateAndGetAlias<TBase>(typeof(TBase), alias);
+            var model = Activator.CreateInstance<TDerived>().Metadata.ModelId;
+
+            return new WhereIsOfModelCondition(modelAlias, model);
         }
 
         private WhereScalarFunctionCondition CreateAdtScalarBinaryOperatorCondition<TModel>(string propertyName, string value, Type type, string alias, ScalarOperator binaryOperator)

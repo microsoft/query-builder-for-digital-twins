@@ -4,6 +4,7 @@
 namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 {
     using System;
+    using global::Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -156,6 +157,56 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
+        public void CanApplyWhereIsOfModelFilter()
+        {
+            var query = QueryBuilder
+                    .From<Space>()
+                    .Or(query => query
+                        .WhereIsOfModel<Space, Building>()
+                        .WhereIsOfModel<Space, Floor>());
+
+            Assert.AreEqual($"SELECT space FROM DIGITALTWINS space WHERE IS_OF_MODEL(space, '{Space.ModelId.UpdateVersion(1)}') AND (IS_OF_MODEL(space, '{Building.ModelId.UpdateVersion(1)}') OR IS_OF_MODEL(space, '{Floor.ModelId.UpdateVersion(1)}'))", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                    .From<Space>("bldg")
+                    .WhereStartsWith<Space>(s => s.Name, "word")
+                    .Or(query => query
+                        .WhereIsOfModel<Space, Building>("bldg")
+                        .WhereIsOfModel<Space, Floor>("bldg"));
+
+            Assert.AreEqual($"SELECT bldg FROM DIGITALTWINS bldg WHERE IS_OF_MODEL(bldg, '{Space.ModelId.UpdateVersion(1)}') AND STARTSWITH(bldg.name, 'word') AND (IS_OF_MODEL(bldg, '{Building.ModelId.UpdateVersion(1)}') OR IS_OF_MODEL(bldg, '{Floor.ModelId.UpdateVersion(1)}'))", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                .From<Space>()
+                .Join<Space, BasicDigitalTwin>(s => s.HasChildren)
+                .Where<Space>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                .WhereIsOfModel<BasicDigitalTwin, Floor>();
+
+            Assert.AreEqual($"SELECT space FROM DIGITALTWINS space JOIN basicdigitaltwin RELATED space.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(space, '{Space.ModelId.UpdateVersion(1)}') AND space.$dtId = 'ID' AND IS_OF_MODEL(basicdigitaltwin, '{Floor.ModelId.UpdateVersion(1)}')", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                .From<Space>("bldng")
+                .Join<Space, BasicDigitalTwin>(s => s.HasChildren, "bldng", "twin")
+                .Or(
+                    s => s.WhereIsOfModel<BasicDigitalTwin, Hallway>("twin")
+                        .WhereIsOfModel<BasicDigitalTwin, Floor>("twin"))
+                .Where<BasicDigitalTwin>(b => b.Id, ComparisonOperators.IsEqualTo, "ID", "twin");
+
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN twin RELATED bldng.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(bldng, '{Space.ModelId.UpdateVersion(1)}') AND (IS_OF_MODEL(twin, '{Hallway.ModelId.UpdateVersion(1)}') OR IS_OF_MODEL(twin, '{Floor.ModelId.UpdateVersion(1)}')) AND twin.$dtId = 'ID'", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                .From<Space>("bldng")
+                .Join<Space, BasicDigitalTwin>(s => s.HasChildren, "bldng", "twin")
+                .Or(
+                    s => s.WhereIsOfModel<BasicDigitalTwin, Hallway>("twin")
+                        .WhereIsOfModel<BasicDigitalTwin, Floor>("twin"))
+                .Where<BasicDigitalTwin>(b => b.Id, ComparisonOperators.IsEqualTo, "ID", "twin")
+                .Not(query => query.WhereIsOfModel<Space, ConferenceRoom>("bldng"));
+
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN twin RELATED bldng.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(bldng, '{Space.ModelId.UpdateVersion(1)}') AND (IS_OF_MODEL(twin, '{Hallway.ModelId.UpdateVersion(1)}') OR IS_OF_MODEL(twin, '{Floor.ModelId.UpdateVersion(1)}')) AND twin.$dtId = 'ID' AND NOT IS_OF_MODEL(bldng, '{ConferenceRoom.ModelId.UpdateVersion(1)}')", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
         public void CanUseLogicalOperations()
         {
             var query = QueryBuilder
@@ -189,6 +240,19 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                         .WhereEndsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")));
 
             Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
+
+            query = QueryBuilder
+                .From<Building>("bldng")
+                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
+                .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                .Not(query => query.WhereIsOfModel<Building, WBuilding>("bldng"))
+                .Or(query => query
+                    .Where<Building>("count", ComparisonOperators.IsGreaterThan, 20, alias: "bldng")
+                    .And(q => q
+                        .Where<Building>("count", ComparisonOperators.IsLessThan, 10, alias: "bldng")
+                        .WhereEndsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")));
+
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND NOT IS_OF_MODEL(bldng, '{WBuilding.ModelId.UpdateVersion(1)}') AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
 
             query = QueryBuilder
                 .From<Building>("bldng")

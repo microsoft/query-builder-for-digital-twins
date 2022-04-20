@@ -39,7 +39,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
         /// <returns>A conjunction class that supports appending more conditions to the WHERE statements via OR or AND terms.</returns>
         public CompoundWhereStatement<TwinsWhereStatement> IsOfModel(string dtmi)
         {
-            WhereClause.AddCondition(new WhereIsOfModelCondition { Alias = this.Alias, Model = dtmi });
+            WhereClause.AddCondition(new WhereIsOfModelCondition(this.Alias, dtmi));
             return new CompoundWhereStatement<TwinsWhereStatement>(JoinClauses, WhereClause, Alias);
         }
 
