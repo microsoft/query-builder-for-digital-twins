@@ -1,42 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <RootNamespace>Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder</RootNamespace>
+        <AssemblyName>Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder</AssemblyName>
+        <Authors>Microsoft</Authors>
+        <Company>Microsoft</Company>
+        <Title>Digital Twins Query Bulider</Title>
+        <Description>A C# query builder for Azure Digital Twins based on Azure Digital Twins SDK.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
+        <PackageProjectUrl>https://github.com/microsoft/query-builder-for-digital-twins</PackageProjectUrl>
+        <CodeAnalysisRuleSet>..\StyleCop.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RootNamespace>Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder</RootNamespace>
-    <AssemblyName>Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder</AssemblyName>
-    <Authors>Microsoft</Authors>
-    <Company>Microsoft</Company>
-    <Title>Digital Twins Query Bulider</Title>
-    <Description>A C# query builder for Azure Digital Twins based on Azure Digital Twins SDK.</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/microsoft/query-builder-for-digital-twins</PackageProjectUrl>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\StyleCop.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="..\stylecop.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\stylecop.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AdditionalFiles>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Azure.DigitalTwins.Core" Version="1.2.2" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Text.Encodings.Web" Version="6.0.0" />
-  </ItemGroup>
-
+    <ItemGroup>
+        <PackageReference Include="Azure.DigitalTwins.Core" Version="1.2.2" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="System.Text.Encodings.Web" Version="6.0.0" />
+    </ItemGroup>
 </Project>

@@ -192,3 +192,6 @@ ModelManifest.xml
 *.exe
 
 .vs/
+
+coveragereports/
+coverage.xml

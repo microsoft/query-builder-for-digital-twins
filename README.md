@@ -1,13 +1,20 @@
-[![Package publish](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml/badge.svg)](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml)
-
 # Azure Digital Twins Query Builder
 
+[![Package publish](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml/badge.svg)](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml)
+
 The Azure Digital Twins (ADT) QueryBuilder provides a C# based fluent query builder that helps you build and query an Azure Digital Twin instance in an easy and predictable way with familiar C# based programming constructs.
+The QueryBuilder factory supports two flows we're identifying as the ***Typed*** flow and the ***Dynamic*** flow.
+The Typed flow starts with the method `.From<T>()` and uses generics constrained by the BasicDigitalTwin class provided by the ADT Client SDK and provided Linq-like predicates to create queries.
+The Dynamic flow supports two querying methods: `.FromTwins()` and `.FromRelationships()` and both support building queries in scenarios where the C# type of the model is not known, thus the syntax requires a bit more verbosity. More often than not, you'll likely find that it to be a better experience to use the Typed query flow over the Dynamic one that has niche use cases. For a quick comparison between the Dynamic and Typed flows read [here](#typed-vs-dynamic-comparison).
 
 Queries generated follows a grammar of custom SQL-like query language called [Azure Digital Twins query language](https://docs.microsoft.com/en-us/azure/digital-twins/concepts-query-language).
 
-## Pre-requisites
-There are some assumptions QueryBuilder is making so that it can be most useful (please refer to [ADT SDK](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/digitaltwins/Azure.DigitalTwins.Core#azure-iot-digital-twins-client-library-for-net) for more context):
+___
+
+## Prerequisites
+
+There are some assumptions the Typed QueryBuilder is making so that it can be most useful (please refer to [ADT SDK](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/digitaltwins/Azure.DigitalTwins.Core#azure-iot-digital-twins-client-library-for-net) for more context):
+
 - Digital Twin Definition Language (DTDL) models are represented in C# classes (C# models).
 - C# models inherit from BasicDigitalTwin class supplied by ADT SDK.
 - DTDL properties are mapped to C# properties in their corresponding models.
@@ -15,9 +22,13 @@ There are some assumptions QueryBuilder is making so that it can be most useful 
 - Enum values have EnumMember attributes mapping to the DTDL model enum values.
 - Models have references to their relationships and the relationship classes extend BasicRelationship class supplied by ADT SDK.
 - C# relationship classes set Name property at construction.
+  > Note: It's important to understand this because of the distinction in behavior between the Typed and Dynamic flows. In the Dynamic flow, you'll need to be cognizant of the json representation of the property name, whereas in the Typed flow, this is taken care of for you.
 
-## Samples
-Here are some samples of how QueryBuilder can be used to construct complex queries:
+___
+
+## Typed Samples
+
+Here are some samples of how the Typed flow can be used to construct complex queries:
 
 ```csharp
 var query = QueryBuilder
@@ -29,7 +40,7 @@ var query = QueryBuilder
 
 var stringQuery = query.BuildAdtQuery();
 
-/* 
+/*
 Generated query - Gets you all sensor twins in the specified building
 
 SELECT sensor
@@ -68,7 +79,7 @@ var query = QueryBuilder
 
 var stringQuery = query.BuildAdtQuery();
 
-    
+
 /*
 Generated query - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
 
@@ -131,12 +142,12 @@ var stringQuery = query.BuildAdtQuery();
 /*
 Generated query - uses AND & OR
 
-SELECT bldng 
-FROM DIGITALTWINS bldng 
-JOIN itfunc RELATED bldng.hasITSiteFunction rel 
-WHERE IS_OF_MODEL(bldng, 'dtmi:microsoft:Space:Building;1') 
-AND IS_OF_MODEL(itfunc, 'dtmi:microsoft:ITSiteFunction;1') 
-AND bldng.$dtId = 'ID' AND (bldng.count > 20 
+SELECT bldng
+FROM DIGITALTWINS bldng
+JOIN itfunc RELATED bldng.hasITSiteFunction rel
+WHERE IS_OF_MODEL(bldng, 'dtmi:microsoft:Space:Building;1')
+AND IS_OF_MODEL(itfunc, 'dtmi:microsoft:ITSiteFunction;1')
+AND bldng.$dtId = 'ID' AND (bldng.count > 20
 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))
 */
 ```
@@ -174,7 +185,11 @@ FROM DIGITALTWINS basicdigitaltwin
 */
 ```
 
-## Methods
+___
+
+### Methods
+
+Methods supported in the Typed flow.
 
 - QueryBuilder
   - From\<TModel\>()
@@ -204,6 +219,8 @@ FROM DIGITALTWINS basicdigitaltwin
   - CountAllDigitalTwins()
     - BuildAdtQuery()
 
+___
+
 ### Parameters
 
 | Name | Type | Description |
@@ -216,7 +233,6 @@ FROM DIGITALTWINS basicdigitaltwin
 | value | object | Value against which the where condition is applied. |
 | values | string[] | values against which the where condition is applied. |
 | conditions | [Action<AdtFilteredQuery\<TQuery\>>](https://docs.microsoft.com/en-us/dotnet/api/system.action-1) | An action used to apply a chain of filters to the query. |
-
 
 ___
 
@@ -241,15 +257,215 @@ ScalarOperators
 - IS_PRIMITIVE
 - IS_STRING
 
+___
+
+## Dynamic Samples
+
+Here are some samples of how the Dynamic flow can be used to construct complex queries:
+
+> Note: In comparing these nearly identical samples to the Typed flow, you'll want to take notice that while the Typed flow automatically applies the IS_OF_MODEL scalar function to filter for models based on the types used in the methods' generic parameters, the Dynamic flow does not, as it is not aware of any types. To filter for specific models, the Dynamic flow supports `.Where(t => t.IsOfModel("dtmi:sometwinmodel;1"))`
+
+```csharp
+var query = QueryBuilder
+                .FromTwins()
+                .Join(b => b
+                    .With("device")
+                    .RelatedBy("hasDevices")
+                    .Join(d => d
+                        .With("sensor")
+                        .RelatedBy("hasSensors")))
+                .Where(b => b.TwinProperty("$dtId").IsEqualTo("ID"))
+                .Select("sensor");
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - Gets you all sensor twins based on the root twin with the $dtId of 'ID'
+
+SELECT sensor
+FROM DIGITALTWINS twin
+JOIN device RELATED twin.hasDevices
+JOIN sensor RELATED device.hasSensors
+WHERE twin.$dtId = 'ID'
+*/
+```
+
+``` csharp
+var query = QueryBuilder
+            .FromTwins()
+            .Where(b => b
+                .TwinProperty("name")
+                .IsIn(new string[] { "name1", "name2" }));
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - uses 'IN' ADT query operator
+
+SELECT twin
+FROM DIGITALTWINS twin
+WHERE twin.name IN ['name1','name2']
+*/
+```
+
+``` csharp
+var query = QueryBuilder
+            .FromTwins()
+            .Top(5)
+            .Where(b => b
+                .TwinProperty("name")
+                .StartsWith("name"));
+
+var stringQuery = query.BuildAdtQuery();
+
+
+/*
+Generated query - uses 'TOP' and 'STARTSWITH' ADT query operator
+
+SELECT Top(5) twin
+FROM DIGITALTWINS twin
+WHERE STARTSWITH(twin.name, 'name')
+*/
+```
+
+``` csharp
+var query = QueryBuilder
+            .FromTwins()
+            .Count()
+            .Where(b => b
+                .TwinProperty("name")
+                .StartsWith("name"));
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - uses 'TOP' and 'STARTSWITH' ADT query operator
+
+SELECT COUNT()
+FROM DIGITALTWINS twin
+WHERE STARTSWITH(twin.name, 'name')
+*/
+```
+
+``` csharp
+var query = QueryBuilder
+                .FromTwins()
+                .Count()
+                .Where(b => b
+                    .TwinProperty("name")
+                    .Contains("ame"));
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - uses 'TOP' and 'CONTAINS' ADT query operator
+
+SELECT COUNT()
+FROM DIGITALTWINS twin
+WHERE CONTAINS(twin.name, 'ame')
+*/
+```
+
+```csharp
+var query = QueryBuilder
+            .FromTwins("bldng")
+            .Join(b => b
+                .With("itfunc")
+                .RelatedBy("hasITSiteFunction")
+                .As("rel"))
+            .Where(b => b
+                .TwinProperty("$dtId")
+                .IsEqualTo("ID")
+                .And()
+                .Precedence(p => p
+                    .TwinProperty("count")
+                    .IsGreaterThan(20)
+                    .Or()
+                    .Precedence(p => p
+                        .TwinProperty("count")
+                        .IsLessThan(10)
+                        .And()
+                        .RelationshipProperty("maxPriority", "rel")
+                        .EndsWith("word"))));
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - uses AND & OR
+
+SELECT bldng
+FROM DIGITALTWINS bldng
+JOIN itfunc RELATED bldng.hasITSiteFunction rel
+WHERE bldng.$dtId = 'ID' AND (bldng.count > 20
+OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))
+```
+
+___
+
+### Methods
+
+Methods supported in the Dynamic flow.
+
+- QueryBuilder
+  - FromTwins()
+    - Where(whereLogic)
+    - Join(joinLogic)
+    - Join(joinAndWhereLogic)
+    - Select(aliases)
+    - Top(numberOfRecords)
+    - Count()
+    - BuildAdtQuery()
+  - FromRelationships()
+    - Where()
+    - Select(aliases)
+    - Top(numberOfRecords)
+    - Count()
+    - BuildAdtQuery()
+  - CountAllDigitalTwins()
+    - BuildAdtQuery()
+
+### Parameters
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| TWhereStatement, CompoundWhereStatement, JoinWithStatement, JoinFinalStatement | | These types are all part of the Where and Join methods' inner fluent syntax that aid in building and enforcing particular query semantics. |
+| whereLogic | [Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>>](https://docs.microsoft.com/en-us/dotnet/api/system.func-2) | Func to include WHERE logic in the query. |
+| joinLogic | [Func\<JoinWithStatement\<TWhereStatement\>, JoinFinalStatement\<TWhereStatement\>\>](https://docs.microsoft.com/en-us/dotnet/api/system.func-2) | Func to include JOIN logic in the query. |
+| joinAndWhereLogic | [Func\<JoinWithStatement\<TWhereStatement\>, CompoundWhereStatement\<TWhereStatement\>\>]() | Func to include JOIN logic in the query with additional WHERE logic scoped to the JOIN. |
+| aliases | params object[] | This can be one or many aliases to override and apply to the SELECT clause of the query.
+| numberOfRecords | int | The number of records to include in the a TOP query. |
+
+___
+
+### Operators
+
+The operators used in the Dynamic flow are expressed as methods, but support remains the same for each.
+
+___
+
+## Typed vs Dynamic Comparison
+
+| Feature | Typed | Dynamic |
+| ------- | ----- | ------- |
+| Query Twins Collection | :white_check_mark: | :white_check_mark: |
+| Query Relationships Collection | :x: | :white_check_mark: |
+| Select Twin Properties | :x: | :white_check_mark: |
+| Select Relationship Properties | :x: | :white_check_mark: |
+| Use Property Selectors | :white_check_mark: | :x: |
+| Use Relationship Selectors | :white_check_mark: | :x: |
+
+> Note: While not a comparison between the Typed or Dynamic flows, it's worth noting that Joins cannot be used when querying the Relationships collection.
+___
 
 ## Change history
+
 See [CHANGELOG](CHANGELOG.md) for change history of each version.
 
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>.
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
@@ -263,11 +479,10 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 For guidance on reporing security issues, please refer to the [security](SECURITY.md) section.
 
-
 ## Trademarks
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
-trademarks or logos is subject to and must follow 
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
+trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
