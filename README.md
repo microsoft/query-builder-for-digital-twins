@@ -151,6 +151,34 @@ AND bldng.$dtId = 'ID' AND (bldng.count > 20
 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))
 ```
 
+```csharp
+var query = QueryBuilder
+                    .From<Space>()
+                    .WhereStartsWith<Space>(s => s.Name, "word")
+                    .Or(query => query
+                        .WhereIsOfModel<Space, Building>()
+                        .WhereIsOfModel<Space, Floor>())
+                    .Not(query => query
+                        .WhereIsOfModel<Space, ConferenceRoom>());
+/* 
+Generated query - uses IS_OF_MODEL & OR
+SELECT space FROM DIGITALTWINS space 
+WHERE IS_OF_MODEL(space, 'dtmi:microsoft:Space;1') 
+AND STARTSWITH(space.name, 'word') 
+AND (IS_OF_MODEL(space, 'dtmi:microsoft:Space:Building;1') OR IS_OF_MODEL(space, 'dtmi:microsoft:Space:Floor;1'))
+AND NOT IS_OF_MODEL(space, 'dtmi:microsoft:Space:ConferenceRoom;1')
+*/
+```
+
+```csharp
+var query = QueryBuilder
+                .From<BasicDigitalTwin>();
+/* 
+Generated query - select all twins
+SELECT basicdigitaltwin 
+FROM DIGITALTWINS basicdigitaltwin
+*/
+```
 ___
 
 ### Methods
@@ -173,6 +201,7 @@ Methods supported in the Typed flow.
     - WhereIn\<TModel\>(propertyName, values)
     - WhereNotIn\<TModel\>(propertySelector, values)
     - WhereNotIn\<TModel\>(propertyName, values)
+    - WhereIsOfModel\<TBase,TDerived\>()
     - Join\<TJoinFrom,TJoinWith\>(relationship)
     - Select\<TSelect\>()
     - Top(numberOfRecords)
@@ -190,7 +219,7 @@ ___
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| TModel, TJoinFrom, TJoinWith, TSelect | A [Type](https://docs.microsoft.com/en-us/dotnet/api/system.type) that's a sub-type of [Azure.DigitalTwins.Core.BasicDigitalTwin](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/digitaltwins/Azure.DigitalTwins.Core/src/Models/BasicDigitalTwin.cs). | The C# model of the twin. |
+| TModel, TJoinFrom, TJoinWith, TSelect, TBase, TDerived | A [Type](https://docs.microsoft.com/en-us/dotnet/api/system.type) that's a sub-type of [Azure.DigitalTwins.Core.BasicDigitalTwin](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/digitaltwins/Azure.DigitalTwins.Core/src/Models/BasicDigitalTwin.cs). | The C# model of the twin. |
 | propertySelector | [Expression<Func<TModel, object>>](https://docs.microsoft.com/en-us/dotnet/api/system.linq.expressions.expression-1) | Expression to select any property of TModel type.|
 | propertyName | string | JSON property name of TModel type.  |
 | operation | ComparisonOperators | Operator for the condition. |
