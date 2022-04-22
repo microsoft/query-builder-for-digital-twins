@@ -34,7 +34,7 @@ jobs:
         run: dotnet build --no-restore --configuration Debug
 
       - name: Test
-        run: dotnet test --configuration Debug /p:CollectCoverage=true /p:Threshold=${{inputs.coverage-threshold}} /p:ThresholdType=line /p:ThresholdStat=total /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$GITHUB_WORKSPACE/coverage.xml
+        run: dotnet test --configuration Debug /p:CollectCoverage=true /p:Threshold=100 /p:ThresholdType=line /p:ThresholdStat=total /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$GITHUB_WORKSPACE/coverage.xml
 
       - name: Generate Test Coverage Report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.1.3
