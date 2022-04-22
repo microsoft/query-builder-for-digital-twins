@@ -14,6 +14,7 @@
         <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
         <PackageProjectUrl>https://github.com/microsoft/query-builder-for-digital-twins</PackageProjectUrl>
         <CodeAnalysisRuleSet>..\StyleCop.ruleset</CodeAnalysisRuleSet>
+        <TreatWarningsAsErrors Condition="'$(OFFICIAL_BUILD)' == 'True'">true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,6 +23,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.DigitalTwins.Core" Version="1.2.2" />
+        <PackageReference Include="MinVer" PrivateAssets="all" Version="3.1.0"/>
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
