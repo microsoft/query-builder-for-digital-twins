@@ -74,8 +74,5 @@ jobs:
       - name: Publish
         uses: ./.github/workflows/publish.yml
         needs: [Build, Sign]
-        with:
-          assembly_name: ${{ needs.Parse_Environment.outputs.assembly_name }}
-          version: ${{ needs.Build.outputs.stable-version }}
         secrets:
           api_key: ${{ secrets.NUGET_API_KEY }}
