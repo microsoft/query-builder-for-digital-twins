@@ -1,0 +1,32 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[Bug]: "
+labels: ['triage', 'type:bug']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: summary
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Which version of the tool was used?
+      description: The version of package, or a git commit hash from the branch if you're using the sources in this repo.
+  - type: input
+    id: query
+    attributes:
+      label: Provide the full query used. i.e. `QueryBuilder.From<Space>()`
+  - type: textarea
+    id: logs
+    attributes:
+      label: Steps To Reproduce
+      description: 'Any additional steps or information that can aide in reproducing the bug.'
+      placeholder: Tell us what you see!
