@@ -21,4 +21,4 @@ jobs:
     - name: Push Stable Package
       run: |
         $fileName = (Get-ChildItem -Recurse -Filter *.nupkg | Select -Property Name).Name
-        nuget push signed/${{fileName}} -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.api_key }} -Verbosity detailed -NonInteractive
+        echo $fileName
