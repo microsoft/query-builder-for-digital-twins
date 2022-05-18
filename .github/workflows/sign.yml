@@ -60,7 +60,7 @@ jobs:
     - name: Create Stable Input File
       run: |
         $fileName = (Get-ChildItem -Recurse -Filter *.nupkg | Select -Property Name).Name
-        $stableInputJsonTemplate = @'
+        $stableInputJsonTemplate = @"
         {
           "Version": "1.0.0",
           "SignBatches": [
@@ -71,8 +71,8 @@ jobs:
               "DestinationRootDirectory": "@@workspace@@\\signed",
               "SignRequestFiles": [
                 {
-                  "SourceLocation": "${{fileName}}",
-                  "DestinationLocation": "${{fileName}}"
+                  "SourceLocation": "$fileName",
+                  "DestinationLocation": "$fileName"
                 }
               ],
               "SigningInfo": {
@@ -94,7 +94,7 @@ jobs:
             }
           ]
         }
-        '@
+        "@
         $workspace = [regex]::escape("${{github.workspace}}")
         $stableInputJson = $stableInputJsonTemplate -replace '@@workspace@@', $workspace
         Out-File -FilePath .\stableInput.json -InputObject $stableInputJson
@@ -128,7 +128,7 @@ jobs:
     - name: Verify Signature
       run: |
         $fileName = (Get-ChildItem -Recurse -Filter *.nupkg | Select -Property Name).Name
-        nuget verify -Signatures signed/${{fileName}} -CertificateFingerprint ${{secrets.signing_cert_fingerprint}}
+        nuget verify -Signatures signed/$fileName -CertificateFingerprint ${{secrets.signing_cert_fingerprint}}
     - name: Upload Signed Packages
       uses: actions/upload-artifact@v2
       with:
