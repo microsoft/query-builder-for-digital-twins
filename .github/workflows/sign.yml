@@ -24,6 +24,11 @@ jobs:
   Sign:
     runs-on: windows-latest
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
     - name: Download Unsigned Packages
       uses: actions/download-artifact@v2
       with:
@@ -39,7 +44,7 @@ jobs:
           creds: ${{ secrets.az_creds }}
 
     - name: Run Signing Script
-      run: ./.github/scripts/sign.ps1 ADD THE ARGS HERE
+      run: ./.github/scripts/sign.ps1 ${{ secrets.client_id }} ${{ github.workspace }} ${{ secrets.az_sub }} ${{ secrets.storage_name }} ${{ secrets.container_name }} ${{ secrets.vault_name }} ${{ secrets.aad_cert }} ${{ secrets.sign_cert }} ${{ secrets.signing_cert_fingerprint }}
 
     - name: Azure logout
       run: az logout

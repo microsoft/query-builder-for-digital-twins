@@ -11,6 +11,17 @@ param(
     [Parameter(Mandatory=$false)] [switch]$user_login
 )
 
+$fileName = (Get-ChildItem -Recurse -Filter *.nupkg | Select-Object -Property Name -First 1).Name
+if ($fileName -match ' ') {
+    # This accounts for cases where it finds the same package and we end up with $fileName = "proj.1.1.0.nupkg proj.1.1.0.nupkg"
+    $fileName = $fileName.split()[0]
+}
+
+if ([string]::IsNullOrWhiteSpace($fileName)) {
+    throw "Unable to find nupkg for signing. Ensure the 'dotnet pack' command has been run and that it's output to a directory called 'unsigned'."
+}
+
+Write-Host "Found nupkg: $fileName"
 if ($user_login) {
     Write-Host 'Logging into Azure.'
     az login
@@ -21,7 +32,7 @@ if (Test-Path 'signed') {
     Write-Host "'signed' directory already exists."
 } else {
     mkdir signed
-    Write-Host "'signed directory created successfully."
+    Write-Host "'signed' directory created successfully."
 }
 
 Write-Host "Generation 'auth.json' and 'input.json' files for ESRP Client."
@@ -79,33 +90,41 @@ $inputJson = @"
     ]
 }
 "@
-$fileName = (Get-ChildItem -Recurse -Filter *.nupkg | Select-Object -Property Name).Name
 Out-File -FilePath .\auth.json -InputObject $authJson
 Out-File -FilePath .\input.json -InputObject $inputJson
 Write-Host 'Done.'
-Write-Host 'Downloading ESRP Client.'
-az storage blob download --auth-mode login --subscription  $subscriptionId --account-name $storage_name -c $container_name -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
-Write-Host 'Done.'
-Write-Host 'Unzipping ESRP Client.'
-Expand-Archive -Path 'esrp.zip' -DestinationPath './esrp' -Force
-Write-Host 'Done.'
-Write-Host 'Downloading & Installing Certifictes.'
-Remove-Item cert.pfx -ErrorAction SilentlyContinue
-az keyvault secret download --subscription $subscriptionId --vault-name $vault_name --name $aad_cert -f cert.pfx
-certutil -silent -f -importpfx cert.pfx
-Remove-Item cert.pfx
-az keyvault secret download --subscription $subscriptionId --vault-name $vault_name --name $sign_cert -f cert.pfx
-certutil -silent -f -importpfx cert.pfx
-Remove-Item cert.pfx
-Write-Host 'Done.'
-Write-Host 'Executing ESRP Client.'
-./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./stableInput.json -o ./Output.json -l Verbose -f STDOUT
-Write-Host 'Done. Signing Complete.'
-Write-Host 'Verify signatures with NuGet.'
-nuget verify -Signatures signed/$fileName -CertificateFingerprint $signing_cert_fingerprint
-Write-Host 'Done. Signatures verified.'
-Write-Host 'Package ready for upload.'
-
-if ($user_login) {
-    az logout
+try {
+    Write-Host 'Downloading ESRP Client.'
+    az storage blob download --auth-mode login --subscription  $subscriptionId --account-name $storage_name -c $container_name -n microsoft.esrpclient.1.2.76.zip -f esrp.zip
+    if (Test-Path 'esrp.zip') {
+        Write-Host 'Done.'
+    } else {
+        throw 'Download did not complete successfully. This is likely due to an access issue.'
+    }
+    
+    Write-Host 'Unzipping ESRP Client.'
+    Expand-Archive -Path 'esrp.zip' -DestinationPath './esrp' -Force
+    Write-Host 'Done.'
+    Write-Host 'Downloading & Installing Certifictes.'
+    Remove-Item cert.pfx -ErrorAction SilentlyContinue
+    az keyvault secret download --subscription $subscriptionId --vault-name $vault_name --name $aad_cert -f cert.pfx
+    certutil -silent -f -importpfx cert.pfx
+    Remove-Item cert.pfx
+    az keyvault secret download --subscription $subscriptionId --vault-name $vault_name --name $sign_cert -f cert.pfx
+    certutil -silent -f -importpfx cert.pfx
+    Remove-Item cert.pfx
+    Write-Host 'Done.'
+    Write-Host 'Executing ESRP Client.'
+    ./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./input.json -o ./Output.json -l Verbose -f STDOUT
+    Write-Host 'Done. Signing Complete.'
+    Write-Host 'Verifying signatures with NuGet.'
+    nuget verify -Signatures signed/$fileName -CertificateFingerprint $signing_cert_fingerprint
+    Write-Host 'Done. Signatures verified.'
+    Write-Host 'Package ready for upload.'
+} catch {
+    throw
+} finally {
+    if ($user_login) {
+        az logout
+    }
 }
