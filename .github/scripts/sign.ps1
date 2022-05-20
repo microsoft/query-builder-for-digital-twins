@@ -118,9 +118,14 @@ try {
     ./esrp/tools/EsrpClient.exe sign -a ./auth.json -p ./esrp/tools/Policy.json -c ./esrp/tools/Config.json -i ./input.json -o ./Output.json -l Verbose -f STDOUT
     Write-Host 'Done. Signing Complete.'
     Write-Host 'Verifying signatures with NuGet.'
-    nuget verify -Signatures signed/$fileName -CertificateFingerprint $signing_cert_fingerprint
-    Write-Host 'Done. Signatures verified.'
-    Write-Host 'Package ready for upload.'
+    $result = nuget verify -Signatures signed/$fileName -CertificateFingerprint $signing_cert_fingerprint
+    $anyMatches = $result | Where-Object { $_ -match 'Package signature validation failed.'}
+    if ([string]::IsNullOrWhiteSpace($anyMatches)) {
+        Write-Host 'Done. Signatures verified.'
+        Write-Host 'Package ready for upload.'
+    } else {
+        throw 'Package signature validation failed.'
+    }
 } catch {
     throw
 } finally {
