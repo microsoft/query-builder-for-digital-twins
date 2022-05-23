@@ -35,7 +35,7 @@ if (Test-Path 'signed') {
     Write-Host "'signed' directory created successfully."
 }
 
-Write-Host "Generation 'auth.json' and 'input.json' files for ESRP Client."
+Write-Host "Generating 'auth.json' and 'input.json' files for ESRP Client."
 $authJson = @"
 {
     "Version": "1.0.0",
@@ -119,6 +119,7 @@ try {
     Write-Host 'Done. Signing Complete.'
     Write-Host 'Verifying signatures with NuGet.'
     $result = nuget verify -Signatures signed/$fileName -CertificateFingerprint $signing_cert_fingerprint
+    Write-Host $result
     $anyMatches = $result | Where-Object { $_ -match 'Package signature validation failed.'}
     if ([string]::IsNullOrWhiteSpace($anyMatches)) {
         Write-Host 'Done. Signatures verified.'
