@@ -196,4 +196,11 @@ ModelManifest.xml
 coveragereports/
 coverage.xml
 
+# sign script files
 unsigned/
+signed/
+esrp/
+esrp.zip
+cert.pfx
+auth.json
+input.json
