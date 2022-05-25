@@ -12,12 +12,12 @@ permissions:
 
 jobs:
   Build:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@users/mibir/new-workflows
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v2.0
     with:
      project-to-build: "QueryBuilder/QueryBuilder.csproj"
      project-to-test: "QueryBuilder.Test/QueryBuilder.Test.csproj"
 
   Pack:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/pack.yml@users/mibir/new-workflows
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/pack.yml@v2.0
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"

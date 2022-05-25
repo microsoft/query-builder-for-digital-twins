@@ -11,13 +11,13 @@ permissions:
 
 jobs:
   Pack:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/pack.yml@users/mibir/new-workflows
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/pack.yml@v2.0
     with:
-      project-to-pack: "src/DoCoolThings/DoCoolThings.csproj"
+      project-to-pack: "QueryBuilder/QueryBuilder.csproj"
 
   Sign:
     needs: Pack
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/sign.yml@users/mibir/new-workflows
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/sign.yml@v2.0
     secrets:
       client_id: ${{ secrets.AAD_SIGNING_CLIENT_ID }}
       az_creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -31,8 +31,6 @@ jobs:
 
   Publish:
     needs: [Pack, Sign]
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/publish.yml@users/mibir/new-workflows
-    with:
-      dry_run: true
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/publish.yml@v2.0
     secrets:
       api_key: ${{ secrets.NUGET_API_KEY }}
