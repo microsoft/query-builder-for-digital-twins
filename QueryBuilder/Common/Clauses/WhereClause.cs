@@ -51,11 +51,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
                 {
                     continue;
                 }
-                else if (Conditions[i] == Not)
-                {
-                    HandleNots(builder, $"{Not} ", ref next);
-                    i = next;
-                }
                 else
                 {
                     var and = i == 0 ? string.Empty : $"{And} ";
