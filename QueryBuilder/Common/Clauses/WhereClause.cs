@@ -51,16 +51,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
                 {
                     continue;
                 }
-                else if (Conditions[i] == Not)
-                {
-                    HandleNots(builder, $"{Not} ", ref next);
-                    i += next;
-                }
                 else
                 {
-                    var and = i == 0 ? string.Empty : $" {And} ";
+                    var and = i == 0 ? string.Empty : $"{And} ";
                     builder.Append($"{and}{Conditions[i]}");
                 }
+
+                TryAppendSpace(builder, i);
             }
 
             return builder.ToString();
@@ -74,24 +71,48 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
 
         private bool TryHandleCompoundStatement(StringBuilder builder, ref int next, ref int i)
         {
-            if (next < Conditions.Count && (Conditions[next] == Or || Conditions[next] == And))
+            if (i == 0)
             {
-                var compound = Conditions[next];
-                next++;
-                if (Conditions[next] != Not)
+                if (Conditions[i] == Not)
                 {
-                    builder.Append($"{Conditions[i]} {compound} {Conditions[next]}");
-                    i += next;
+                    HandleNots(builder, $"{Not} ", ref next);
+                    i = next;
+                    TryAppendSpace(builder, i);
                     return true;
                 }
 
-                next++;
-                HandleNots(builder, $"{Conditions[i]} {compound} {Not} ", ref next);
-                i += next;
+                builder.Append($"{Conditions[i]}");
+                TryAppendSpace(builder, i);
+                return true;
+            }
+            else if (next < Conditions.Count && (Conditions[i] == Or || Conditions[i] == And))
+            {
+                var compound = Conditions[i];
+
+                if (Conditions[next] == Not)
+                {
+                    HandleNots(builder, $"{compound} ", ref next);
+                    i = next;
+                    TryAppendSpace(builder, i);
+                    return true;
+                }
+
+                builder.Append($"{compound} {Conditions[next]}");
+                i++;
+                TryAppendSpace(builder, i);
+
                 return true;
             }
 
             return false;
+        }
+
+        private void TryAppendSpace(StringBuilder builder, int i)
+        {
+            if (i + 1 < Conditions.Count)
+            {
+                builder.Append(" ");
+            }
         }
 
         /// <summary>

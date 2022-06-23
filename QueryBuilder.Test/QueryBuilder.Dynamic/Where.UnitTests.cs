@@ -299,6 +299,54 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         }
 
         [TestMethod]
+        public void CanProcessUnionAndIntersectionSequenceConditions()
+        {
+            var query = QueryBuilder.FromTwins()
+                .Where(t => t
+                    .IsOfModel(Space.ModelId.UpdateVersion(1))
+                    .Or()
+                    .TwinProperty("count").IsGreaterThan(20)
+                    .Or()
+                    .TwinProperty("name").NotEqualTo("building 1"));
+
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') OR twin.count > 20 OR twin.name != 'building 1'", query.BuildAdtQuery());
+
+            query = QueryBuilder.FromTwins()
+                .Where(t => t
+                    .IsOfModel(Space.ModelId.UpdateVersion(1))
+                    .Or()
+                    .TwinProperty("count").IsGreaterThan(20)
+                    .Or()
+                    .Not()
+                    .Not()
+                    .TwinProperty("name").NotEqualTo("building 1"));
+
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') OR twin.count > 20 OR NOT NOT twin.name != 'building 1'", query.BuildAdtQuery());
+
+            query = QueryBuilder.FromTwins()
+                .Where(t => t
+                    .IsOfModel(Space.ModelId.UpdateVersion(1))
+                    .And()
+                    .TwinProperty("count").IsGreaterThan(20)
+                    .And()
+                    .TwinProperty("name").NotEqualTo("building 1"));
+
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') AND twin.count > 20 AND twin.name != 'building 1'", query.BuildAdtQuery());
+
+            query = QueryBuilder.FromTwins()
+                .Where(t => t
+                    .IsOfModel(Space.ModelId.UpdateVersion(1))
+                    .Or()
+                    .IsOfModel(Building.ModelId.UpdateVersion(1))
+                    .And()
+                    .TwinProperty("count").IsGreaterThan(20)
+                    .And()
+                    .TwinProperty("name").NotEqualTo("building 1"));
+
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') OR IS_OF_MODEL(twin, 'dtmi:microsoft:Space:Building;1') AND twin.count > 20 AND twin.name != 'building 1'", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
         public void CanApplyComparisonConditions()
         {
             var query = QueryBuilder
