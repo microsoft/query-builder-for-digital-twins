@@ -501,6 +501,67 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
             Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin JOIN floor RELATED twin.hasChildren haschildrenrelationship JOIN device RELATED floor.hasDevices hasdevicesrelationship WHERE IS_OF_MODEL(device, 'dtmi:microsoft:somemodel;1')", query.BuildAdtQuery());
         }
 
+        [TestMethod]
+        public void CanFilterWithStringExpressions()
+        {
+            var queryString = QueryBuilder
+                    .FromTwins()
+                    .Where(t => t.IsOfModel("dtmi:space;1"))
+                    .Where($"twin.name eq '2201'")
+                    .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:space;1') AND twin.name = '2201'", queryString);
+
+            queryString = QueryBuilder
+                    .FromTwins()
+                    .Where($"twin.externalId lt 22 and isofmodel(twin, 'dtmi:space;1')")
+                    .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId < 22 AND IS_OF_MODEL(twin, 'dtmi:space;1')", queryString);
+
+            queryString = QueryBuilder
+                    .FromTwins()
+                    .Where($"twin.externalId lt 22 and is_of_model(twin, 'dtmi:space;1')")
+                    .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE twin.externalId < 22 AND IS_OF_MODEL(twin, 'dtmi:space;1')", queryString);
+
+            queryString = QueryBuilder
+                    .FromTwins()
+                    .Join(t => t
+                        .With("hasChildrenTwin")
+                        .RelatedBy("hasChildren"))
+                    .Where($"twin.name ne 'building1' && isofmodel(twin, 'dtmi:space:building;1') && hasChildrenTwin.name nin ['testfloor']")
+                    .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin JOIN hasChildrenTwin RELATED twin.hasChildren haschildrenrelationship WHERE twin.name != 'building1' AND IS_OF_MODEL(twin, 'dtmi:space:building;1') AND hasChildrenTwin.name NIN ['testfloor']", queryString);
+
+            queryString = QueryBuilder
+                    .FromTwins()
+                    .Join(t => t
+                        .With("hasAddressTwin")
+                        .RelatedBy("hasAddress"))
+                    .Where($"twin.name ne 'building1' && isofmodel(twin, 'dtmi:space:building;1') && hasAddress.addressType eq 'Mailing'")
+                    .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin JOIN hasAddressTwin RELATED twin.hasAddress hasaddressrelationship WHERE twin.name != 'building1' AND IS_OF_MODEL(twin, 'dtmi:space:building;1') AND hasaddressrelationship.addressType = 'Mailing'", queryString);
+
+            queryString = QueryBuilder
+                    .FromTwins()
+                    .Join(t => t
+                        .With("hasAddressTwin")
+                        .RelatedBy("hasAddress")
+                        .Join(hct => hct
+                            .With("hasCityTwin")
+                            .RelatedBy("hasCity")))
+                    .Where($"isofmodel(twin, 'dtmi:space:building;1') && twin.name = '122'")
+                    .Select("twin", "hasAddressTwin", "hasCityTwin")
+                    .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin, hasAddressTwin, hasCityTwin FROM DIGITALTWINS twin JOIN hasAddressTwin RELATED twin.hasAddress hasaddressrelationship JOIN hasCityTwin RELATED hasAddressTwin.hasCity hascityrelationship WHERE IS_OF_MODEL(twin, 'dtmi:space:building;1') AND twin.name = '122'", queryString);
+        }
+
+        [TestMethod]
+        public void WhereAddsNoConditionWhenStringIsEmptyOrNull()
+        {
+            var queryString = QueryBuilder.FromTwins().Where(string.Empty).BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin", queryString);
+        }
+
         private enum CustomEnum
         {
             Value1,

@@ -195,6 +195,7 @@ ModelManifest.xml
 
 coveragereports/
 coverage.xml
+coverage/
 
 # sign script files
 unsigned/

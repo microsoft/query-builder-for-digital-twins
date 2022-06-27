@@ -333,7 +333,7 @@ var query = QueryBuilder
 var stringQuery = query.BuildAdtQuery();
 
 /*
-Generated query - uses 'TOP' and 'STARTSWITH' ADT query operator
+Generated query - uses 'COUNT' and 'STARTSWITH' ADT query operator
 
 SELECT COUNT()
 FROM DIGITALTWINS twin
@@ -344,7 +344,7 @@ WHERE STARTSWITH(twin.name, 'name')
 ``` csharp
 var query = QueryBuilder
                 .FromTwins()
-                .Count()
+                .TOP(5)
                 .Where(b => b
                     .TwinProperty("name")
                     .Contains("ame"));
@@ -354,7 +354,7 @@ var stringQuery = query.BuildAdtQuery();
 /*
 Generated query - uses 'TOP' and 'CONTAINS' ADT query operator
 
-SELECT COUNT()
+SELECT TOP(5) twin
 FROM DIGITALTWINS twin
 WHERE CONTAINS(twin.name, 'ame')
 */
@@ -394,6 +394,21 @@ WHERE bldng.$dtId = 'ID' AND (bldng.count > 20
 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))
 ```
 
+``` csharp
+var query = QueryBuilder
+            .FromTwins()
+            .Where("startswith(twin.name, 'name1')");
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - uses 'STARTSWITH' ADT query operator
+
+SELECT twin
+FROM DIGITALTWINS twin
+WHERE STARTSWITH(twin.name, 'name1')
+*/
+```
 ___
 
 ### Methods
@@ -402,6 +417,7 @@ Methods supported in the Dynamic flow.
 
 - QueryBuilder
   - FromTwins()
+    - Where(filter)
     - Where(whereLogic)
     - Join(joinLogic)
     - Join(joinAndWhereLogic)
@@ -410,7 +426,8 @@ Methods supported in the Dynamic flow.
     - Count()
     - BuildAdtQuery()
   - FromRelationships()
-    - Where()
+    - Where(filter)
+    - Where(whereLogic)
     - Select(aliases)
     - Top(numberOfRecords)
     - Count()
@@ -424,6 +441,7 @@ Methods supported in the Dynamic flow.
 | ---- | ---- | ----------- |
 | TWhereStatement, CompoundWhereStatement, JoinWithStatement, JoinFinalStatement | | These types are all part of the Where and Join methods' inner fluent syntax that aid in building and enforcing particular query semantics. |
 | whereLogic | [Func<TWhereStatement, CompoundWhereStatement<TWhereStatement>>](https://docs.microsoft.com/en-us/dotnet/api/system.func-2) | Func to include WHERE logic in the query. |
+| filter | string | A string filter query that can contain one or multiple conditions |
 | joinLogic | [Func\<JoinWithStatement\<TWhereStatement\>, JoinFinalStatement\<TWhereStatement\>\>](https://docs.microsoft.com/en-us/dotnet/api/system.func-2) | Func to include JOIN logic in the query. |
 | joinAndWhereLogic | [Func\<JoinWithStatement\<TWhereStatement\>, CompoundWhereStatement\<TWhereStatement\>\>]() | Func to include JOIN logic in the query with additional WHERE logic scoped to the JOIN. |
 | aliases | params object[] | This can be one or many aliases to override and apply to the SELECT clause of the query.

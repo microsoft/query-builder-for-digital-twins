@@ -40,6 +40,25 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
             return whereLogic.Invoke(statement);
         }
 
+        /// <summary>
+        /// An alternative way to add a WHERE clause to the query by directly providing a string that contains the condition.
+        /// </summary>
+        /// <param name="filter">The verbatim condition in string format.</param>
+        /// <returns>An extendible part of a WHERE statement to continue adding WHERE conditions to.</returns>
+        public CompoundWhereStatement<TWhereStatement> Where(string filter)
+        {
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var fixedFilter = FilterHelper.ReplaceOperators(filter);
+                fixedFilter = FilterHelper.ReplaceScalarFunctions(fixedFilter);
+                fixedFilter = FilterHelper.ReplaceCompoundOperators(fixedFilter);
+                fixedFilter = FilterHelper.FixRelationshipNames(fixedFilter, Clauses);
+                WhereClause.AddCondition(fixedFilter);
+            }
+
+            return new CompoundWhereStatement<TWhereStatement>(Clauses, WhereClause, Current.JoinWith);
+        }
+
 #pragma warning disable SA1629
         /// <summary>
         /// Adds a nested JOIN to the existing one. This will contextually bind this JOIN to a parent one.
