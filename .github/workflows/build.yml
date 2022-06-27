@@ -9,15 +9,20 @@ on:
 
 permissions:
   contents: read
+  actions: read
+  security-events: write
 
 jobs:
   Build:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v2.0
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v2.1
     with:
      project-to-build: "QueryBuilder/QueryBuilder.csproj"
      project-to-test: "QueryBuilder.Test/QueryBuilder.Test.csproj"
 
   Pack:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/pack.yml@v2.0
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/pack.yml@v2.1
     with:
       project-to-pack: "QueryBuilder/QueryBuilder.csproj"
+
+  Scan:
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/scan.yml@v2.1
