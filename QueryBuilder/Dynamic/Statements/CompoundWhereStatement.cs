@@ -19,7 +19,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statement
 
         internal WhereClause WhereClause { get; private set; }
 
-        private string alias;
+        private readonly string alias;
 
         internal CompoundWhereStatement(IList<JoinClause> joinClauses, WhereClause whereClause, string alias)
         {
