@@ -344,7 +344,7 @@ WHERE STARTSWITH(twin.name, 'name')
 ``` csharp
 var query = QueryBuilder
                 .FromTwins()
-                .TOP(5)
+                .Top(5)
                 .Where(b => b
                     .TwinProperty("name")
                     .Contains("ame"));
