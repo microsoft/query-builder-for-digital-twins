@@ -5,6 +5,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using global::Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
@@ -25,21 +26,20 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
         /// <returns>ADT query instance with one select clause.</returns>
-        public Query<TSelect> Select<TSelect>(string alias = null)
-            where TSelect : BasicDigitalTwin
+        public Query<TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
             ClearSelects();
 
-            ValidateAndAddSelect<TSelect>(alias);
+            ValidateAndAddSelect<TSelect>(alias, propertySelector);
             return new Query<TSelect>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
         }
 
         /// <summary>
         /// Select Top(N) records.
         /// </summary>
-        /// <param name="numberOfRecords">Postive number.</param>
+        /// <param name="numberOfRecords">Positive number.</param>
         /// <returns>The ADT Query with TOP clause.</returns>
         public DefaultSelectQuery<T> Top(ushort numberOfRecords)
         {

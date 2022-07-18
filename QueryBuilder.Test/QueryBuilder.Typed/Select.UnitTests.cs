@@ -269,5 +269,49 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .Join<Space, Space>(s => s.HasChildren, "spc1", "spc2")
                 .Select<Building>();
         }
+
+        [TestMethod]
+        public void CanSelectRelationship()
+        {
+            var query = QueryBuilder
+                .From<Building>()
+                .Join<Building, Floor>(s => s.HasChildren)
+                .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                .Select<Building>()
+                .Select<SpaceHasChildrenRelationship>()
+                .Select<Floor>();
+
+            var expectedQuery = $"SELECT building, spacehaschildrenrelationship, floor FROM DIGITALTWINS building JOIN floor RELATED building.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(floor, '{Floor.ModelId.UpdateVersion(1)}') AND building.$dtId = 'ID'";
+
+            Assert.AreEqual(expectedQuery, query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void CanSelectRelationshipWithAlias()
+        {
+            var query = QueryBuilder
+                .From<Building>("b")
+                .Join<Building, Floor>(s => s.HasChildren, "b", "f", "rel")
+                .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                .Select<Building>()
+                .Select<SpaceHasChildrenRelationship>()
+                .Select<Floor>();
+
+            var expectedQuery = $"SELECT b, rel, f FROM DIGITALTWINS b JOIN f RELATED b.hasChildren rel WHERE IS_OF_MODEL(b, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(f, '{Floor.ModelId.UpdateVersion(1)}') AND b.$dtId = 'ID'";
+
+            Assert.AreEqual(expectedQuery, query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void CanSelectProperty()
+        {
+            var query = QueryBuilder
+                .From<Building>()
+                .Select<Building>(propertySelector: b => b.Number);
+
+            var expectedQuery = $"SELECT building.number FROM DIGITALTWINS building WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}')";
+
+            Assert.AreEqual(expectedQuery, query.BuildAdtQuery());
+        }
     }
 }

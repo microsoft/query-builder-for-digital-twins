@@ -13,7 +13,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
 
     internal static class QueryValidator
     {
-        internal static void ExtractModelAndPropertyName<TModel>(Expression<Func<TModel, object>> propertySelector, out Type type, out string propertyName) where TModel : BasicDigitalTwin
+        internal static void ExtractModelAndPropertyName<TModel>(Expression<Func<TModel, object>> propertySelector, out Type type, out string propertyName)
         {
             var member = propertySelector.Body as MemberExpression;
             if (propertySelector.Body is UnaryExpression unary) // for primitive-type properties that require conversion to object

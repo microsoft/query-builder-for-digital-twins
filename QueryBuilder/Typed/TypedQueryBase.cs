@@ -6,6 +6,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using global::Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
@@ -43,8 +44,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">A nullable alias string for selecting types that are mapped to aliases.</param>
-        internal void ValidateAndAddSelect<TSelect>(string alias = null)
-            where TSelect : BasicDigitalTwin
+        internal void ValidateAndAddSelect<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             if (!string.IsNullOrEmpty(alias))
             {
@@ -56,7 +56,16 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             }
 
             var generatedAlias = string.IsNullOrEmpty(alias) ? GetAssignedAlias(typeof(TSelect)) : alias;
-            selectClause.Add(generatedAlias);
+
+            if (propertySelector is not null)
+            {
+                QueryValidator.ExtractModelAndPropertyName(propertySelector, out _, out var propertyName);
+                selectClause.Add($"{generatedAlias}.{propertyName}");
+            }
+            else
+            {
+                selectClause.Add(generatedAlias);
+            }
         }
 
         /// <inheritdoc/>
