@@ -44,6 +44,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">A nullable alias string for selecting types that are mapped to aliases.</param>
+        /// <param name="propertySelector">A nullable expression for selecting an individual property on a type.</param>
         internal void ValidateAndAddSelect<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             if (!string.IsNullOrEmpty(alias))

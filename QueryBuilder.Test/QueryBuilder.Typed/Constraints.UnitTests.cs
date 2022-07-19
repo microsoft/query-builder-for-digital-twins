@@ -55,7 +55,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
             var query = QueryBuilder
                 .From<Building>();
 
-            Assert.IsNotNull(query.GetType().GetMethod("Select"));
+            Assert.IsTrue(query.GetType().GetMethods().Any(mi => mi.Name == "Select"));
         }
 
         [TestMethod]
@@ -113,7 +113,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .From<Building>()
                 .Top(2);
 
-            Assert.IsNotNull(query.GetType().GetMethod("Select"));
+            Assert.IsTrue(query.GetType().GetMethods().Any(mi => mi.Name == "Select"));
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .From<Building>()
                 .Select<Building>();
 
-            Assert.IsNotNull(query.GetType().GetMethod("Select"));
+            Assert.IsTrue(query.GetType().GetMethods().Any(mi => mi.Name == "Select"));
         }
 
         [TestMethod]
@@ -184,7 +184,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .Select<Building>()
                 .Select<Building>();
 
-            Assert.IsNotNull(query.GetType().GetMethod("Select"));
+            Assert.IsTrue(query.GetType().GetMethods().Any(mi => mi.Name == "Select"));
         }
 
         [TestMethod]

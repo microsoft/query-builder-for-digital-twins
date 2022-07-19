@@ -21,10 +21,22 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Select a property on a type.
+        /// </summary>
+        /// <typeparam name="TSelect">The type to be selected.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <returns>ADT query instance with one select clause.</returns>
+        public Query<TSelect> Select<TSelect>(Expression<Func<TSelect, object>> propertySelector)
+        {
+            return Select(null, propertySelector);
+        }
+
+        /// <summary>
         /// Select a type and optionally provide an alias.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
+        /// <param name="propertySelector">Optional property to select on the type.</param>
         /// <returns>ADT query instance with one select clause.</returns>
         public Query<TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {

@@ -303,13 +303,59 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
-        public void CanSelectProperty()
+        public void CanSelectSingleProperty()
         {
             var query = QueryBuilder
                 .From<Building>()
-                .Select<Building>(propertySelector: b => b.Number);
+                .Top(1)
+                .Select<Building>(b => b.Number);
 
-            var expectedQuery = $"SELECT building.number FROM DIGITALTWINS building WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}')";
+            var expectedQuery = $"SELECT TOP(1) building.number FROM DIGITALTWINS building WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}')";
+
+            Assert.AreEqual(expectedQuery, query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void CanSelectMultipleProperties()
+        {
+            var query = QueryBuilder
+                .From<Building>()
+                .Select<Building>(b => b.BusinessEntityNumber)
+                .Select<Building>(b => b.BusinessEntityName)
+                .Select<Building>(b => b.Number)
+                .Select<Building>(b => b.ShortName)
+                .Select<Building>(b => b.Description)
+                .Select<Building>(b => b.SquareFootArea);
+
+            var expectedQuery = $"SELECT building.businessEntityNumber, building.businessEntityName, building.number, building.shortName, building.description, building.squareFootArea FROM DIGITALTWINS building WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}')";
+
+            Assert.AreEqual(expectedQuery, query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void CanSelectMultiplePropertiesWithAliases()
+        {
+            var query = QueryBuilder
+                .From<Building>("b")
+                .Select<Building>("b", b => b.Number)
+                .Select<Building>(b => b.Description);
+
+            var expectedQuery = $"SELECT b.number, b.description FROM DIGITALTWINS b WHERE IS_OF_MODEL(b, '{Building.ModelId.UpdateVersion(1)}')";
+
+            Assert.AreEqual(expectedQuery, query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void CanSelectPropertiesFromMultipleTypes()
+        {
+            var query = QueryBuilder
+                .From<Building>()
+                .Join<Building, Floor>(s => s.HasChildren)
+                .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                .Select<Building>(b => b.FriendlyName)
+                .Select<Floor>(f => f.Description);
+
+            var expectedQuery = $"SELECT building.friendlyName, floor.description FROM DIGITALTWINS building JOIN floor RELATED building.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(floor, '{Floor.ModelId.UpdateVersion(1)}') AND building.$dtId = 'ID'";
 
             Assert.AreEqual(expectedQuery, query.BuildAdtQuery());
         }

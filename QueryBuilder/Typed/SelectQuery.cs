@@ -42,18 +42,30 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Select a property on a type.
+        /// </summary>
+        /// <typeparam name="TSelect">The type to be selected.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <returns>ADT query instance with one select clause.</returns>
+        public Query<TSelect> Select<TSelect>(Expression<Func<TSelect, object>> propertySelector)
+        {
+            return Select(null, propertySelector);
+        }
+
+        /// <summary>
         /// Select a type and optionally provide an alias.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
+        /// <param name="propertySelector">Optional property to select on the type.</param>
         /// <returns>ADT query instance with one select clause.</returns>
-        public Query<TSelect> Select<TSelect>(string alias = null)
+        public Query<TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
             ClearSelects();
 
-            ValidateAndAddSelect<TSelect>(alias);
+            ValidateAndAddSelect<TSelect>(alias, propertySelector);
             return new Query<TSelect>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
         }
     }
@@ -69,22 +81,34 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
-        /// Select a type and optionally provide an alias.
+        /// Select a property on a type.
+        /// </summary>
+        /// <typeparam name="TSelect">The type to be selected.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <returns>ADT query instance with two select clauses.</returns>
+        public Query<T, TSelect> Select<TSelect>(Expression<Func<TSelect, object>> propertySelector)
+        {
+            return Select(null, propertySelector);
+        }
+
+        /// <summary>
+        /// Select a type and optionally provide an alias or property.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
+        /// <param name="propertySelector">Optional property to select on the type.</param>
         /// <returns>ADT query instance with two select clauses.</returns>
         public Query<T, TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
-            ValidateAndAddSelect<TSelect>(alias);
+            ValidateAndAddSelect<TSelect>(alias, propertySelector);
             return new Query<T, TSelect>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
         }
     }
 
     /// <summary>
-    /// The query that has two select clause.
+    /// The query that has two select clauses.
     /// </summary>
     /// <typeparam name="T1">The first selected type.</typeparam>
     /// <typeparam name="T2">The second selected type.</typeparam>
@@ -95,22 +119,34 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Select a property on a type.
+        /// </summary>
+        /// <typeparam name="TSelect">The type to be selected.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <returns>ADT query instance with three select clauses.</returns>
+        public Query<T1, T2, TSelect> Select<TSelect>(Expression<Func<TSelect, object>> propertySelector)
+        {
+            return Select(null, propertySelector);
+        }
+
+        /// <summary>
         /// Select a type and optionally provide an alias.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
+        /// <param name="propertySelector">Optional property to select on the type.</param>
         /// <returns>ADT query instance with three select clauses.</returns>
-        public Query<T1, T2, TSelect> Select<TSelect>(string alias = null)
+        public Query<T1, T2, TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
-            ValidateAndAddSelect<TSelect>(alias);
+            ValidateAndAddSelect<TSelect>(alias, propertySelector);
             return new Query<T1, T2, TSelect>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
         }
     }
 
     /// <summary>
-    /// The query that has three select clause.
+    /// The query that has three select clauses.
     /// </summary>
     /// <typeparam name="T1">The first selected type.</typeparam>
     /// <typeparam name="T2">The second selected type.</typeparam>
@@ -122,22 +158,34 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Select a property on a type.
+        /// </summary>
+        /// <typeparam name="TSelect">The type to be selected.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <returns>ADT query instance with four select clauses.</returns>
+        public Query<T1, T2, T3, TSelect> Select<TSelect>(Expression<Func<TSelect, object>> propertySelector)
+        {
+            return Select(null, propertySelector);
+        }
+
+        /// <summary>
         /// Select a type and optionally provide an alias.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
+        /// <param name="propertySelector">Optional property to select on the type.</param>
         /// <returns>ADT query instance with four select clauses.</returns>
-        public Query<T1, T2, T3, TSelect> Select<TSelect>(string alias = null)
+        public Query<T1, T2, T3, TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
-            ValidateAndAddSelect<TSelect>(alias);
+            ValidateAndAddSelect<TSelect>(alias, propertySelector);
             return new Query<T1, T2, T3, TSelect>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
         }
     }
 
     /// <summary>
-    /// The query that has four select clause.
+    /// The query that has four select clauses.
     /// </summary>
     /// <typeparam name="T1">The first selected type.</typeparam>
     /// <typeparam name="T2">The second selected type.</typeparam>
@@ -150,22 +198,34 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Select a property on a type.
+        /// </summary>
+        /// <typeparam name="TSelect">The type to be selected.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <returns>ADT query instance with five select clauses.</returns>
+        public Query<T1, T2, T3, T4, TSelect> Select<TSelect>(Expression<Func<TSelect, object>> propertySelector)
+        {
+            return Select(null, propertySelector);
+        }
+
+        /// <summary>
         /// Select a type and optionally provide an alias.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
+        /// <param name="propertySelector">Optional property to select on the type.</param>
         /// <returns>ADT query instance with five select clauses.</returns>
-        public Query<T1, T2, T3, T4, TSelect> Select<TSelect>(string alias = null)
+        public Query<T1, T2, T3, T4, TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
-            ValidateAndAddSelect<TSelect>(alias);
+            ValidateAndAddSelect<TSelect>(alias, propertySelector);
             return new Query<T1, T2, T3, T4, TSelect>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
         }
     }
 
     /// <summary>
-    /// The query that has five select clause.
+    /// The query that has five select clauses.
     /// </summary>
     /// <typeparam name="T1">The first selected type.</typeparam>
     /// <typeparam name="T2">The second selected type.</typeparam>
@@ -179,22 +239,34 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Select a property on a type.
+        /// </summary>
+        /// <typeparam name="TSelect">The type to be selected.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <returns>ADT query instance with six select clauses.</returns>
+        public Query<T1, T2, T3, T4, T5, TSelect> Select<TSelect>(Expression<Func<TSelect, object>> propertySelector)
+        {
+            return Select(null, propertySelector);
+        }
+
+        /// <summary>
         /// Select a type and optionally provide an alias.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
-        /// <returns>ADT query instance with five select clauses.</returns>
-        public Query<T1, T2, T3, T4, T5, TSelect> Select<TSelect>(string alias = null)
+        /// <param name="propertySelector">Optional property to select on the type.</param>
+        /// <returns>ADT query instance with six select clauses.</returns>
+        public Query<T1, T2, T3, T4, T5, TSelect> Select<TSelect>(string alias = null, Expression<Func<TSelect, object>> propertySelector = null)
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
-            ValidateAndAddSelect<TSelect>(alias);
+            ValidateAndAddSelect<TSelect>(alias, propertySelector);
             return new Query<T1, T2, T3, T4, T5, TSelect>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
         }
     }
 
     /// <summary>
-    /// The query that has six select clause.
+    /// The query that has six select clauses.
     /// </summary>
     /// <typeparam name="T1">The first selected type.</typeparam>
     /// <typeparam name="T2">The second selected type.</typeparam>
