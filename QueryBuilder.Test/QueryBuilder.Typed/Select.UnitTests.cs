@@ -321,7 +321,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
             var query = QueryBuilder
                 .From<Building>()
                 .Top(1)
-                .Select<Building, int?>(b => b.Number);
+                .Select((Building b) => b.Number);
 
             var expectedQuery = $"SELECT TOP(1) building.number FROM DIGITALTWINS building WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}')";
 
@@ -333,12 +333,12 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             var query = QueryBuilder
                 .From<Building>()
-                .Select<Building, string>(b => b.BusinessEntityNumber)
-                .Select<Building, string>(b => b.BusinessEntityName)
-                .Select<Building, int?>(b => b.Number)
-                .Select<Building, string>(b => b.ShortName)
-                .Select<Building, string>(b => b.Description)
-                .Select<Building, float?>(b => b.SquareFootArea);
+                .Select((Building b) => b.BusinessEntityNumber)
+                .Select((Building b) => b.BusinessEntityName)
+                .Select((Building b) => b.Number)
+                .Select((Building b) => b.ShortName)
+                .Select((Building b) => b.Description)
+                .Select((Building b) => b.SquareFootArea);
 
             var expectedQuery = $"SELECT building.businessEntityNumber, building.businessEntityName, building.number, building.shortName, building.description, building.squareFootArea FROM DIGITALTWINS building WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}')";
 
@@ -350,8 +350,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             var query = QueryBuilder
                 .From<Building>("b")
-                .Select<Building, int?>(b => b.Number, typeAlias: "b")
-                .Select<Building, string>(b => b.Description);
+                .Select((Building b) => b.Number, typeAlias: "b")
+                .Select((Building b) => b.Description);
 
             var expectedQuery = $"SELECT b.number, b.description FROM DIGITALTWINS b WHERE IS_OF_MODEL(b, '{Building.ModelId.UpdateVersion(1)}')";
 
@@ -365,8 +365,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .From<Building>()
                 .Join<Building, Floor>(s => s.HasChildren)
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
-                .Select<Building, string>(b => b.FriendlyName)
-                .Select<Floor, string>(f => f.Description);
+                .Select((Building b) => b.FriendlyName)
+                .Select((Floor f) => f.Description);
 
             var expectedQuery = $"SELECT building.friendlyName, floor.description FROM DIGITALTWINS building JOIN floor RELATED building.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(floor, '{Floor.ModelId.UpdateVersion(1)}') AND building.$dtId = 'ID'";
 
@@ -380,8 +380,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .From<Building>()
                 .Join<Building, Floor>(s => s.HasChildren)
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
-                .Select<Building, string>(b => b.Name, "buildingName")
-                .Select<Floor, string>(f => f.Name, "floorName");
+                .Select((Building b) => b.Name, "buildingName")
+                .Select((Floor f) => f.Name, "floorName");
 
             var expectedQuery = $"SELECT building.name AS buildingName, floor.name AS floorName FROM DIGITALTWINS building JOIN floor RELATED building.hasChildren spacehaschildrenrelationship WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(floor, '{Floor.ModelId.UpdateVersion(1)}') AND building.$dtId = 'ID'";
 
@@ -394,8 +394,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
             var query = QueryBuilder
                 .From<Space>("spc1")
                 .Join<Space, Space>(s => s.HasChildren, "spc1", "spc2", "rel")
-                .Select<Space, string>(s => s.Name, "spaceName", "spc1")
-                .Select<Space, string>(s => s.Name, "childName", "spc2");
+                .Select((Space s) => s.Name, "spaceName", "spc1")
+                .Select((Space s) => s.Name, "childName", "spc2");
 
             var expectedQuery = $"SELECT spc1.name AS spaceName, spc2.name AS childName FROM DIGITALTWINS spc1 JOIN spc2 RELATED spc1.hasChildren rel WHERE IS_OF_MODEL(spc1, '{Space.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(spc2, '{Space.ModelId.UpdateVersion(1)}')";
 
@@ -410,8 +410,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 .From<Building>()
                 .Join<Building, Floor>(s => s.HasChildren)
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
-                .Select<Building, string>(b => b.Name)
-                .Select<Floor, string>(f => f.Name);
+                .Select((Building b) => b.Name)
+                .Select((Floor f) => f.Name);
         }
     }
 }
