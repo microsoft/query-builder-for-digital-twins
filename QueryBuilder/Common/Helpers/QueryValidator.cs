@@ -48,7 +48,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
         {
             if (!allowedType.Contains(typeof(TModel)))
             {
-                throw new ArgumentException($"Typed where clause on Type {typeof(TModel).Name} is only allowed on types used in From<T> or Join<T,T>.");
+                throw new ArgumentException($"Typed where or select clause on Type {typeof(TModel).Name} is only allowed on types used in From<T> or Join<T,T>.");
             }
         }
 
