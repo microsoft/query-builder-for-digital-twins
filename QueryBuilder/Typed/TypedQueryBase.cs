@@ -66,16 +66,16 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
 
             if (string.IsNullOrEmpty(propertyAlias))
             {
-                if (selectClause.Aliases.Any(s => s.EndsWith($".{propertyName}")))
+                if (selectClause.Aliases.Any(s => s.Value.EndsWith($".{propertyName}")))
                 {
                     throw new ArgumentException($"Duplicate property name: there is already a property with the name '{propertyName}' in the select clause. Please add a property alias.");
                 }
 
-                selectClause.Add($"{generatedAlias}.{propertyName}");
+                selectClause.Add($"{generatedAlias}.{propertyName}", propertyName);
             }
             else
             {
-                selectClause.Add($"{generatedAlias}.{propertyName} AS {propertyAlias}");
+                selectClause.Add($"{generatedAlias}.{propertyName} AS {propertyAlias}", propertyAlias);
             }
         }
 
