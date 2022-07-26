@@ -34,9 +34,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             var joinFromAlias = GetAssignedAlias(typeof(TJoinFrom));
             var joinWithAlias = GenerateTypeAlias(typeof(TJoinWith));
             var relationship = relationshipSelector.Invoke((TJoinFrom)Activator.CreateInstance(typeof(TJoinFrom)));
-            var relationshipType = relationship.GetType();
-            var relationshipAlias = GenerateTypeAlias(relationshipType);
-            return Join<TJoinFrom, TJoinWith>(relationshipSelector, joinFromAlias, joinWithAlias, relationshipAlias);
+            return Join<TJoinFrom, TJoinWith>(relationshipSelector, joinFromAlias, joinWithAlias);
         }
 
         /// <summary>
@@ -67,9 +65,20 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
 
             aliasToTypeMapping.Add(joinWithAlias, typeof(TJoinWith));
 
+            Type relationshipType;
+            if (relationship is IEnumerable<BasicRelationship>)
+            {
+                var ienumerable = relationship.GetType().GetInterface("IEnumerable`1");
+                relationshipType = ienumerable.GetGenericArguments()[0];
+            }
+            else
+            {
+                relationshipType = relationship.GetType();
+            }
+
             if (string.IsNullOrEmpty(relationshipAlias))
             {
-                relationshipAlias = GenerateTypeAlias(relationship.GetType());
+                relationshipAlias = GenerateTypeAlias(relationshipType);
             }
             else
             {
@@ -79,7 +88,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
                 }
             }
 
-            aliasToTypeMapping.Add(relationshipAlias, relationship.GetType());
+            aliasToTypeMapping.Add(relationshipAlias, relationshipType);
             joinClauses.Add(new JoinClause
             {
                 JoinWith = joinWithAlias,

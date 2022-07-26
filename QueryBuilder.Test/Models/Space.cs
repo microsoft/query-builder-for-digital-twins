@@ -42,7 +42,7 @@ namespace QueryBuilder.UnitTests
         public SpaceStatus Status { get; set; }
 
         [JsonIgnore]
-        public SpaceHasChildrenRelationship HasChildren { get; private set; } = new SpaceHasChildrenRelationship();
+        public SpaceHasChildrenRelationshipCollection HasChildren { get; private set; } = new SpaceHasChildrenRelationshipCollection();
 
         [JsonIgnore]
         public SpaceHasDevicesRelationship HasDevices { get; private set; } = new SpaceHasDevicesRelationship();
