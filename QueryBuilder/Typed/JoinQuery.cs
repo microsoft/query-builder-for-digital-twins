@@ -68,7 +68,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             Type relationshipType;
             if (relationship is IEnumerable<BasicRelationship>)
             {
-                var ienumerable = relationship.GetType().GetInterface("IEnumerable`1");
+                var ienumerable = relationship.GetType().GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
                 relationshipType = ienumerable.GetGenericArguments()[0];
             }
             else
