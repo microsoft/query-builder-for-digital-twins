@@ -54,11 +54,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// Validates the alias is assigned to a model, or the type is not ambiguous (isn't joined with the same type), and then adds the select clause.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
-        /// <typeparam name="TOut">The type of the property.</typeparam>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
         /// <param name="propertySelector">A nullable expression for selecting an individual property on a type.</param>
         /// <param name="propertyAlias">An alias string for assigning an alias to the property.</param>
         /// <param name="typeAlias">An alias string for selecting types that are mapped to aliases.</param>
-        internal void ValidateAndAddSelect<TSelect, TOut>(Expression<Func<TSelect, TOut>> propertySelector, string propertyAlias, string typeAlias)
+        internal void ValidateAndAddSelect<TSelect, TProperty>(Expression<Func<TSelect, TProperty>> propertySelector, string propertyAlias, string typeAlias)
         {
             var generatedAlias = GenerateTypeAlias<TSelect>(typeAlias);
 
