@@ -65,16 +65,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
 
             aliasToTypeMapping.Add(joinWithAlias, typeof(TJoinWith));
 
-            Type relationshipType;
-            if (relationship is IEnumerable<BasicRelationship>)
-            {
-                var ienumerable = relationship.GetType().GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-                relationshipType = ienumerable.GetGenericArguments()[0];
-            }
-            else
-            {
-                relationshipType = relationship.GetType();
-            }
+            var relationshipType = GetRelationshipTargetType(relationship);
 
             if (string.IsNullOrEmpty(relationshipAlias))
             {
@@ -114,6 +105,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             }
 
             return alias;
+        }
+
+        private Type GetRelationshipTargetType(BasicRelationship relationship)
+        {
+            var ienumerable = relationship.GetType().GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            return ienumerable.GetGenericArguments()[0];
         }
     }
 }
