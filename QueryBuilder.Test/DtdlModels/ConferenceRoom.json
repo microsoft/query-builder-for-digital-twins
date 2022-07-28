@@ -1,0 +1,7 @@
+{
+  "@id": "dtmi:test:Space:ConferenceRoom;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "ConferenceRoom",
+  "extends": "dtmi:test:Space;1"
+}

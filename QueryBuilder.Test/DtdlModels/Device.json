@@ -1,0 +1,31 @@
+{
+  "@id": "dtmi:test:Device;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Device",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "externalId",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "name",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "description",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:Sensor;1",
+      "name": "hasSensors"
+    }
+  ]
+}

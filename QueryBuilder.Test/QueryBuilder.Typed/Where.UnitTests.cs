@@ -5,6 +5,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 {
     using System;
     using global::Azure.DigitalTwins.Core;
+    using global::QueryBuilder.Test.Generated;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -379,22 +380,6 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         public void CanPutConditionsOnRelationshipProperties()
         {
             var query = QueryBuilder
-                      .From<Building>()
-                      .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction)
-                      .Where<Building>(b => b.HasITSiteFunction.MaxPriority, ComparisonOperators.IsEqualTo, 50)
-                      .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
-
-            Assert.AreEqual($"SELECT building FROM DIGITALTWINS building JOIN itsitefunction RELATED building.hasITSiteFunction buildinghasitsitefunctionrelationship WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itsitefunction, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND buildinghasitsitefunctionrelationship.maxPriority = 50 AND building.$dtId = 'ID'", query.BuildAdtQuery());
-
-            query = QueryBuilder
-                      .From<Building>()
-                      .Join<Building, Employee>(b => b.HasBuildingContact)
-                      .Where<Building>(b => b.HasBuildingContact.Comments, ComparisonOperators.IsEqualTo, "some comment")
-                      .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
-
-            Assert.AreEqual($"SELECT building FROM DIGITALTWINS building JOIN employee RELATED building.hasBuildingContact buildinghasbuildingcontactrelationship WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(employee, '{Employee.ModelId.UpdateVersion(1)}') AND buildinghasbuildingcontactrelationship.comments = 'some comment' AND building.$dtId = 'ID'", query.BuildAdtQuery());
-
-            query = QueryBuilder
                       .From<Building>("bldng")
                       .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
                       .Where<BuildingHasITSiteFunctionRelationship>("maxPriority", ComparisonOperators.IsEqualTo, 50)
@@ -418,7 +403,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
             var query = QueryBuilder
                          .From<Building>()
                          .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction)
-                         .Where<Building>(b => b.HasSalesGeo.ToString(), ComparisonOperators.IsEqualTo, 50)
+                         .Where<Building>(b => b.HasAddress.ToString(), ComparisonOperators.IsEqualTo, 50)
                          .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
         }
 
@@ -429,7 +414,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
             var query = QueryBuilder
                          .From<Building>()
                          .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction)
-                         .Where<Building>(b => b.HasSalesGeo.Name.Length, ComparisonOperators.IsEqualTo, 50)
+                         .Where<Building>(b => b.HasAddress.Targets, ComparisonOperators.IsEqualTo, 50)
                          .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
         }
 

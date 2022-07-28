@@ -1,0 +1,20 @@
+{
+  "@id": "dtmi:test:ITSiteFunction;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "ITSiteFunction",
+  "contents": [
+    {
+      "@type": "Property",
+      "schema": "integer",
+      "writable": true,
+      "name": "externalId"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "description"
+    }
+  ]
+}

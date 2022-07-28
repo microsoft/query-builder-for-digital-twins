@@ -6,6 +6,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using global::QueryBuilder.Test.Generated;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

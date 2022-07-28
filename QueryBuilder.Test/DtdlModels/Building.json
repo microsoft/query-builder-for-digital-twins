@@ -1,0 +1,152 @@
+{
+  "@id": "dtmi:test:Space:Building;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Building",
+  "extends": "dtmi:test:Space;1",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "businessEntityNumber",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "number",
+      "writable": true,
+      "schema": "integer"
+    },
+    {
+      "@type": "Property",
+      "name": "shortName",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "squareMeter",
+      "writable": true,
+      "schema": "float"
+    },
+    {
+      "@type": "Property",
+      "name": "rationalSortKey",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "regionId",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "startOfBusinessTime",
+      "writable": true,
+      "schema": "time"
+    },
+    {
+      "@type": "Property",
+      "name": "endOfBusinessTime",
+      "writable": true,
+      "schema": "time"
+    },
+    {
+      "@type": "Property",
+      "name": "businessEntityName",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "amenities",
+      "writable": true,
+      "schema": {
+        "@type": "Map",
+        "mapKey": {
+          "name": "amenityName",
+          "schema": "string"
+        },
+        "mapValue": {
+          "name": "amenityValue",
+          "schema": "boolean"
+        }
+      }
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:Address;1",
+      "name": "hasAddress",
+      "properties": [
+        {
+          "@type": "Property",
+          "name": "addressType",
+          "schema": {
+            "@type": "Enum",
+            "valueSchema": "string",
+            "enumValues": [
+              {
+                "name": "Mailing",
+                "displayName": "Mailing",
+                "enumValue": "Mailing",
+                "comment": "1"
+              },
+              {
+                "name": "Street",
+                "displayName": "Street",
+                "enumValue": "Street",
+                "comment": "2"
+              },
+              {
+                "name": "Temporary",
+                "displayName": "Temporary",
+                "enumValue": "Temporary",
+                "comment": "3"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:ITSiteFunction;1",
+      "name": "hasITSiteFunction",
+      "properties": [
+        {
+          "@type": "Property",
+          "name": "maxPriority",
+          "writable": true,
+          "schema": "integer"
+        }
+      ]
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:Employee;1",
+      "name": "hasBuildingContact",
+      "properties": [
+        {
+          "@type": "Property",
+          "name": "contactType",
+          "writable": true,
+          "schema": "string"
+        },
+        {
+          "@type": "Property",
+          "name": "comments",
+          "writable": true,
+          "schema": "string"
+        },
+        {
+          "@type": "Property",
+          "name": "externalId",
+          "writable": true,
+          "schema": "integer"
+        }
+      ]
+    }
+  ]
+}

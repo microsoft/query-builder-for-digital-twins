@@ -1,0 +1,21 @@
+{
+  "@id": "dtmi:test:Space:Building:WBuilding;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "WBuilding",
+  "extends": "dtmi:test:Space:Building;1",
+  "contents": [
+    {
+      "@type": "Property",
+      "schema": "integer",
+      "writable": true,
+      "name": "limit"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "landlordName"
+    }
+  ]
+}
