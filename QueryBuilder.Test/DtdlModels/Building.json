@@ -112,19 +112,6 @@
     },
     {
       "@type": "Relationship",
-      "target": "dtmi:test:ITSiteFunction;1",
-      "name": "hasITSiteFunction",
-      "properties": [
-        {
-          "@type": "Property",
-          "name": "maxPriority",
-          "writable": true,
-          "schema": "integer"
-        }
-      ]
-    },
-    {
-      "@type": "Relationship",
       "target": "dtmi:test:Employee;1",
       "name": "hasBuildingContact",
       "properties": [

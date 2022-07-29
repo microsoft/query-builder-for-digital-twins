@@ -32,12 +32,6 @@ namespace QueryBuilder.Test.Generated
         public string? OfficialCountryShortName { get; set; }
         [JsonPropertyName("officialCountryLongName")]
         public string? OfficialCountryLongName { get; set; }
-        [JsonPropertyName("postalCodeLengthQuantity")]
-        public string? PostalCodeLengthQuantity { get; set; }
-        [JsonPropertyName("postalCodeMaskDescription")]
-        public string? PostalCodeMaskDescription { get; set; }
-        [JsonPropertyName("postalCodeMaskExpression")]
-        public string? PostalCodeMaskExpression { get; set; }
         [JsonPropertyName("unitOfMeasure")]
         public string? UnitOfMeasure { get; set; }
         [JsonIgnore]
@@ -51,7 +45,7 @@ namespace QueryBuilder.Test.Generated
 
         public bool Equals(Country? other)
         {
-            return other is not null && Id == other.Id && Metadata.ModelId == other.Metadata.ModelId && Number == other.Number && Name == other.Name && ShortName == other.ShortName && Code == other.Code && ShortCode == other.ShortCode && OfficialCountryShortName == other.OfficialCountryShortName && OfficialCountryLongName == other.OfficialCountryLongName && PostalCodeLengthQuantity == other.PostalCodeLengthQuantity && PostalCodeMaskDescription == other.PostalCodeMaskDescription && PostalCodeMaskExpression == other.PostalCodeMaskExpression && UnitOfMeasure == other.UnitOfMeasure;
+            return other is not null && Id == other.Id && Metadata.ModelId == other.Metadata.ModelId && Number == other.Number && Name == other.Name && ShortName == other.ShortName && Code == other.Code && ShortCode == other.ShortCode && OfficialCountryShortName == other.OfficialCountryShortName && OfficialCountryLongName == other.OfficialCountryLongName && UnitOfMeasure == other.UnitOfMeasure;
         }
 
         public static bool operator ==(Country? left, Country? right)
@@ -66,7 +60,7 @@ namespace QueryBuilder.Test.Generated
 
         public override int GetHashCode()
         {
-            return this.CustomHash(Id?.GetHashCode(), Metadata?.ModelId?.GetHashCode(), Number?.GetHashCode(), Name?.GetHashCode(), ShortName?.GetHashCode(), Code?.GetHashCode(), ShortCode?.GetHashCode(), OfficialCountryShortName?.GetHashCode(), OfficialCountryLongName?.GetHashCode(), PostalCodeLengthQuantity?.GetHashCode(), PostalCodeMaskDescription?.GetHashCode(), PostalCodeMaskExpression?.GetHashCode(), UnitOfMeasure?.GetHashCode());
+            return this.CustomHash(Id?.GetHashCode(), Metadata?.ModelId?.GetHashCode(), Number?.GetHashCode(), Name?.GetHashCode(), ShortName?.GetHashCode(), Code?.GetHashCode(), ShortCode?.GetHashCode(), OfficialCountryShortName?.GetHashCode(), OfficialCountryLongName?.GetHashCode(), UnitOfMeasure?.GetHashCode());
         }
 
         public bool Equals(BasicDigitalTwin? other)

@@ -62,11 +62,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                .WhereStartsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
+                .WhereStartsWith<BuildingHasBuildingContactRelationship>("comments", "word")
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND STARTSWITH(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND STARTSWITH(rel.comments, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .From<Building>()
@@ -82,11 +82,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                .WhereEndsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
+                .WhereEndsWith<BuildingHasBuildingContactRelationship>("comments", "word")
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND ENDSWITH(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND ENDSWITH(rel.comments, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
 
             query = QueryBuilder
                    .From<Building>()
@@ -102,11 +102,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                .WhereContains<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
+                .WhereContains<BuildingHasBuildingContactRelationship>("comments", "word")
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND CONTAINS(rel.maxPriority, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND CONTAINS(rel.comments, 'word') AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
 
         [TestMethod]
@@ -126,11 +126,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                .WhereIn<BuildingHasITSiteFunctionRelationship>("maxPriority", new string[] { "name1", "name2" })
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
+                .WhereIn<BuildingHasBuildingContactRelationship>("comments", new string[] { "name1", "name2" })
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND rel.maxPriority IN ['name1','name2'] AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND rel.comments IN ['name1','name2'] AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
 
         [TestMethod]
@@ -150,11 +150,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                .WhereNotIn<BuildingHasITSiteFunctionRelationship>("maxPriority", new string[] { "name1", "name2" })
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
+                .WhereNotIn<BuildingHasBuildingContactRelationship>("comments", new string[] { "name1", "name2" })
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND rel.maxPriority NIN ['name1','name2'] AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND rel.comments NIN ['name1','name2'] AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
 
         [TestMethod]
@@ -232,40 +232,36 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
                 .Or(query => query
                     .Where<Building>("count", ComparisonOperators.IsGreaterThan, 20, alias: "bldng")
                     .And(q => q
                         .Where<Building>("count", ComparisonOperators.IsLessThan, 10, alias: "bldng")
-                        .WhereEndsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")));
+                        .WhereEndsWith<BuildingHasBuildingContactRelationship>("comments", "word")));
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.comments, 'word')))", query.BuildAdtQuery());
 
-            query = QueryBuilder
-                .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
-                .Not(query => query.WhereIsOfModel<Building, WBuilding>("bldng"))
-                .Or(query => query
-                    .Where<Building>("count", ComparisonOperators.IsGreaterThan, 20, alias: "bldng")
-                    .And(q => q
-                        .Where<Building>("count", ComparisonOperators.IsLessThan, 10, alias: "bldng")
-                        .WhereEndsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")));
+            var query2 = QueryBuilder
+                .From<Room>()
+                .Join<Room, Device>(b => b.HasDevices)
+                .Where<Room>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
+                .Not(query => query.WhereIsOfModel<Room, ConferenceRoom>())
+                .Where<Room>("roomCapacity", ComparisonOperators.IsGreaterThan, 5);
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND NOT IS_OF_MODEL(bldng, '{WBuilding.ModelId.UpdateVersion(1)}') AND (bldng.count > 20 OR (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT room FROM DIGITALTWINS room JOIN device RELATED room.hasDevices spacehasdevicesrelationship WHERE IS_OF_MODEL(room, '{Room.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(device, '{Device.ModelId.UpdateVersion(1)}') AND room.$dtId = 'ID' AND NOT IS_OF_MODEL(room, '{ConferenceRoom.ModelId.UpdateVersion(1)}') AND room.roomCapacity > 5", query2.BuildAdtQuery());
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID")
                 .Or(query => query
                     .Where<Building>("count", ComparisonOperators.IsGreaterThan, 20, alias: "bldng")
                     .Not(q => q
                         .Where<Building>("count", ComparisonOperators.IsLessThan, 10, alias: "bldng")
-                        .WhereEndsWith<BuildingHasITSiteFunctionRelationship>("maxPriority", "word")));
+                        .WhereEndsWith<BuildingHasBuildingContactRelationship>("comments", "word")));
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND (bldng.count > 20 OR NOT (bldng.count < 10 AND ENDSWITH(rel.maxPriority, 'word')))", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND bldng.$dtId = 'ID' AND (bldng.count > 20 OR NOT (bldng.count < 10 AND ENDSWITH(rel.comments, 'word')))", query.BuildAdtQuery());
         }
 
         [TestMethod]
@@ -381,11 +377,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             var query = QueryBuilder
                       .From<Building>("bldng")
-                      .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                      .Where<BuildingHasITSiteFunctionRelationship>("maxPriority", ComparisonOperators.IsEqualTo, 50)
+                      .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
+                      .Where<BuildingHasBuildingContactRelationship>("externalId", ComparisonOperators.IsEqualTo, 50)
                       .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND rel.maxPriority = 50 AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND rel.externalId = 50 AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
 
             query = QueryBuilder
                       .From<Building>("bldng")
@@ -402,7 +398,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             var query = QueryBuilder
                          .From<Building>()
-                         .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction)
+                         .Join<Building, Employee>(b => b.HasBuildingContact)
                          .Where<Building>(b => b.HasAddress.ToString(), ComparisonOperators.IsEqualTo, 50)
                          .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
         }
@@ -413,7 +409,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             var query = QueryBuilder
                          .From<Building>()
-                         .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction)
+                         .Join<Building, Employee>(b => b.HasBuildingContact)
                          .Where<Building>(b => b.HasAddress.Targets, ComparisonOperators.IsEqualTo, 50)
                          .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
         }
@@ -471,11 +467,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 
             query = QueryBuilder
                 .From<Building>("bldng")
-                .Join<Building, ITSiteFunction>(b => b.HasITSiteFunction, "bldng", "itfunc", "rel")
-                .Where<BuildingHasITSiteFunctionRelationship>("maxPriority", op)
+                .Join<Building, Employee>(b => b.HasBuildingContact, "bldng", "empl", "rel")
+                .Where<BuildingHasBuildingContactRelationship>("comments", op)
                 .Where<Building>(b => b.Id, ComparisonOperators.IsEqualTo, "ID");
 
-            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN itfunc RELATED bldng.hasITSiteFunction rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(itfunc, '{ITSiteFunction.ModelId.UpdateVersion(1)}') AND {op.Name}(rel.maxPriority) AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN empl RELATED bldng.hasBuildingContact rel WHERE IS_OF_MODEL(bldng, '{Building.ModelId.UpdateVersion(1)}') AND IS_OF_MODEL(empl, '{Employee.ModelId.UpdateVersion(1)}') AND {op.Name}(rel.comments) AND bldng.$dtId = 'ID'", query.BuildAdtQuery());
         }
 
         private void TestComparisonOperation(ComparisonOperators op)

@@ -48,24 +48,6 @@
     },
     {
       "@type": "Property",
-      "name": "postalCodeLengthQuantity",
-      "writable": true,
-      "schema": "string"
-    },
-    {
-      "@type": "Property",
-      "name": "postalCodeMaskDescription",
-      "writable": true,
-      "schema": "string"
-    },
-    {
-      "@type": "Property",
-      "name": "postalCodeMaskExpression",
-      "writable": true,
-      "schema": "string"
-    },
-    {
-      "@type": "Property",
       "name": "unitOfMeasure",
       "writable": true,
       "schema": "string"

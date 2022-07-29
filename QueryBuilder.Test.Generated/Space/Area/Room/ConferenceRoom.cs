@@ -10,14 +10,14 @@ namespace QueryBuilder.Test.Generated
     using System.Runtime.Serialization;
     using System.Text.Json.Serialization;
 
-    public class ConferenceRoom : Space, IEquatable<ConferenceRoom>
+    public class ConferenceRoom : Room, IEquatable<ConferenceRoom>
     {
         public ConferenceRoom()
         {
             Metadata.ModelId = ModelId;
         }
         [JsonIgnore]
-        public static new string ModelId { get; } = "dtmi:test:Space:ConferenceRoom;1";
+        public static new string ModelId { get; } = "dtmi:test:Space:Area:Room:ConferenceRoom;1";
         public override bool Equals(object? obj)
         {
             return Equals(obj as ConferenceRoom);

@@ -41,8 +41,6 @@ namespace QueryBuilder.Test.Generated
         [JsonIgnore]
         public BuildingHasAddressRelationshipCollection HasAddress { get; set; } = new BuildingHasAddressRelationshipCollection();
         [JsonIgnore]
-        public BuildingHasITSiteFunctionRelationshipCollection HasITSiteFunction { get; set; } = new BuildingHasITSiteFunctionRelationshipCollection();
-        [JsonIgnore]
         public BuildingHasBuildingContactRelationshipCollection HasBuildingContact { get; set; } = new BuildingHasBuildingContactRelationshipCollection();
         public override bool Equals(object? obj)
         {
