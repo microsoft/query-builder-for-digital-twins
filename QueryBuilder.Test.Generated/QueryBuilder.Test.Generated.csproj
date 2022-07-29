@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net6</TargetFrameworks>
+    <TargetFrameworks>net6</TargetFrameworks>
     <DeterministicSourcePaths>false</DeterministicSourcePaths>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>QueryBuilder.Test.Generated</RootNamespace>
@@ -14,19 +14,10 @@
     <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+  <ItemGroup>
+    <PackageReference Include="Azure.DigitalTwins.Core" Version="1.2.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Text.Json" Version="6.0.4" />
     <PackageReference Include="System.Text.Encodings.Web" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="4.7.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Azure.DigitalTwins.Core" Version="1.2.2" />
   </ItemGroup>
 </Project>
