@@ -38,7 +38,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
         /// Gets the list of aliases in the query.
         /// </summary>
         /// <returns>All the aliases used in the query.</returns>
-        public IEnumerable<string> SelectedAliases => selectClause.Aliases;
+        public IEnumerable<string> SelectedAliases => selectClause.Aliases.Select(a => a.Key);
 
         /// <summary>
         /// Build the ADT query.

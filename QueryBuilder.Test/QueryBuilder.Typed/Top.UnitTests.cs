@@ -3,6 +3,7 @@
 
 namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 {
+    using global::QueryBuilder.Test.Generated;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 

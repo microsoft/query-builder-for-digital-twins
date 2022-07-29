@@ -1,0 +1,20 @@
+{
+  "@id": "dtmi:test:City;1",
+  "@type": "Interface",
+  "displayName": "City",
+  "@context": "dtmi:dtdl:context;2",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "name",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "code",
+      "writable": true,
+      "schema": "string"
+    }
+  ]
+}

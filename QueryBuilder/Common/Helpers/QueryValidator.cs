@@ -13,7 +13,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
 
     internal static class QueryValidator
     {
-        internal static void ExtractModelAndPropertyName<TModel>(Expression<Func<TModel, object>> propertySelector, out Type type, out string propertyName) where TModel : BasicDigitalTwin
+        internal static void ExtractModelAndPropertyName<TModel, TProperty>(Expression<Func<TModel, TProperty>> propertySelector, out Type type, out string propertyName)
         {
             var member = propertySelector.Body as MemberExpression;
             if (propertySelector.Body is UnaryExpression unary) // for primitive-type properties that require conversion to object
@@ -48,7 +48,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
         {
             if (!allowedType.Contains(typeof(TModel)))
             {
-                throw new ArgumentException($"Typed where clause on Type {typeof(TModel).Name} is only allowed on types used in From<T> or Join<T,T>.");
+                throw new ArgumentException($"Typed where or select clause on Type {typeof(TModel).Name} is only allowed on types used in From<T> or Join<T,T>.");
             }
         }
 

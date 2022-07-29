@@ -5,6 +5,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using global::Azure.DigitalTwins.Core;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers;
@@ -20,13 +21,31 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         }
 
         /// <summary>
+        /// Select a property on a type and optionally provide an alias.
+        /// </summary>
+        /// <typeparam name="TSelect">The type from which to select a property.</typeparam>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <param name="propertySelector">The property to select on the type.</param>
+        /// <param name="propertyAlias">Optional alias to map to the selected property.</param>
+        /// <param name="typeAlias">Optional alias to map to the selected type.</param>
+        /// <returns>ADT query instance with one select clause.</returns>
+        public Query<TProperty> Select<TSelect, TProperty>(Expression<Func<TSelect, TProperty>> propertySelector, string propertyAlias = null, string typeAlias = null)
+        {
+            QueryValidator.ValidateType<TSelect>(Types);
+
+            ClearSelects();
+
+            ValidateAndAddSelect<TSelect, TProperty>(propertySelector, propertyAlias, typeAlias);
+            return new Query<TProperty>(aliasToTypeMapping, selectClause, fromClause, joinClauses, whereClause);
+        }
+
+        /// <summary>
         /// Select a type and optionally provide an alias.
         /// </summary>
         /// <typeparam name="TSelect">The type to be selected.</typeparam>
         /// <param name="alias">Optional alias to map to the selected type.</param>
         /// <returns>ADT query instance with one select clause.</returns>
         public Query<TSelect> Select<TSelect>(string alias = null)
-            where TSelect : BasicDigitalTwin
         {
             QueryValidator.ValidateType<TSelect>(Types);
 
@@ -39,7 +58,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// <summary>
         /// Select Top(N) records.
         /// </summary>
-        /// <param name="numberOfRecords">Postive number.</param>
+        /// <param name="numberOfRecords">Positive number.</param>
         /// <returns>The ADT Query with TOP clause.</returns>
         public DefaultSelectQuery<T> Top(ushort numberOfRecords)
         {

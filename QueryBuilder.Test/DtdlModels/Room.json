@@ -1,0 +1,21 @@
+{
+  "@id": "dtmi:test:Space:Area:Room;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Room",
+  "extends": "dtmi:test:Space:Area;1",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "seatCount",
+      "writable": true,
+      "schema": "integer"
+    },
+    {
+      "@type": "Property",
+      "name": "roomCapacity",
+      "writable": true,
+      "schema": "integer"
+    }
+  ]
+}

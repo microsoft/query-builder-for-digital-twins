@@ -1,0 +1,14 @@
+{
+  "@id": "dtmi:test:Amenities;1",
+  "@type": "Interface",
+  "displayName": "Amenities",
+  "@context": "dtmi:dtdl:context;2",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "description",
+      "writable": true,
+      "schema": "string"
+    }
+  ]
+}

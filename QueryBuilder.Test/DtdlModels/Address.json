@@ -1,0 +1,47 @@
+{
+  "@id": "dtmi:test:Address;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Address",
+  "contents": [
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "street1"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "street2"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "county"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "zipcode"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:StateProvince;1",
+      "name": "hasState"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:City;1",
+      "name": "hasCity"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:Country;1",
+      "name": "hasCountry"
+    }
+  ]
+}

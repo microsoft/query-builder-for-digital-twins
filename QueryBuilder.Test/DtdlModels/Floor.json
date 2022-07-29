@@ -1,0 +1,19 @@
+{
+  "@id": "dtmi:test:Space:Floor;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Floor",
+  "extends": "dtmi:test:Space;1",
+  "contents": [
+    {
+      "@type": "Property",
+      "schema": "integer",
+      "name": "logicalOrder"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "name": "regionId"
+    }
+  ]
+}

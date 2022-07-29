@@ -1,0 +1,20 @@
+{
+  "@id": "dtmi:test:StateProvince;30",
+  "@type": "Interface",
+  "displayName": "State",
+  "@context": "dtmi:dtdl:context;2",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "code",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "name",
+      "writable": true,
+      "schema": "string"
+    }
+  ]
+}

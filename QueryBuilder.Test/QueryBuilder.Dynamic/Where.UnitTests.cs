@@ -4,6 +4,7 @@
 namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
 {
     using System;
+    using global::QueryBuilder.Test.Generated;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -309,7 +310,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Or()
                     .TwinProperty("name").NotEqualTo("building 1"));
 
-            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') OR twin.count > 20 OR twin.name != 'building 1'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:test:Space;1') OR twin.count > 20 OR twin.name != 'building 1'", query.BuildAdtQuery());
 
             query = QueryBuilder.FromTwins()
                 .Where(t => t
@@ -321,7 +322,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Not()
                     .TwinProperty("name").NotEqualTo("building 1"));
 
-            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') OR twin.count > 20 OR NOT NOT twin.name != 'building 1'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:test:Space;1') OR twin.count > 20 OR NOT NOT twin.name != 'building 1'", query.BuildAdtQuery());
 
             query = QueryBuilder.FromTwins()
                 .Where(t => t
@@ -331,7 +332,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .And()
                     .TwinProperty("name").NotEqualTo("building 1"));
 
-            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') AND twin.count > 20 AND twin.name != 'building 1'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:test:Space;1') AND twin.count > 20 AND twin.name != 'building 1'", query.BuildAdtQuery());
 
             query = QueryBuilder.FromTwins()
                 .Where(t => t
@@ -343,7 +344,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .And()
                     .TwinProperty("name").NotEqualTo("building 1"));
 
-            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:microsoft:Space;1') OR IS_OF_MODEL(twin, 'dtmi:microsoft:Space:Building;1') AND twin.count > 20 AND twin.name != 'building 1'", query.BuildAdtQuery());
+            Assert.AreEqual($"SELECT twin FROM DIGITALTWINS twin WHERE IS_OF_MODEL(twin, 'dtmi:test:Space;1') OR IS_OF_MODEL(twin, 'dtmi:test:Space:Building;1') AND twin.count > 20 AND twin.name != 'building 1'", query.BuildAdtQuery());
         }
 
         [TestMethod]
