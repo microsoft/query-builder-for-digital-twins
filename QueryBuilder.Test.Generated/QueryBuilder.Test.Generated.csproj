@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net6</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <DeterministicSourcePaths>false</DeterministicSourcePaths>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>QueryBuilder.Test.Generated</RootNamespace>
