@@ -1,0 +1,8 @@
+{
+  "@id": "dtmi:test:Hallway;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Hallway",
+  "extends": "dtmi:test:Space;1",
+  "contents": []
+}

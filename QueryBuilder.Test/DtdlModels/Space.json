@@ -1,0 +1,108 @@
+{
+  "@id": "dtmi:test:Space;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Space",
+  "contents": [
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "name"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "roomKey"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "friendlyName"
+    },
+    {
+      "@type": "Property",
+      "schema": "string",
+      "writable": true,
+      "name": "description"
+    },
+    {
+      "@type": "Property",
+      "name": "squareFootArea",
+      "writable": true,
+      "schema": "float"
+    },
+    {
+      "@type": "Property",
+      "schema": {
+        "@type": "Map",
+        "mapKey": {
+          "name": "capabilityName",
+          "schema": "string"
+        },
+        "mapValue": {
+          "name": "capabilityValue",
+          "schema": "boolean"
+        }
+      },
+      "writable": true,
+      "name": "capabilities"
+    },
+    {
+      "@type": "Property",
+      "name": "status",
+      "schema": {
+        "@type": "Enum",
+        "valueSchema": "string",
+        "enumValues": [
+          {
+            "name": "Active",
+            "displayName": "Active",
+            "enumValue": "Active",
+            "description": "active",
+            "comment": "1"
+          },
+          {
+            "name": "Inactive",
+            "displayName": "Inactive",
+            "enumValue": "Inactive",
+            "description": "inactive",
+            "comment": "2"
+          },
+          {
+            "name": "Pending",
+            "displayName": "Pending",
+            "enumValue": "Pending",
+            "description": "pending",
+            "comment": "3"
+          },
+          {
+            "name": "UnderConstruction",
+            "displayName": "Under Construction",
+            "enumValue": "UnderConstruction",
+            "description": "underConstruction",
+            "comment": "4"
+          }
+        ]
+      },
+      "writable": true
+    },
+    {
+      "@type": "Relationship",
+      "name": "hasChildren",
+      "target": "dtmi:test:Space;1"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:Space;1",
+      "name": "hasParent"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:Device;1",
+      "name": "hasDevices"
+    }
+  ]
+}

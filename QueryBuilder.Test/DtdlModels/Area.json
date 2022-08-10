@@ -1,0 +1,27 @@
+{
+  "@id": "dtmi:test:Space:Area;1",
+  "@type": "Interface",
+  "@context": "dtmi:dtdl:context;2",
+  "displayName": "Area",
+  "extends": "dtmi:test:Space;1",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "floorId",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "buildingId",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "regionId",
+      "writable": true,
+      "schema": "string"
+    }
+  ]
+}

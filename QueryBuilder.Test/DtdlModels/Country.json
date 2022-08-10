@@ -1,0 +1,66 @@
+{
+  "@id": "dtmi:test:Country;1",
+  "@type": "Interface",
+  "displayName": "Country",
+  "@context": "dtmi:dtdl:context;2",
+  "contents": [
+    {
+      "@type": "Property",
+      "name": "number",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "name",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "shortName",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "code",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "shortCode",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "officialCountryShortName",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "officialCountryLongName",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Property",
+      "name": "unitOfMeasure",
+      "writable": true,
+      "schema": "string"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:StateProvince;1",
+      "name": "hasState"
+    },
+    {
+      "@type": "Relationship",
+      "target": "dtmi:test:City;1",
+      "name": "hasCity"
+    }
+  ]
+}

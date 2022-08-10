@@ -34,9 +34,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             var joinFromAlias = GetAssignedAlias(typeof(TJoinFrom));
             var joinWithAlias = GenerateTypeAlias(typeof(TJoinWith));
             var relationship = relationshipSelector.Invoke((TJoinFrom)Activator.CreateInstance(typeof(TJoinFrom)));
-            var relationshipType = relationship.GetType();
-            var relationshipAlias = GenerateTypeAlias(relationshipType);
-            return Join<TJoinFrom, TJoinWith>(relationshipSelector, joinFromAlias, joinWithAlias, relationshipAlias);
+            return Join<TJoinFrom, TJoinWith>(relationshipSelector, joinFromAlias, joinWithAlias);
         }
 
         /// <summary>
@@ -67,9 +65,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
 
             aliasToTypeMapping.Add(joinWithAlias, typeof(TJoinWith));
 
+            var relationshipType = GetRelationshipTargetType(relationship);
+
             if (string.IsNullOrEmpty(relationshipAlias))
             {
-                relationshipAlias = GenerateTypeAlias(relationship.GetType());
+                relationshipAlias = GenerateTypeAlias(relationshipType);
             }
             else
             {
@@ -79,7 +79,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
                 }
             }
 
-            aliasToTypeMapping.Add(relationshipAlias, relationship.GetType());
+            aliasToTypeMapping.Add(relationshipAlias, relationshipType);
             joinClauses.Add(new JoinClause
             {
                 JoinWith = joinWithAlias,
@@ -105,6 +105,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             }
 
             return alias;
+        }
+
+        private Type GetRelationshipTargetType(BasicRelationship relationship)
+        {
+            var ienumerable = relationship.GetType().GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            return ienumerable.GetGenericArguments()[0];
         }
     }
 }
