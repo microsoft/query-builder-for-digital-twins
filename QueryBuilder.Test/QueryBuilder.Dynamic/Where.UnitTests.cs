@@ -553,6 +553,22 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .Select("twin", "hasAddressTwin", "hasCityTwin")
                     .BuildAdtQuery();
             Assert.AreEqual("SELECT twin, hasAddressTwin, hasCityTwin FROM DIGITALTWINS twin JOIN hasAddressTwin RELATED twin.hasAddress hasaddressrelationship JOIN hasCityTwin RELATED hasAddressTwin.hasCity hascityrelationship WHERE IS_OF_MODEL(twin, 'dtmi:space:building;1') AND twin.name = '122'", queryString);
+
+            queryString = QueryBuilder
+                        .FromTwins()
+                        .Where($"not twin.name eq 'building1'")
+                        .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE NOT twin.name = 'building1'", queryString);
+        }
+
+        [TestMethod]
+        public void StringsInScalarFunctionsAreNotOverwritten()
+        {
+            var queryString = QueryBuilder
+                    .FromTwins()
+                    .Where($"twin.name equals 'building1' and not contains(twin.description, 'myname has an equals in it')")
+                    .BuildAdtQuery();
+            Assert.AreEqual("SELECT twin FROM DIGITALTWINS twin WHERE twin.name = 'building1' AND NOT CONTAINS(twin.description, 'myname has an equals in it')", queryString);
         }
 
         [TestMethod]

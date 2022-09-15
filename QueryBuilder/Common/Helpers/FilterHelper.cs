@@ -6,6 +6,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
 
     internal static class FilterHelper
@@ -29,14 +30,14 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
 
         private static readonly IDictionary<string, string> scalarFunctionMap = new Dictionary<string, string>
         {
-            { "isofmodel(", "IS_OF_MODEL(" },
-            { "is_of_model(", "IS_OF_MODEL(" },
-            { "contains(", "CONTAINS(" },
-            { "startswith(", "STARTSWITH(" },
-            { "endswith(", "ENDSWITH(" },
-            { " in [", " IN [" },
-            { " notin [", " NIN [" },
-            { " nin [", " NIN [" }
+            { "isofmodel\\(", "IS_OF_MODEL(" },
+            { "is_of_model\\(", "IS_OF_MODEL(" },
+            { "contains\\(", "CONTAINS(" },
+            { "startswith\\(", "STARTSWITH(" },
+            { "endswith\\(", "ENDSWITH(" },
+            { " in \\[", " IN [" },
+            { " notin \\[", " NIN [" },
+            { " nin \\[", " NIN [" }
         };
 
         private static readonly IDictionary<string, string> compoundOperatorMap = new Dictionary<string, string>
@@ -44,7 +45,9 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
             { " || ", " OR " },
             { " or ", " OR " },
             { " and ", " AND " },
-            { " && ", " AND " }
+            { " && ", " AND " },
+            { " not ", " NOT " },
+            { "not ", "NOT " }
         };
 
         internal static string ReplaceOperators(string queryText) => ReplaceWithMap(binaryOperatorMap, queryText);
@@ -85,13 +88,31 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
             var newQueryText = queryText;
             foreach (var key in map.Keys)
             {
-                if (newQueryText.Contains(key))
-                {
-                    newQueryText = newQueryText.Replace(key, map[key]);
-                }
+                var regexPattern = $"(?<ignored>'[^']+')|(?<replace>{key})";
+                newQueryText = Regex.Replace(newQueryText, regexPattern, (match) => Evaluate(match, map[key]));
             }
 
             return newQueryText;
+        }
+
+        private static string Evaluate(Match match, string newValue)
+        {
+            if (match.Value == string.Empty)
+            {
+                return string.Empty;
+            }
+
+            if (match.Value == " ")
+            {
+                return match.Value;
+            }
+
+            if (match.Value.StartsWith("'") && match.Value.EndsWith("'"))
+            {
+                return match.Value;
+            }
+
+            return newValue;
         }
     }
 }
