@@ -74,6 +74,34 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         }
 
         [TestMethod]
+        public void CanUseStringWhereConditionWithJoin()
+        {
+            var query = QueryBuilder
+                .FromTwins("bldng")
+                .Join(b => b
+                    .With("flr")
+                    .RelatedBy("hasChildren")
+                    .As("rel")
+                    .Where("flr.name eq 'floor1'"));
+
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren rel WHERE flr.name = 'floor1'", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
+        public void JoinWhereAddsNoConditionIfStringIsNullOrEmpty()
+        {
+            var query = QueryBuilder
+                .FromTwins("bldng")
+                .Join(b => b
+                    .With("flr")
+                    .RelatedBy("hasChildren")
+                    .As("rel")
+                    .Where(string.Empty));
+
+            Assert.AreEqual($"SELECT bldng FROM DIGITALTWINS bldng JOIN flr RELATED bldng.hasChildren rel", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CanNotAssignAliasAlreadyUsed()
         {

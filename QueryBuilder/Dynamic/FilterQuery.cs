@@ -31,5 +31,24 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
             whereLogic.Invoke(statement);
             return (TQuery)this;
         }
+
+        /// <summary>
+        /// An alternative way to add a WHERE clause to the query by directly providing a string that contains the condition.
+        /// </summary>
+        /// <param name="filter">The verbatim condition in string format.</param>
+        /// <returns>Query that contains a WHERE clause and conditional arguments.</returns>
+        public TQuery Where(string filter)
+        {
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var fixedFilter = FilterHelper.ReplaceOperators(filter);
+                fixedFilter = FilterHelper.ReplaceScalarFunctions(fixedFilter);
+                fixedFilter = FilterHelper.ReplaceCompoundOperators(fixedFilter);
+                fixedFilter = FilterHelper.FixRelationshipNames(fixedFilter, joinClauses);
+                whereClause.AddCondition(fixedFilter);
+            }
+
+            return (TQuery)this;
+        }
     }
 }
