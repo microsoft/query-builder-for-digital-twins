@@ -13,11 +13,13 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
         <PackageProjectUrl>https://github.com/microsoft/query-builder-for-digital-twins</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <CodeAnalysisRuleSet>..\StyleCop.ruleset</CodeAnalysisRuleSet>
         <TreatWarningsAsErrors Condition="'$(OFFICIAL_BUILD)' == 'True'">true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
         <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
     </ItemGroup>
 
