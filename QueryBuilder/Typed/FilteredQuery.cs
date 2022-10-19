@@ -26,6 +26,17 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         /// <summary>
         /// Add Where condition to ADT Query Builder.
         /// </summary>
+        /// <param name="expression">LINQ Expression.</param>
+        /// <returns>ADT query instance.</returns>
+        public TQuery Where<TModel>(Expression<Func<TModel, bool>> expression)
+            where TModel : BasicDigitalTwin
+        {
+            return new LinqExpressionConverter<TModel>(expression).AddToQuery((TQuery)this);
+        }
+
+        /// <summary>
+        /// Add Where condition to ADT Query Builder.
+        /// </summary>
         /// <param name="propertySelector">Expression to select property of TModel.</param>
         /// <param name="scalarFunction">ADT comparison operator.</param>
         /// <param name="alias"> Optional - Model Alias.</param>
