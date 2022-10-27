@@ -31,7 +31,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         public TQuery Where<TModel>(Expression<Func<TModel, bool>> expression)
             where TModel : BasicDigitalTwin
         {
-            return new LinqExpressionConverter<TModel>(expression).AddToQuery((TQuery)this);
+            return AddConditions(expression);
         }
 
         /// <summary>
@@ -426,6 +426,117 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             var customValue = enumField.GetCustomAttribute<EnumMemberAttribute>();
             var defaultValue = Convert.ChangeType(value, value.GetTypeCode());
             return customValue is null ? defaultValue.ToString() : customValue.Value;
+        }
+
+        private TQuery AddConditions<TModel>(Expression<Func<TModel, bool>> expression)
+            where TModel : BasicDigitalTwin
+        {
+            var linqExpressionParser = new LinqExpressionParser<TModel>(expression);
+            if (linqExpressionParser.IsLogical)
+            {
+                return AddLogicalExpressionConditions((TQuery)this, linqExpressionParser);
+            }
+
+            return AddSimpleExpressionConditions((TQuery)this, linqExpressionParser);
+        }
+
+        private static TQuery AddSimpleExpressionConditions<TModel>(TQuery query, LinqExpressionParser<TModel> linqExpressionParser)
+            where TModel : BasicDigitalTwin
+        {
+            var propertyName = linqExpressionParser.PropertyName;
+            var value = linqExpressionParser.Value;
+            var scalarOperator = linqExpressionParser.ScalarOperator;
+            var comparisonOperator = linqExpressionParser.ComparisonOperator;
+            if (!linqExpressionParser.IsScalar)
+            {
+                query.whereClause.AddCondition(query.CreateWhereComparisonCondition<TModel>(propertyName, comparisonOperator, value, typeof(TModel), null));
+                return query;
+            }
+
+            if (scalarOperator is ScalarUnaryOperator unaryOperator)
+            {
+                if (unaryOperator == ScalarOperators.IS_NULL && linqExpressionParser.ComparisonOperator == ComparisonOperators.NotEqualTo)
+                {
+                    var tempQuery = (TQuery)query.MemberwiseClone();
+                    tempQuery.whereClause = new WhereClause();
+                    tempQuery.whereClause.AddCondition(query.CreateWhereScalarCondition<TModel>(propertyName, unaryOperator, typeof(TModel), null));
+                    query.whereClause.AddCondition(new NotCondition
+                    {
+                        Condition = tempQuery.whereClause.Conditions.First()
+                    });
+                    return query;
+                }
+
+                query.whereClause.AddCondition(query.CreateWhereScalarCondition<TModel>(propertyName, unaryOperator, typeof(TModel), null));
+                return query;
+            }
+
+            // scalar binary operator
+            query.whereClause.AddCondition(query.CreateAdtScalarBinaryOperatorCondition<TModel>(propertyName, (string)value, typeof(TModel), null, scalarOperator));
+            return query;
+        }
+
+        private static TQuery AddLogicalExpressionConditions<TModel>(TQuery query, LinqExpressionParser<TModel> linqExpressionParser)
+            where TModel : BasicDigitalTwin
+        {
+            var leftLogicalExpression = linqExpressionParser.LeftLogicalExpression;
+            var rightLogicalExpression = linqExpressionParser.RightLogicalExpression;
+            var logicalExpressionTypes = linqExpressionParser.LogicalExpressionTypes;
+            var logicalExpressionType = linqExpressionParser.LogicalExpressionType;
+            var leftLogicalExpressionParser = new LinqExpressionParser<TModel>(linqExpressionParser.LeftLogicalExpression);
+            var rightLogicalExpressionParser = new LinqExpressionParser<TModel>(linqExpressionParser.RightLogicalExpression);
+
+            // left is logical, right is simple
+            if (logicalExpressionTypes.Contains(leftLogicalExpression.NodeType) && !logicalExpressionTypes.Contains(rightLogicalExpression.NodeType))
+            {
+                return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddLogicalExpressionConditions, AddSimpleExpressionConditions, leftLogicalExpressionParser, rightLogicalExpressionParser);
+            }
+
+            // right is logical, left is simple
+            if (logicalExpressionTypes.Contains(rightLogicalExpression.NodeType) && !logicalExpressionTypes.Contains(leftLogicalExpression.NodeType))
+            {
+                return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddLogicalExpressionConditions, AddSimpleExpressionConditions, rightLogicalExpressionParser, leftLogicalExpressionParser);
+            }
+
+            // both are logical
+            if (logicalExpressionTypes.Contains(leftLogicalExpression.NodeType) && logicalExpressionTypes.Contains(rightLogicalExpression.NodeType))
+            {
+                return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddLogicalExpressionConditions, AddLogicalExpressionConditions, rightLogicalExpressionParser, leftLogicalExpressionParser);
+            }
+
+            // both are simple
+            return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddSimpleExpressionConditions, AddSimpleExpressionConditions, rightLogicalExpressionParser, leftLogicalExpressionParser);
+        }
+
+        private static TQuery AddLogicalExpressionTypeConditions<TModel>(
+            TQuery query,
+            ExpressionType logicalExpressionType,
+            Func<TQuery, LinqExpressionParser<TModel>, TQuery> outerFunction,
+            Func<TQuery, LinqExpressionParser<TModel>, TQuery> innerFunction,
+            LinqExpressionParser<TModel> outerFunctionParam,
+            LinqExpressionParser<TModel> innerFunctionParam)
+            where TModel : BasicDigitalTwin
+        {
+            Action<FilteredQuery<TQuery>> conditions;
+            var tempQuery = (TQuery)query.MemberwiseClone();
+            tempQuery.whereClause = new WhereClause();
+            conditions = query => outerFunction(innerFunction((TQuery)query, innerFunctionParam), outerFunctionParam);
+            conditions.Invoke(tempQuery);
+            if (logicalExpressionType == ExpressionType.AndAlso)
+            {
+                query.whereClause.AddCondition(new AndCondition
+                {
+                    Conditions = tempQuery.whereClause.Conditions
+                });
+                return query;
+            }
+
+            // Invariant: logicalExpressionType is either AndAlso or OrElse.
+            query.whereClause.AddCondition(new OrCondition
+            {
+                Conditions = tempQuery.whereClause.Conditions
+            });
+            return query;
         }
     }
 }

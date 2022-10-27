@@ -253,6 +253,141 @@ ScalarOperators
 
 ___
 
+## Typed Samples Using LINQ Expressions
+
+Here are some samples of how the Typed flow can be used to construct complex queries:
+
+```csharp
+var query = QueryBuilder
+                .From<Building>()
+                .Join<Building, Device>(b => b.HasDevices)
+                .Join<Device, Sensor>(d => d.HasSensors)
+                .Where<Building>(b => b.Id == "ID")
+                .Select<Sensor>();
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - Gets you all sensor twins in the specified building
+
+SELECT sensor
+FROM DIGITALTWINS building
+JOIN device RELATED building.hasDevices
+JOIN sensor RELATED device.hasSensors
+WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+AND IS_OF_MODEL(device, 'dtmi:microsoft:Device;1')
+AND IS_OF_MODEL(sensor, 'dtmi:microsoft:Sensor;1')
+AND building.$dtId = 'ID'
+*/
+```
+
+``` csharp
+var query = QueryBuilder
+            .From<Building>()
+            .Top(5)
+            .Where<Building>(b => b.Name.StartsWith("name"));
+
+var stringQuery = query.BuildAdtQuery();
+
+
+/*
+Generated query - uses 'IS_OF_MODEL', 'TOP' and 'STARTSWITH' ADT query operator
+
+SELECT Top(5) building
+FROM DIGITALTWINS building
+WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+AND STARTSWITH(building.name, 'name')
+*/
+```
+
+``` csharp
+var query = QueryBuilder
+            .From<Building>()
+            .Count()
+            .Where<Building>(b => b.Name.Contains("ame"));
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - uses 'IS_OF_MODEL', 'TOP' and 'CONTAINS' ADT query operator
+
+SELECT COUNT()
+FROM DIGITALTWINS building
+WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+AND CONTAINS(building.name, 'ame')
+*/
+```
+
+```csharp
+var query = QueryBuilder
+            .From<Building>()
+            .Join<Building, Device>(building => building.HasDevices)
+            .Join<Device, Sensor>(device => device.HasSensors)
+            .Where<Building>(building => (building.Id != null && building.Id == "name"))
+            .Where<Device>(device => (device.Name != null && device.Name == "name"))
+            .Select<Sensor>();
+
+var stringQuery = query.BuildAdtQuery();
+
+/*
+Generated query - Gets you all sensor twins in the specified building and device
+
+SELECT sensor
+FROM DIGITALTWINS building
+JOIN device RELATED building.hasDevices spacehasdevicesrelationship
+JOIN sensor RELATED device.hasSensors devicehassensorsrelationship
+WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
+AND IS_OF_MODEL(device, 'dtmi:microsoft:Device;1')
+AND IS_OF_MODEL(sensor, 'dtmi:microsoft:Sensor;1')
+AND (NOT IS_NULL(building.$dtId) AND building.$dtId = '{floor.Name}'))
+AND (NOT IS_NULL(device.name) AND device.name = 'name'))
+*/
+```
+___
+
+### Methods
+
+Methods supported in the Typed flow.
+
+- QueryBuilder
+  - From\<TModel\>()
+    - Where\<TModel\>(expression)
+    - Join\<TJoinFrom,TJoinWith\>(relationship)
+    - Select\<TSelect\>()
+    - Top(numberOfRecords)
+    - Count()
+    - BuildAdtQuery()
+  - CountAllDigitalTwins()
+    - BuildAdtQuery()
+
+___
+
+### Operators
+
+ComparisonOperators
+
+- IsEqualTo
+- IsGreaterThan
+- IsGreaterThanOrEqualTo
+- IsLessThan
+- IsLessThanOrEqualTo
+- NotEqualTo
+
+ScalarOperators
+
+- IS_BOOL
+- IS_NULL
+- IS_NUMBER
+- IS_OBJECT
+- IS_STRING
+- NOT
+
+LogicalOperators
+- AndAlso
+- OrElse
+
+___
+
 ## Dynamic Samples
 
 Here are some samples of how the Dynamic flow can be used to construct complex queries:
