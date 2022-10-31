@@ -366,12 +366,9 @@ ___
 
 ComparisonOperators
 
-- IsEqualTo
-- IsGreaterThan
-- IsGreaterThanOrEqualTo
-- IsLessThan
-- IsLessThanOrEqualTo
-- NotEqualTo
+- =, !=: Used to compare equality of expressions.
+- <, >: Used for ordered comparison of expressions.
+- <=, >=: Used for ordered comparison of expressions, including equality.
 
 ScalarOperators
 

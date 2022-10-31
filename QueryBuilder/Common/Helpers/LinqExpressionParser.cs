@@ -96,12 +96,12 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
 
             if (string.IsNullOrWhiteSpace(PropertyName))
             {
-                throw new Exception($"Failed to establish a PropertyName from the left or right side of the Operand. ");
+                throw new LinqExpressionNotSupportedException($"Failed to establish a PropertyName from the left or right side of the Operand. ");
             }
 
             if (IsScalar && ScalarOperator is ScalarBinaryOperator && Value is null)
             {
-                throw new Exception($"Failed to establish a Value from the left or right side of the Operand. ");
+                throw new LinqExpressionNotSupportedException($"Failed to establish a Value from the left or right side of the Operand. ");
             }
         }
 
@@ -200,19 +200,13 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
         private string GetPropertyName(MemberExpression expression)
         {
             var propInfo = expression.Member as PropertyInfo;
-            var attribute = propInfo.GetPropertyAttributeValueL<JsonPropertyNameAttribute, string>(attr => attr.Name);
-            var propName = string.IsNullOrEmpty(attribute)
-                    ? string.Equals(propInfo.Name, DTID, StringComparison.OrdinalIgnoreCase) ? ADTDTID : propInfo.Name.ToLowerFirstChar()
-                    : attribute;
+            var propName = GetPropertyNameFromPropertyInfo(propInfo);
 
             // multi level property
             if (expression.Expression is MemberExpression me2)
             {
                 var parentPropInfo = me2.Member as PropertyInfo;
-                var parentAttribute = parentPropInfo.GetPropertyAttributeValueL<JsonPropertyNameAttribute, string>(attr => attr.Name);
-                var parentPropName = string.IsNullOrEmpty(parentAttribute)
-                        ? string.Equals(propInfo.Name, DTID, StringComparison.OrdinalIgnoreCase) ? ADTDTID : propInfo.Name.ToLowerFirstChar()
-                        : parentAttribute;
+                var parentPropName = GetPropertyNameFromPropertyInfo(parentPropInfo);
                 PropertyType = parentPropInfo.PropertyType;
                 return $"{parentPropName}.{propName}";
             }
@@ -220,6 +214,14 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
             // single level property
             PropertyType = propInfo.PropertyType;
             return propName;
+        }
+
+        private string GetPropertyNameFromPropertyInfo(PropertyInfo propInfo)
+        {
+            var propAttribute = propInfo.GetPropertyAttributeValueL<JsonPropertyNameAttribute, string>(attr => attr.Name);
+            return string.IsNullOrEmpty(propAttribute)
+                ? string.Equals(propInfo.Name, DTID, StringComparison.OrdinalIgnoreCase) ? ADTDTID : propInfo.Name.ToLowerFirstChar()
+                : propAttribute;
         }
 
         private void ConvertIntToEnumIfNeeded()
@@ -258,7 +260,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
                 ExpressionType.LessThan => ComparisonOperators.IsLessThan,
                 ExpressionType.LessThanOrEqual => ComparisonOperators.IsLessThanOrEqualTo,
                 ExpressionType.NotEqual => ComparisonOperators.NotEqualTo,
-                _ => throw new Exception($"Linq ExpressionType '{expression.NodeType}' is not supported by ADT.")
+                _ => throw new LinqOperatorNotSupportedException($"Linq ExpressionType '{expression.NodeType}' is not supported by ADT.")
             };
         }
 
@@ -269,7 +271,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
                 "StartsWith" => ScalarOperators.STARTSWITH,
                 "Contains" => ScalarOperators.CONTAINS,
                 "EndsWith" => ScalarOperators.ENDSWITH,
-                _ => throw new Exception($"Method '{methodName}' is not supported for conversion into a ScalarBinaryOperator")
+                _ => throw new LinqOperatorNotSupportedException($"Method '{methodName}' is not a supported string function by ADT")
             };
         }
 
@@ -285,7 +287,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
                 "Int64" => ScalarOperators.IS_NUMBER,
                 "Single" => ScalarOperators.IS_NUMBER,
                 "Object" => ScalarOperators.IS_OBJECT,
-                _ => throw new Exception($"Type '{typeName}' is not supported for conversion into a ScalarUnaryOperator")
+                _ => throw new LinqOperatorNotSupportedException($"Type '{typeName}' has no supported type checking function by ADT")
             };
         }
     }

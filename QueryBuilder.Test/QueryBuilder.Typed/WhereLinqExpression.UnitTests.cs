@@ -142,7 +142,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception), "The given expression is not a Binary comparison.")]
+        [ExpectedException(typeof(LinqExpressionNotSupportedException), "The given expression is not a Binary comparison.")]
         public void NoPropertyNameThrowsException()
         {
             QueryBuilder
@@ -151,7 +151,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception), "The given expression includes function call that's not supported.")]
+        [ExpectedException(typeof(LinqOperatorNotSupportedException), "The given expression includes function call that's not supported.")]
         public void MethodNotSupportedThrowsException()
         {
             QueryBuilder
@@ -160,7 +160,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception), "The given expression is always true.")]
+        [ExpectedException(typeof(LinqExpressionNotSupportedException), "The given expression is always true.")]
         public void NoPropertyThrowsException()
         {
             QueryBuilder
@@ -169,16 +169,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception), "The given expression includes function call that's not supported.")]
-        public void FunctionCallNotSupportedThrowsException()
-        {
-            QueryBuilder
-                .From<Building>()
-                .Where<Building>(building => building.Name.Equals(" "));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(Exception), "The Array type is not supported.")]
+        [ExpectedException(typeof(LinqOperatorNotSupportedException), "The Array type is not supported.")]
         public void TypeNotSupportedThrowsException()
         {
             QueryBuilder
@@ -187,7 +178,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception), "XOR expressions are not supported.")]
+        [ExpectedException(typeof(LinqOperatorNotSupportedException), "XOR expressions are not supported.")]
         public void ExpressionTypeNotSupportedThrowsException()
         {
             QueryBuilder
@@ -196,7 +187,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception), "Null value provided.")]
+        [ExpectedException(typeof(LinqExpressionNotSupportedException), "Null value provided.")]
         public void NullValueThrowsException()
         {
             var myBuilding = new Building { Name = null };
