@@ -290,7 +290,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers
         }
     }
 
-    internal static class ConverterHelper
+    internal static class ParserHelper
     {
         internal static string ToLowerFirstChar(this string input)
         {

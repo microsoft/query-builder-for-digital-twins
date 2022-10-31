@@ -31,7 +31,8 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         public TQuery Where<TModel>(Expression<Func<TModel, bool>> expression)
             where TModel : BasicDigitalTwin
         {
-            return AddConditions(expression);
+            AddConditions(expression);
+            return (TQuery)this;
         }
 
         /// <summary>
@@ -348,7 +349,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             };
         }
 
-        private WhereComparisonCondition CreateWhereComparisonCondition<TModel>(string propertyName, ComparisonOperators op, object value, Type type, string alias)
+        internal WhereComparisonCondition CreateWhereComparisonCondition<TModel>(string propertyName, ComparisonOperators op, object value, Type type, string alias)
         {
             var modelAlias = ValidateAndGetAlias<TModel>(type, alias);
             if (value is Enum e)
@@ -419,7 +420,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             return string.IsNullOrEmpty(alias) ? GetAssignedAlias(type) : alias;
         }
 
-        private string GetEnumValue(Enum value)
+        private static string GetEnumValue(Enum value)
         {
             var enumName = value.GetType().GetEnumName(value);
             var enumField = value.GetType().GetField(enumName);
@@ -428,19 +429,24 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             return customValue is null ? defaultValue.ToString() : customValue.Value;
         }
 
-        private TQuery AddConditions<TModel>(Expression<Func<TModel, bool>> expression)
+        private void AddConditions<TModel>(Expression<Func<TModel, bool>> expression)
             where TModel : BasicDigitalTwin
         {
             var linqExpressionParser = new LinqExpressionParser<TModel>(expression);
             if (linqExpressionParser.IsLogical)
             {
-                return AddLogicalExpressionConditions((TQuery)this, linqExpressionParser);
+                var compoundCondition = CreateCompoundCondition(linqExpressionParser.LogicalExpressionType, true);
+                CompileCompoundConditions<TModel>(linqExpressionParser, compoundCondition);
+                whereClause.AddCondition(compoundCondition);
             }
-
-            return AddSimpleExpressionConditions((TQuery)this, linqExpressionParser);
+            else
+            {
+                var simpleCondition = CompileSimpleCondition<TModel>(linqExpressionParser);
+                whereClause.AddCondition(simpleCondition);
+            }
         }
 
-        private static TQuery AddSimpleExpressionConditions<TModel>(TQuery query, LinqExpressionParser<TModel> linqExpressionParser)
+        private Condition CompileSimpleCondition<TModel>(LinqExpressionParser<TModel> linqExpressionParser)
             where TModel : BasicDigitalTwin
         {
             var propertyName = linqExpressionParser.PropertyName;
@@ -449,94 +455,92 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             var comparisonOperator = linqExpressionParser.ComparisonOperator;
             if (!linqExpressionParser.IsScalar)
             {
-                query.whereClause.AddCondition(query.CreateWhereComparisonCondition<TModel>(propertyName, comparisonOperator, value, typeof(TModel), null));
-                return query;
+                return CreateWhereComparisonCondition<TModel>(propertyName, comparisonOperator, value, typeof(TModel), null);
             }
 
             if (scalarOperator is ScalarUnaryOperator unaryOperator)
             {
                 if (unaryOperator == ScalarOperators.IS_NULL && linqExpressionParser.ComparisonOperator == ComparisonOperators.NotEqualTo)
                 {
-                    var tempQuery = (TQuery)query.MemberwiseClone();
-                    tempQuery.whereClause = new WhereClause();
-                    tempQuery.whereClause.AddCondition(query.CreateWhereScalarCondition<TModel>(propertyName, unaryOperator, typeof(TModel), null));
-                    query.whereClause.AddCondition(new NotCondition
+                    return new NotCondition
                     {
-                        Condition = tempQuery.whereClause.Conditions.First()
-                    });
-                    return query;
+                        Condition = CreateWhereScalarCondition<TModel>(propertyName, unaryOperator, typeof(TModel), null).ToString()
+                    };
                 }
 
-                query.whereClause.AddCondition(query.CreateWhereScalarCondition<TModel>(propertyName, unaryOperator, typeof(TModel), null));
-                return query;
+                return CreateWhereScalarCondition<TModel>(propertyName, unaryOperator, typeof(TModel), null);
             }
 
             // scalar binary operator
-            query.whereClause.AddCondition(query.CreateAdtScalarBinaryOperatorCondition<TModel>(propertyName, (string)value, typeof(TModel), null, scalarOperator));
-            return query;
+            return CreateAdtScalarBinaryOperatorCondition<TModel>(propertyName, (string)value, typeof(TModel), null, scalarOperator);
         }
 
-        private static TQuery AddLogicalExpressionConditions<TModel>(TQuery query, LinqExpressionParser<TModel> linqExpressionParser)
+        private void CompileCompoundConditions<TModel>(LinqExpressionParser<TModel> linqExpressionParser, CompoundCondition compoundCondition)
             where TModel : BasicDigitalTwin
         {
-            var leftLogicalExpression = linqExpressionParser.LeftLogicalExpression;
-            var rightLogicalExpression = linqExpressionParser.RightLogicalExpression;
             var logicalExpressionTypes = linqExpressionParser.LogicalExpressionTypes;
-            var logicalExpressionType = linqExpressionParser.LogicalExpressionType;
+            var expressionType = linqExpressionParser.LogicalExpressionType;
+            var leftExpression = linqExpressionParser.LeftLogicalExpression;
+            var rightExpression = linqExpressionParser.RightLogicalExpression;
             var leftLogicalExpressionParser = new LinqExpressionParser<TModel>(linqExpressionParser.LeftLogicalExpression);
             var rightLogicalExpressionParser = new LinqExpressionParser<TModel>(linqExpressionParser.RightLogicalExpression);
+            var leftExpressionType = leftLogicalExpressionParser.LogicalExpressionType;
+            var rightExpressionType = rightLogicalExpressionParser.LogicalExpressionType;
 
-            // left is logical, right is simple
-            if (logicalExpressionTypes.Contains(leftLogicalExpression.NodeType) && !logicalExpressionTypes.Contains(rightLogicalExpression.NodeType))
+            if (logicalExpressionTypes.Contains(leftExpressionType) && !logicalExpressionTypes.Contains(rightExpressionType))
             {
-                return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddLogicalExpressionConditions, AddSimpleExpressionConditions, leftLogicalExpressionParser, rightLogicalExpressionParser);
+                // left is logical, right is simple
+                CompileChildCompoundExpression(linqExpressionParser, leftLogicalExpressionParser, compoundCondition);
+                compoundCondition.Conditions.Add(CompileSimpleCondition<TModel>(rightLogicalExpressionParser).ToString());
             }
-
-            // right is logical, left is simple
-            if (logicalExpressionTypes.Contains(rightLogicalExpression.NodeType) && !logicalExpressionTypes.Contains(leftLogicalExpression.NodeType))
+            else if (logicalExpressionTypes.Contains(rightExpressionType) && !logicalExpressionTypes.Contains(leftExpressionType))
             {
-                return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddLogicalExpressionConditions, AddSimpleExpressionConditions, rightLogicalExpressionParser, leftLogicalExpressionParser);
+                // right is logical, left is simple
+                compoundCondition.Conditions.Add(CompileSimpleCondition<TModel>(leftLogicalExpressionParser).ToString());
+                CompileChildCompoundExpression(linqExpressionParser, rightLogicalExpressionParser, compoundCondition);
             }
-
-            // both are logical
-            if (logicalExpressionTypes.Contains(leftLogicalExpression.NodeType) && logicalExpressionTypes.Contains(rightLogicalExpression.NodeType))
+            else if (logicalExpressionTypes.Contains(leftExpressionType) && logicalExpressionTypes.Contains(rightExpressionType))
             {
-                return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddLogicalExpressionConditions, AddLogicalExpressionConditions, rightLogicalExpressionParser, leftLogicalExpressionParser);
+                // both are logical
+                CompileChildCompoundExpression(linqExpressionParser, leftLogicalExpressionParser, compoundCondition);
+                CompileChildCompoundExpression(linqExpressionParser, rightLogicalExpressionParser, compoundCondition);
             }
-
-            // both are simple
-            return AddLogicalExpressionTypeConditions(query, logicalExpressionType, AddSimpleExpressionConditions, AddSimpleExpressionConditions, rightLogicalExpressionParser, leftLogicalExpressionParser);
+            else
+            {
+                // add simple comdition to conditions
+                compoundCondition.Conditions.Add(CompileSimpleCondition<TModel>(leftLogicalExpressionParser).ToString());
+                compoundCondition.Conditions.Add(CompileSimpleCondition<TModel>(rightLogicalExpressionParser).ToString());
+            }
         }
 
-        private static TQuery AddLogicalExpressionTypeConditions<TModel>(
-            TQuery query,
-            ExpressionType logicalExpressionType,
-            Func<TQuery, LinqExpressionParser<TModel>, TQuery> outerFunction,
-            Func<TQuery, LinqExpressionParser<TModel>, TQuery> innerFunction,
-            LinqExpressionParser<TModel> outerFunctionParam,
-            LinqExpressionParser<TModel> innerFunctionParam)
+        private void CompileChildCompoundExpression<TModel>(LinqExpressionParser<TModel> parentExpressionParser, LinqExpressionParser<TModel> childExpressionParser, CompoundCondition compoundCondition)
             where TModel : BasicDigitalTwin
         {
-            Action<FilteredQuery<TQuery>> conditions;
-            var tempQuery = (TQuery)query.MemberwiseClone();
-            tempQuery.whereClause = new WhereClause();
-            conditions = query => outerFunction(innerFunction((TQuery)query, innerFunctionParam), outerFunctionParam);
-            conditions.Invoke(tempQuery);
-            if (logicalExpressionType == ExpressionType.AndAlso)
+            if (childExpressionParser.LogicalExpressionType == parentExpressionParser.LogicalExpressionType)
             {
-                query.whereClause.AddCondition(new AndCondition
-                {
-                    Conditions = tempQuery.whereClause.Conditions
-                });
-                return query;
+                CompileCompoundConditions(childExpressionParser, compoundCondition);
             }
-
-            // Invariant: logicalExpressionType is either AndAlso or OrElse.
-            query.whereClause.AddCondition(new OrCondition
+            else
             {
-                Conditions = tempQuery.whereClause.Conditions
-            });
-            return query;
+                CompoundCondition childNodeCompoundCondition = CreateCompoundCondition(childExpressionParser.LogicalExpressionType, false);
+                CompileCompoundConditions(childExpressionParser, childNodeCompoundCondition);
+                compoundCondition.Conditions.Add(childNodeCompoundCondition.ToString());
+            }
+        }
+
+        private static CompoundCondition CreateCompoundCondition(ExpressionType expressionType, bool isRootCompoundCondition)
+        {
+            return expressionType == ExpressionType.AndAlso ?
+            new AndCondition
+            {
+                Conditions = new List<string>(),
+                IsRoot = isRootCompoundCondition
+            }
+            : new OrCondition
+            {
+                Conditions = new List<string>(),
+                IsRoot = isRootCompoundCondition
+            };
         }
     }
 }

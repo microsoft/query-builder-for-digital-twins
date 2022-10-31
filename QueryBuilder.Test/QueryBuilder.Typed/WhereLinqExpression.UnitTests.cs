@@ -4,6 +4,7 @@
 namespace QueryBuilder.UnitTests.QueryBuilder.Typed
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq.Expressions;
     using global::QueryBuilder.Test.Generated;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder;
@@ -13,7 +14,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
     public class QueryWhereLinqExpressionTest
     {
         [TestMethod]
-        public void CanApplyComplexFilter()
+        public void CanApplyMultiModelCompoundFilter()
         {
             var floor = new Floor { Name = "floorName" };
             var query = QueryBuilder
@@ -30,8 +31,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
                 $"WHERE IS_OF_MODEL(building, '{Building.ModelId.UpdateVersion(1)}') " +
                 $"AND IS_OF_MODEL(device, '{Device.ModelId.UpdateVersion(1)}') " +
                 $"AND IS_OF_MODEL(sensor, '{Sensor.ModelId.UpdateVersion(1)}') " +
-                $"AND (IS_STRING(building.name) OR (NOT IS_NULL(building.$dtId) AND building.$dtId = '{floor.Name}')) " +
-                "AND (IS_STRING(device.description) OR (NOT IS_NULL(device.name) AND device.name = 'name'))";
+                $"AND (NOT IS_NULL(building.$dtId) AND building.$dtId = '{floor.Name}') OR IS_STRING(building.name) " +
+                "AND (NOT IS_NULL(device.name) AND device.name = 'name') OR IS_STRING(device.description)";
             Assert.AreEqual(expected, query.BuildAdtQuery());
         }
 
@@ -48,7 +49,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             TestLinqExpressionWhereClause(
                 building => building.Name == null && building.Name == null,
-                "(IS_NULL(building.name) AND IS_NULL(building.name))");
+                "IS_NULL(building.name) AND IS_NULL(building.name)");
         }
 
         [TestMethod]
@@ -56,7 +57,7 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             TestLinqExpressionWhereClause(
                 building => building.Name == null || building.Name == null,
-                "(IS_NULL(building.name) OR IS_NULL(building.name))");
+                "IS_NULL(building.name) OR IS_NULL(building.name)");
         }
 
         [TestMethod]
@@ -64,10 +65,13 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             TestLinqExpressionWhereClause(
                 building => building.Name == null && (building.Name == null && building.Name == "a"),
-                "(IS_NULL(building.name) AND (IS_NULL(building.name) AND building.name = 'a'))");
+                "IS_NULL(building.name) AND IS_NULL(building.name) AND building.name = 'a'");
             TestLinqExpressionWhereClause(
                 building => (building.Name == null && building.Name == "a") && building.Name == null,
-                "(IS_NULL(building.name) AND (IS_NULL(building.name) AND building.name = 'a'))");
+                "IS_NULL(building.name) AND building.name = 'a' AND IS_NULL(building.name)");
+            TestLinqExpressionWhereClause(
+                building => (building.Name == "a" && building.Name == "b") && (building.Name == "c" && building.Name == "d"),
+                "building.name = 'a' AND building.name = 'b' AND building.name = 'c' AND building.name = 'd'");
         }
 
         [TestMethod]
@@ -75,10 +79,13 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             TestLinqExpressionWhereClause(
                 building => building.Name == null || (building.Name == null || building.Name == "a"),
-                "(IS_NULL(building.name) OR (IS_NULL(building.name) OR building.name = 'a'))");
+                "IS_NULL(building.name) OR IS_NULL(building.name) OR building.name = 'a'");
             TestLinqExpressionWhereClause(
                 building => (building.Name == null || building.Name == "a") || building.Name == null,
-                "(IS_NULL(building.name) OR (IS_NULL(building.name) OR building.name = 'a'))");
+                "IS_NULL(building.name) OR building.name = 'a' OR IS_NULL(building.name)");
+            TestLinqExpressionWhereClause(
+                building => (building.Name == "a" || building.Name == "b") || (building.Name == "c" || building.Name == "d"),
+                "building.name = 'a' OR building.name = 'b' OR building.name = 'c' OR building.name = 'd'");
         }
 
         [TestMethod]
@@ -86,7 +93,16 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
         {
             TestLinqExpressionWhereClause(
                 building => building.Name.StartsWith("a") || ((building.Name == "a" && building.RoomKey == "1") || (building.Name == "b" && building.RoomKey == "2") || building.Name == null),
-                "(STARTSWITH(building.name, 'a') OR (IS_NULL(building.name) OR ((building.name = 'a' AND building.roomKey = '1') OR (building.name = 'b' AND building.roomKey = '2'))))");
+                "STARTSWITH(building.name, 'a') OR (building.name = 'a' AND building.roomKey = '1') OR (building.name = 'b' AND building.roomKey = '2') OR IS_NULL(building.name)");
+        }
+
+        [TestMethod]
+        [SuppressMessage("Usage", "SA1408: Conditional expressions should declare precedence", Justification = "Testing ambiguous case.")]
+        public void CanAplyAmbiguousPrecedence()
+        {
+            TestLinqExpressionWhereClause(
+                building => building.Name == null || building.Name == null && building.Name == null,
+                "IS_NULL(building.name) OR (IS_NULL(building.name) AND IS_NULL(building.name))");
         }
 
         [TestMethod]
