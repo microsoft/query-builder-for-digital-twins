@@ -339,7 +339,7 @@ JOIN sensor RELATED device.hasSensors devicehassensorsrelationship
 WHERE IS_OF_MODEL(building, 'dtmi:microsoft:Space:Building;1')
 AND IS_OF_MODEL(device, 'dtmi:microsoft:Device;1')
 AND IS_OF_MODEL(sensor, 'dtmi:microsoft:Sensor;1')
-AND (NOT IS_NULL(building.$dtId) AND building.$dtId = '{floor.Name}'))
+AND (NOT IS_NULL(building.$dtId) AND building.$dtId = 'name'))
 AND (NOT IS_NULL(device.name) AND device.name = 'name'))
 */
 ```
