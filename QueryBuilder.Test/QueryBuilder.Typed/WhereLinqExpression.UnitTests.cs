@@ -42,6 +42,11 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Typed
             var query = QueryBuilder
                 .From<Space>()
                 .Where<Space>(space => space.Status == SpaceStatus.Active);
+            var expected =
+            "SELECT space FROM DIGITALTWINS space " +
+            $"WHERE IS_OF_MODEL(space, '{Space.ModelId.UpdateVersion(1)}') " +
+            $"AND space.status = '{SpaceStatus.Active.GetEnumValue()}'";
+            Assert.AreEqual(expected, query.BuildAdtQuery());
         }
 
         [TestMethod]

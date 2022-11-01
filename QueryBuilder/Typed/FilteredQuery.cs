@@ -31,7 +31,19 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
         public TQuery Where<TModel>(Expression<Func<TModel, bool>> expression)
             where TModel : BasicDigitalTwin
         {
-            AddConditions(expression);
+            var linqExpressionParser = new LinqExpressionParser<TModel>(expression);
+            if (linqExpressionParser.IsLogical)
+            {
+                var compoundCondition = CreateCompoundCondition(linqExpressionParser.LogicalExpressionType, true);
+                CompileCompoundConditions<TModel>(linqExpressionParser, compoundCondition);
+                whereClause.AddCondition(compoundCondition);
+            }
+            else
+            {
+                var simpleCondition = CompileSimpleCondition<TModel>(linqExpressionParser);
+                whereClause.AddCondition(simpleCondition);
+            }
+
             return (TQuery)this;
         }
 
@@ -349,7 +361,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             };
         }
 
-        internal WhereComparisonCondition CreateWhereComparisonCondition<TModel>(string propertyName, ComparisonOperators op, object value, Type type, string alias)
+        private WhereComparisonCondition CreateWhereComparisonCondition<TModel>(string propertyName, ComparisonOperators op, object value, Type type, string alias)
         {
             var modelAlias = ValidateAndGetAlias<TModel>(type, alias);
             if (value is Enum e)
@@ -427,23 +439,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Typed
             var customValue = enumField.GetCustomAttribute<EnumMemberAttribute>();
             var defaultValue = Convert.ChangeType(value, value.GetTypeCode());
             return customValue is null ? defaultValue.ToString() : customValue.Value;
-        }
-
-        private void AddConditions<TModel>(Expression<Func<TModel, bool>> expression)
-            where TModel : BasicDigitalTwin
-        {
-            var linqExpressionParser = new LinqExpressionParser<TModel>(expression);
-            if (linqExpressionParser.IsLogical)
-            {
-                var compoundCondition = CreateCompoundCondition(linqExpressionParser.LogicalExpressionType, true);
-                CompileCompoundConditions<TModel>(linqExpressionParser, compoundCondition);
-                whereClause.AddCondition(compoundCondition);
-            }
-            else
-            {
-                var simpleCondition = CompileSimpleCondition<TModel>(linqExpressionParser);
-                whereClause.AddCondition(simpleCondition);
-            }
         }
 
         private Condition CompileSimpleCondition<TModel>(LinqExpressionParser<TModel> linqExpressionParser)
