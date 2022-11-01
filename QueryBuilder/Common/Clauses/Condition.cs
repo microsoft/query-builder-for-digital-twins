@@ -20,10 +20,17 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
     {
         internal IList<string> Conditions { get; set; }
 
+        internal bool IsRoot { get; set; }
+
         protected string LogicalOperator { get; set; }
 
         public override string ToString()
         {
+            if (IsRoot)
+            {
+                return $"{string.Join($" {LogicalOperator} ", Conditions)}";
+            }
+
             return $"({string.Join($" {LogicalOperator} ", Conditions)})";
         }
     }
