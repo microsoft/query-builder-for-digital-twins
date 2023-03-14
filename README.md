@@ -1,6 +1,8 @@
 # Azure Digital Twins Query Builder
 
-[![Package publish](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml/badge.svg)](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/pipeline.yml)
+[![Build](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/build.yml/badge.svg)](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/build.yml) 
+[![Release](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/release.yml/badge.svg)](https://github.com/microsoft/query-builder-for-digital-twins/actions/workflows/release.yml)
+[![NuGet](https://img.shields.io/nuget/v/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.svg)](https://www.nuget.org/packages/Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder)
 
 The Azure Digital Twins (ADT) QueryBuilder provides a C# based fluent query builder that helps you build and query an Azure Digital Twin instance in an easy and predictable way with familiar C# based programming constructs.
 The QueryBuilder factory supports two flows we're identifying as the ***Typed*** flow and the ***Dynamic*** flow.

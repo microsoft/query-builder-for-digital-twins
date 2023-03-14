@@ -16,6 +16,10 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <CodeAnalysisRuleSet>..\StyleCop.ruleset</CodeAnalysisRuleSet>
         <TreatWarningsAsErrors Condition="'$(OFFICIAL_BUILD)' == 'True'">true</TreatWarningsAsErrors>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <MinVerTagPrefix>v</MinVerTagPrefix>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
 
     <ItemGroup>
@@ -38,5 +42,19 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
     </ItemGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <Target Name="AssemblyVersionTarget" AfterTargets="MinVer" Condition="'$(MinVerVersion)'!='' AND '$(BuildNumber)' != ''">
+        <PropertyGroup>
+            <AssemblyVersion>$(MinVerMajor).0.0.0</AssemblyVersion>
+            <FileVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).$(BuildNumber)</FileVersion>
+            <PackageVersion>$(MinVerVersion)</PackageVersion>
+            <Version>$(MinVerVersion)</Version>
+        </PropertyGroup>
+    </Target>
 </Project>
