@@ -5,6 +5,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic.Statements;
 
@@ -48,6 +49,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         {
             foreach (var clause in joinClause)
             {
+                if (joinClauses.Any(jc => jc.Id == clause.Id))
+                {
+                    continue;
+                }
+
                 ValidateAliasIsDefined(clause.JoinFrom);
                 ValidateAndAddAlias(clause.JoinWith);
                 SetRelationshipAliasIfNeeded(clause);

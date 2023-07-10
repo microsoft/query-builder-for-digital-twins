@@ -3,10 +3,13 @@
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
 {
+    using System;
     using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers.Terms;
 
     internal class JoinClause
     {
+        internal Guid Id { get; set; } = Guid.NewGuid();
+
         internal string JoinWith { get; set; }
 
         internal string JoinFrom { get; set; }
