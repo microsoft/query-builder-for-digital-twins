@@ -16,11 +16,11 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         where TQuery : JoinQuery<TQuery, TWhereStatement>
         where TWhereStatement : WhereBaseStatement<TWhereStatement>
     {
-        private readonly JoinWithStatement<TWhereStatement> joinStatement;
+        private string rootAlias;
 
         internal JoinQuery(string rootAlias, IList<string> definedAliases, SelectClause selectClause, FromClause fromClause, IList<JoinClause> joinClauses, WhereClause whereClause) : base(rootAlias, definedAliases, selectClause, fromClause, joinClauses, whereClause)
         {
-            joinStatement = new JoinWithStatement<TWhereStatement>(new List<JoinClause>(), whereClause, rootAlias);
+            this.rootAlias = rootAlias;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <returns>The query instance.</returns>
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, JoinFinalStatement<TWhereStatement>> joinLogic)
         {
-            var computed = joinLogic.Invoke(joinStatement);
+            var computed = joinLogic.Invoke(new JoinWithStatement<TWhereStatement>(new List<JoinClause>(), whereClause, rootAlias));
             return Join(computed.Clauses);
         }
 
@@ -41,7 +41,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         /// <returns>The query instance.</returns>
         public TQuery Join(Func<JoinWithStatement<TWhereStatement>, CompoundWhereStatement<TWhereStatement>> joinAndWhereLogic)
         {
-            var computed = joinAndWhereLogic.Invoke(joinStatement);
+            var computed = joinAndWhereLogic.Invoke(new JoinWithStatement<TWhereStatement>(new List<JoinClause>(), whereClause, rootAlias));
             return Join(computed.JoinClauses);
         }
 
@@ -49,11 +49,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Dynamic
         {
             foreach (var clause in joinClause)
             {
-                if (joinClauses.Any(jc => jc.Id == clause.Id))
-                {
-                    continue;
-                }
-
                 ValidateAliasIsDefined(clause.JoinFrom);
                 ValidateAndAddAlias(clause.JoinWith);
                 SetRelationshipAliasIfNeeded(clause);

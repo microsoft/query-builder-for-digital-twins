@@ -8,8 +8,6 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
 
     internal class JoinClause
     {
-        internal Guid Id { get; set; } = Guid.NewGuid();
-
         internal string JoinWith { get; set; }
 
         internal string JoinFrom { get; set; }
