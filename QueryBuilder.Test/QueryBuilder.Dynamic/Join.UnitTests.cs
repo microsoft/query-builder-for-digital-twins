@@ -110,8 +110,8 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
                     .With("ac")
                     .RelatedBy("hasAirconditioner"))
                 .Join(r => r
-                        .With("fridge")
-                        .RelatedBy("hasRefrigerator"))
+                    .With("fridge")
+                    .RelatedBy("hasRefrigerator"))
                 .Select("ac", "fridge");
 
             Assert.AreEqual("SELECT ac, fridge FROM DIGITALTWINS twin JOIN ac RELATED twin.hasAirconditioner hasairconditionerrelationship JOIN fridge RELATED twin.hasRefrigerator hasrefrigeratorrelationship", query.BuildAdtQuery());
