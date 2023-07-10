@@ -3,7 +3,6 @@
 
 namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses
 {
-    using System;
     using static Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Helpers.Terms;
 
     internal class JoinClause
