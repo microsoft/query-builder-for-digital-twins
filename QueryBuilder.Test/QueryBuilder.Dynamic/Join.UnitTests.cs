@@ -102,6 +102,22 @@ namespace QueryBuilder.UnitTests.QueryBuilder.Dynamic
         }
 
         [TestMethod]
+        public void CanDoMultipleJoinsFromRootTwin()
+        {
+            var query = QueryBuilder
+                .FromTwins()
+                .Join(a => a
+                    .With("ac")
+                    .RelatedBy("hasAirconditioner"))
+                .Join(r => r
+                    .With("fridge")
+                    .RelatedBy("hasRefrigerator"))
+                .Select("ac", "fridge");
+
+            Assert.AreEqual("SELECT ac, fridge FROM DIGITALTWINS twin JOIN ac RELATED twin.hasAirconditioner hasairconditionerrelationship JOIN fridge RELATED twin.hasRefrigerator hasrefrigeratorrelationship", query.BuildAdtQuery());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CanNotAssignAliasAlreadyUsed()
         {
