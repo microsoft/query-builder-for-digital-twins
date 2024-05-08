@@ -9,7 +9,7 @@ namespace Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder
     using Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder.Common.Clauses;
 
     /// <summary>
-    /// A class for the basic common functionality.
+    /// A class for the basic common functionality. Test comment
     /// </summary>
     public abstract class QueryBase
     {
