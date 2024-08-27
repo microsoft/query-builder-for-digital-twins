@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   Build:
-    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@users/asthasharma/fix
+    uses: microsoft/digitalworkplace-workflows/.github/workflows/build.yml@v3.3
     with:
      project-to-build: "QueryBuilder/QueryBuilder.csproj"
      project-to-test: "QueryBuilder.Test/QueryBuilder.Test.csproj"
