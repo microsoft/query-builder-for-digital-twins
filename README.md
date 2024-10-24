@@ -632,3 +632,13 @@ trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
+
+
+# Repository Migration Notice
+
+This repository has been migrated to Azure DevOps (ADO). No new release versions of the NuGet package `Microsoft.DigitalWorkplace.DigitalTwins.QueryBuilder` will be released from this repository.
+
+- **Last Version**: 1.4.0
+- **Maintenance**: This repository is no longer maintained.
+
+
